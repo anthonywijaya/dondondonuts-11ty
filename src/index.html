@@ -2,19 +2,60 @@
 layout: default
 ---
 
-<main class="container mx-auto flex flex-col flex-wrap items-center px-6 pt-24 md:flex-row md:pt-48">
-  <header class="flex w-full flex-col justify-center overflow-y-hidden lg:items-start xl:w-2/5">
-    <h1 class="my-4 text-center text-3xl font-bold leading-tight text-blue-500 md:text-left md:text-5xl">
-      {{ metadata.title }}
-    </h1>
-    <p class="mb-6 text-center text-base leading-normal md:text-left md:text-2xl">{{ metadata.description }}</p>
-    <a href="https://github.com/distantcam/windty">
-      <svg class="h-12" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <title>GitHub icon</title>
-        <path
-          d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
-        />
-      </svg>
-    </a>
-  </header>
-</main>
+<div class="mx-auto w-full max-w-7xl lg:px-8">
+  <div class="relative px-4 sm:px-8 lg:px-12">
+    <div class="mx-auto max-w-2xl lg:max-w-5xl text-center">
+      <div class="max-w-md md:max-w-2xl mx-auto">
+        <div class=""><img class="w-1/4 mx-auto mb-8" src="/assets/img/logo.png"></div>
+        <div class="grid grid-cols-3 md:grid-cols-3 gap-4 mt-8 px-4 mb-16">
+          <div class="">
+            <img class="object-cover rounded-xl overflow-hidden w-full" src="/assets/img/hero-1.jpg">
+          </div>
+          <div class="">
+            <img class="object-cover rounded-xl overflow-hidden w-full" src="/assets/img/hero-2.jpg">
+          </div>
+          <div class="">
+            <img class="object-cover rounded-xl overflow-hidden w-full" src="/assets/img/hero-3.jpg">
+          </div>
+        </div>
+
+        <h1 class="text-3xl font-bold text-center mb-3">Ube Donuts, based in Sunter, Jakarta</h1>
+      
+        <h2 class="text-xl text-center mb-8">Spesialis Ube Donut. Dibuat fresh setiap hari.</h2>
+
+        <div class="">
+          <ul>
+            <li class="flex mx-auto w-60 overflow-hidden transition-all ease-in-out duration-300 rounded-3xl p-1.5 mb-4 border text-zinc-800 justify-center gap-4 hover:bg-teal-600 hover:text-zinc-100">
+              <a href="https://api.whatsapp.com/send/?phone=6281293456458&amp;text&amp;type=phone_number&amp;app_absent=0" class="flex overflow-hidden relative" target="_blank">
+                <span class="inline-flex px-4 self-center text-sm">Pesan Dari WhatsApp</span>
+                <div class="flex rounded-full justify-center bg-zinc-50 items-center">
+                  <div class="flex justify-center items-center w-10 h-10"><img class="h-5 w-5 mx-auto"
+                      src="/assets/img/whatsapp-logo.svg">
+                    </div>
+                </div>
+              </a>
+            </li>
+<!--         
+            <li><a class="text-lg underline underline-offset-4 text-teal-800 hover:text-teal-400" href="#">Whatsapp</a></li>
+            <li><a class="text-lg underline underline-offset-4 text-teal-800 hover:text-teal-400" href="#">Tokopedia</a></li> -->
+          </ul>
+        </div>
+        
+        <div class="mt-6 flex gap-6 justify-center">
+          <a class="group -m-1 p-1" aria-label="Follow on Instagram" href="https://instagram.com"><svg
+              viewBox="0 0 24 24" aria-hidden="true"
+              class="h-6 w-6 fill-zinc-500 transition group-hover:fill-zinc-600 dark:fill-zinc-400 dark:group-hover:fill-zinc-300">
+              <path
+                d="M12 3c-2.444 0-2.75.01-3.71.054-.959.044-1.613.196-2.185.418A4.412 4.412 0 0 0 4.51 4.511c-.5.5-.809 1.002-1.039 1.594-.222.572-.374 1.226-.418 2.184C3.01 9.25 3 9.556 3 12s.01 2.75.054 3.71c.044.959.196 1.613.418 2.185.23.592.538 1.094 1.039 1.595.5.5 1.002.808 1.594 1.038.572.222 1.226.374 2.184.418C9.25 20.99 9.556 21 12 21s2.75-.01 3.71-.054c.959-.044 1.613-.196 2.185-.419a4.412 4.412 0 0 0 1.595-1.038c.5-.5.808-1.002 1.038-1.594.222-.572.374-1.226.418-2.184.044-.96.054-1.267.054-3.711s-.01-2.75-.054-3.71c-.044-.959-.196-1.613-.419-2.185A4.412 4.412 0 0 0 19.49 4.51c-.5-.5-1.002-.809-1.594-1.039-.572-.222-1.226-.374-2.184-.418C14.75 3.01 14.444 3 12 3Zm0 1.622c2.403 0 2.688.009 3.637.052.877.04 1.354.187 1.67.31.421.163.72.358 1.036.673.315.315.51.615.673 1.035.123.317.27.794.31 1.671.043.95.052 1.234.052 3.637s-.009 2.688-.052 3.637c-.04.877-.187 1.354-.31 1.67-.163.421-.358.72-.673 1.036a2.79 2.79 0 0 1-1.035.673c-.317.123-.794.27-1.671.31-.95.043-1.234.052-3.637.052s-2.688-.009-3.637-.052c-.877-.04-1.354-.187-1.67-.31a2.789 2.789 0 0 1-1.036-.673 2.79 2.79 0 0 1-.673-1.035c-.123-.317-.27-.794-.31-1.671-.043-.95-.052-1.234-.052-3.637s.009-2.688.052-3.637c.04-.877.187-1.354.31-1.67.163-.421.358-.72.673-1.036.315-.315.615-.51 1.035-.673.317-.123.794-.27 1.671-.31.95-.043 1.234-.052 3.637-.052Z">
+              </path>
+              <path
+                d="M12 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm0-7.622a4.622 4.622 0 1 0 0 9.244 4.622 4.622 0 0 0 0-9.244Zm5.884-.182a1.08 1.08 0 1 1-2.16 0 1.08 1.08 0 0 1 2.16 0Z">
+              </path>
+            </svg> 
+          </a>
+        
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
