@@ -1,0 +1,3 @@
+---
+thumb: "dondon-milk.jpg"
+---

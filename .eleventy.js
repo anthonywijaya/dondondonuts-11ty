@@ -15,6 +15,12 @@ module.exports = function(eleventyConfig) {
 
   // Watch targets
   eleventyConfig.addWatchTarget("./src/_includes/assets/css/");
+
+  // Collections
+
+  eleventyConfig.addCollection("flavors", function (collectionApi) {
+		return collectionApi.getFilteredByGlob("src/input/flavors/*.md");
+	});
   
 
   var pathPrefix = "";

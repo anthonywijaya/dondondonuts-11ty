@@ -1,13 +1,17 @@
 ---
 layout: default
+
+eleventyImport:
+  collections: ["flavors"]
+
 ---
 
 <div class="mx-auto w-full max-w-7xl lg:px-8">
   <div class="relative px-4 sm:px-8 lg:px-12">
     <div class="mx-auto max-w-2xl lg:max-w-5xl text-center">
-      <div class="max-w-md md:max-w-2xl mx-auto">
+      <div class="max-w-md md:max-w-3xl mx-auto">
         <div class=""><img class="w-1/4 mx-auto mb-8" src="/assets/img/logo.png"></div>
-        <div class="grid grid-cols-3 md:grid-cols-3 gap-4 mt-8 px-4 mb-16">
+        <div class="grid grid-cols-3 md:grid-cols-3 gap-2 md:gap-4 mt-8 mb-16">
           <div class="">
             <img class="object-cover rounded-xl overflow-hidden w-full" src="/assets/img/hero-1.jpg">
           </div>
@@ -54,6 +58,17 @@ layout: default
             </svg> 
           </a>
         
+        </div>
+
+        <div>
+          <h3 class="text-3xl mt-8">Our Donuts</h3>
+          <ul class="grid grid-cols-3 md:grid-cols-3 gap-4 mt-8 px-4 mb-16">
+            {%- for flavor in collections.flavors -%}
+              <li class="">
+                <img class="object-cover rounded-xl overflow-hidden w-full" src="{{ flavor.data.thumb }}">
+              </li>
+            {%- endfor -%}
+          </ul>
         </div>
       </div>
     </div>
