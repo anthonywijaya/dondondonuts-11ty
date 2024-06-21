@@ -1,17 +1,41 @@
 const fs = require("fs");
 const htmlmin = require("html-minifier");
 
+const { eleventyImageTransformPlugin } = require("@11ty/eleventy-img");
+
 module.exports = function(eleventyConfig) {
 
   if (process.env.ELEVENTY_PRODUCTION) {
     eleventyConfig.addTransform("htmlmin", htmlminTransform);
   }
 
+  eleventyConfig.addPlugin(eleventyImageTransformPlugin, {
+		// which file extensions to process
+		extensions: "html",
+
+		// Add any other Image utility options here:
+
+		// optional, output image formats
+		// formats: ["webp", "jpeg", "svg"],
+		formats: ["webp", "jpeg", "auto"],
+
+		// optional, output image widths
+		widths: [320, 640, 1280, "auto"],
+
+		// optional, attributes assigned on <img> override these values.
+		defaultAttributes: {
+      sizes: '90vw',
+			loading: "lazy",
+			decoding: "async",
+      alt: "",
+		},
+  });
+
   eleventyConfig.addLayoutAlias('default', 'layouts/default.njk');
 
   // Passthrough
   // eleventyConfig.addPassthroughCopy({ "src/static": "." });
-  eleventyConfig.addPassthroughCopy({"src/_includes/assets/img/**/*": "assets/img/"});
+  eleventyConfig.addPassthroughCopy({"src/assets/img/**/*": "assets/img/"});
 
   // Watch targets
   eleventyConfig.addWatchTarget("./src/_includes/assets/css/");

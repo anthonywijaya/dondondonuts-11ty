@@ -1,7 +1,7 @@
 {
-  "name": "windty",
+  "name": "dondondonuts",
   "version": "1.0.0",
-  "description": "Simple 11ty template with tailwind",
+  "description": "Simple landing page website with tailwind, 11ty.",
   "scripts": {
     "start": "run-p start:*",
     "start:eleventy": "eleventy --serve",
@@ -13,21 +13,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/distantcam/windty.git"
+    "url": "https://github.com/anthonywjya/dondondonuts-11ty.git"
   },
   "keywords": [
     "eleventy",
     "11ty",
     "tailwind"
   ],
-  "author": "Cam MacFarland",
+  "author": "Anthony Wijaya",
   "license": "Unlicense",
-  "homepage": "https://github.com/distantcam/windty#readme",
-  "bugs": {
-    "url": "https://github.com/distantcam/windty/issues"
-  },
+  "homepage": "https://anthonywijaya.com",
   "devDependencies": {
-    "@11ty/eleventy": "^2.0.1",
+    "@11ty/eleventy": "^3.0.0-alpha.6",
+    "@11ty/eleventy-img": "^4.0.2",
     "autoprefixer": "^10.4.19",
     "cross-env": "^7.0.3",
     "cssnano": "^7.0.3",
@@ -38,5 +36,8 @@
     "postcss-import": "^16.1.0",
     "rimraf": "^5.0.7",
     "tailwindcss": "^3.4.4"
+  },
+  "dependencies": {
+    "@11ty/eleventy-img": "^4.0.2"
   }
 }

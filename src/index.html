@@ -10,7 +10,9 @@ eleventyImport:
   <div class="relative px-4 sm:px-8 lg:px-12">
     <div class="mx-auto max-w-2xl lg:max-w-5xl text-center">
       <div class="max-w-md md:max-w-3xl mx-auto">
-        <div class=""><img class="w-1/4 mx-auto mb-8" src="/assets/img/logo.png"></div>
+        <div class="">
+          <img class="w-1/4 mx-auto mb-8" src="/assets/img/logo-illust-text.png">
+        </div>
         <div class="grid grid-cols-3 md:grid-cols-3 gap-2 md:gap-4 mt-8 mb-16">
           <div class="">
             <img class="object-cover rounded-xl overflow-hidden w-full" src="/assets/img/hero-1.jpg">
@@ -46,6 +48,7 @@ eleventyImport:
         </div>
         
         <div class="mt-6 flex gap-6 justify-center">
+          <span>Follow us on Instagram for flavor/promo updates!</span>
           <a class="group -m-1 p-1" aria-label="Follow on Instagram" href="https://instagram.com"><svg
               viewBox="0 0 24 24" aria-hidden="true"
               class="h-6 w-6 fill-zinc-500 transition group-hover:fill-zinc-600 dark:fill-zinc-400 dark:group-hover:fill-zinc-300">
@@ -64,8 +67,9 @@ eleventyImport:
           <h3 class="text-3xl mt-8">Our Donuts</h3>
           <ul class="grid grid-cols-3 md:grid-cols-3 gap-4 mt-8 px-4 mb-16">
             {%- for flavor in collections.flavors -%}
-              <li class="">
+              <li class="mb-4">
                 <img class="object-cover rounded-xl overflow-hidden w-full" src="{{ flavor.data.thumb }}">
+                <p class="mt-2">{{ flavor.data.title }}</p>
               </li>
             {%- endfor -%}
           </ul>

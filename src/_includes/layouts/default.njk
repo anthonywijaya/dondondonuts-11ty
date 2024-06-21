@@ -31,7 +31,7 @@
     <meta name="author" content="{{ author.name }}">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ site.url | url }}{{ page.url }}">
-    <link rel="shortcut icon" type="image/png" href="{{ 'assets/img/favicon-16x16.png' | url }}">
+    <link rel="shortcut icon" type="image/png" href="{{ 'assets/img/favicon-32x32.png' | url }}">
     <link rel="apple-touch-icon" href="{{ 'assets/img/apple-touch-icon.png' | url }}">
     <link rel="dns-prefetch" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,9 +41,9 @@
     <link rel="stylesheet" href="{{ 'site.css' | url }}">
 </head>	
 
-<body class="flex flex-col h-screen bg-white text-slate-800 break-words">
+<body class="flex flex-col h-screen bg-dondonwhite text-dondonblue break-words">
     {% include "partials/header.njk" %}
-    <main class="mx-7 lg:mx-6 mt-32 flex-grow">
+    <main class="mx-7 lg:mx-6 mt-12 flex-grow">
         {% if layout === "post" %}
         {{ content | safe }}
         {% else %}
