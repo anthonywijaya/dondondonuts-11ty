@@ -1,3 +1,0 @@
----
-thumb: "dondon-glazed.jpg"
----
