@@ -14,7 +14,7 @@ eleventyImport:
           <h1 class="invisible">Don Don Donuts</h1>
           <img class="w-1/4 mx-auto mb-8" src="/assets/img/logo-illust-text.png">
         </div>
-        <div class="grid grid-cols-3 md:grid-cols-3 gap-2 md:gap-4 mt-8 mb-16">
+        <div class="grid grid-cols-3 md:grid-cols-3 gap-2 md:gap-4 mt-8 mb-8">
           <div class="">
             <img class="object-cover rounded-xl overflow-hidden w-full" src="/assets/img/hero-1.jpg">
           </div>
@@ -61,17 +61,32 @@ eleventyImport:
               </path>
             </svg> 
           </a>
+
+          
         
         </div>
 
+        <div class="bg-dondonorange text-dondonwhite mt-6 w-1/2 py-2 mx-auto">
+          <p class="inline px-2 font-semibold">See our donuts below </p>
+          <div class="text-xl animate-bounce inline-block font-bold">↓</div>
+        </div>
+        
+
         <div>
-          <h3 class="text-3xl mt-8">Our Donuts</h3>
-          <ul class="grid grid-cols-3 md:grid-cols-3 gap-4 mt-8 px-4 mb-16">
+          <hr class="mt-12 mb-6 w-12 mx-auto"/>
+          <h3 class="text-3xl font-bold mt-8">Our Donuts</h3>
+          <h4 class="px-4 text-2xl font-semibold mt-8">Classic</h4>
+          <p class="mt-4">Rp. 12,000</p>
+          <ul class="grid grid-cols-3 md:grid-cols-3 gap-3 md:gap-8 mt-8 px-4 mb-16">
+            
             {%- for flavor in collections.flavors -%}
+              {% if flavor.data.visible %}
+              
               <li class="mb-4">
                 <img class="object-cover rounded-xl overflow-hidden w-full" src="{{ flavor.data.thumb }}">
                 <p class="mt-2">{{ flavor.data.title }}</p>
               </li>
+              {% endif %}
             {%- endfor -%}
           </ul>
         </div>

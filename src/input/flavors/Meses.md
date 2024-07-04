@@ -1,3 +1,5 @@
 ---
-thumb: "dondon-meses.jpg"
+thumb: "dondon-meses-transparent.png"
+visible: yes
+category: "classic"
 ---

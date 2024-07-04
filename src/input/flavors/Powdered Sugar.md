@@ -1,3 +1,5 @@
 ---
-thumb: "dondon-icing.jpg"
+thumb: "dondon-icingsugar-transparent.png"
+visible: yes
+category: "classic"
 ---

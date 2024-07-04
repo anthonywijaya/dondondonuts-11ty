@@ -1,3 +1,4 @@
 ---
-thumb: "dondon-milkpowder.jpg"
+thumb: "dondon-vanillapowder-transparent.png"
+visible: yes
 ---

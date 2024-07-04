@@ -1,5 +1,5 @@
 ---
-thumb: "dondon-glazed-transparent.png"
+thumb: "dondon-cheese-transparent.png"
 visible: yes
 category: "classic"
 ---
