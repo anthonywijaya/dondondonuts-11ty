@@ -75,20 +75,29 @@ eleventyImport:
         <div>
           <hr class="mt-12 mb-6 w-12 mx-auto"/>
           <h3 class="text-3xl font-bold mt-8">Our Donuts</h3>
-          <h4 class="px-4 text-2xl font-semibold mt-8">Classic</h4>
-          <p class="mt-4">Rp. 12,000</p>
+          
+          {%- for flavorType in collections.flavors -%}
+          <h4 class="px-4 text-2xl font-semibold mt-8">{{flavorType[0]}}</h4>
+
+          
+          <p class="my-4 text-lg">Rp. {{ flavorType[1][1] }}</p>
+          
           <ul class="grid grid-cols-3 md:grid-cols-3 gap-3 md:gap-8 mt-8 px-4 mb-16">
             
-            {%- for flavor in collections.flavors -%}
-              {% if flavor.data.visible %}
-              
-              <li class="mb-4">
-                <img class="object-cover rounded-xl overflow-hidden w-full" src="{{ flavor.data.thumb }}">
-                <p class="mt-2">{{ flavor.data.title }}</p>
-              </li>
-              {% endif %}
-            {%- endfor -%}
+              {%- for flavor in flavorType[1][0] -%}
+                
+                {% if flavor.data.visible %}
+                
+                <li class="mb-4">
+                  <img class="object-cover rounded-xl overflow-hidden w-full" src="{{ flavor.data.thumb }}">
+                  <p class="text-lg font-medium mt-2 mb-1">{{ flavor.data.title }}</p>
+                  <p class="">Our signature Ubedon™ {{ flavor.data.description }}</p>
+                </li>
+                {% endif %}
+              {%- endfor -%}
+            
           </ul>
+          {%- endfor -%}
         </div>
       </div>
     </div>

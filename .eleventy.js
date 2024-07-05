@@ -43,7 +43,13 @@ module.exports = function(eleventyConfig) {
   // Collections
 
   eleventyConfig.addCollection("flavors", function (collectionApi) {
-		return collectionApi.getFilteredByGlob("src/input/flavors/*.md");
+		const classicFlavors = collectionApi.getFilteredByGlob("src/input/flavors/classic/*.md");
+    const premiumFlavors = collectionApi.getFilteredByGlob("src/input/flavors/premium/*.md");
+    const flavors = {
+      "Classic": [classicFlavors, "12,000"],
+      "Premium": [premiumFlavors, "15,000"]
+    };
+    return flavors;
 	});
   
 
