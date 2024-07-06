@@ -14,17 +14,17 @@ eleventyImport:
           <h1 class="invisible">Don Don Donuts</h1>
           <img class="w-1/4 mx-auto mb-8" src="/assets/img/logo-illust-text.png">
         </div>
-        <div class="grid grid-cols-3 md:grid-cols-3 gap-2 md:gap-4 mt-8 mb-8">
-          <div class="">
-            <img class="object-cover rounded-xl overflow-hidden w-full" src="/assets/img/hero-1.jpg">
-          </div>
-          <div class="">
+        
+        <div class="w-full h-[50vh] mb-8">
+          <img class="object-cover h-full rounded-xl overflow-hidden w-full" src="/assets/img/hero-main.jpg">
+        </div>
+          <!-- <div class="">
             <img class="object-cover rounded-xl overflow-hidden w-full" src="/assets/img/hero-2.jpg">
           </div>
           <div class="">
             <img class="object-cover rounded-xl overflow-hidden w-full" src="/assets/img/hero-3.jpg">
-          </div>
-        </div>
+          </div> -->
+        
 
         <h2 class="text-2xl font-bold text-center mb-3">Presenting our signature Ube Donuts, based in Sunter, Jakarta</h1>
       
@@ -33,7 +33,7 @@ eleventyImport:
         <div class="">
           <ul>
             <li class="flex mx-auto w-60 overflow-hidden transition-all ease-in-out duration-300 rounded-3xl p-1.5 mb-4 border text-zinc-800 justify-center gap-4 hover:bg-teal-600 hover:text-zinc-100">
-              <a href="https://api.whatsapp.com/send/?phone=6281293456458&amp;text&amp;type=phone_number&amp;app_absent=0" class="flex overflow-hidden relative" target="_blank">
+              <a href="https://api.whatsapp.com/send/?phone=6281519231874&amp;text&amp;type=phone_number&amp;app_absent=0" class="flex overflow-hidden relative" target="_blank">
                 <span class="inline-flex px-4 self-center text-sm">Pesan Dari WhatsApp</span>
                 <div class="flex rounded-full justify-center bg-zinc-50 items-center">
                   <div class="flex justify-center items-center w-10 h-10"><img class="h-5 w-5 mx-auto"
@@ -50,7 +50,7 @@ eleventyImport:
         
         <div class="mt-6 flex gap-6 justify-center">
           <span>Follow us on Instagram for flavor/promo updates!</span>
-          <a class="group -m-1 p-1" aria-label="Follow on Instagram" href="https://instagram.com"><svg
+          <a class="group -m-1 p-1" aria-label="Follow on Instagram" href="https://instagram.com/dondondonuts.id"><svg
               viewBox="0 0 24 24" aria-hidden="true"
               class="h-6 w-6 fill-zinc-500 transition group-hover:fill-zinc-600 dark:fill-zinc-400 dark:group-hover:fill-zinc-300">
               <path
@@ -66,7 +66,7 @@ eleventyImport:
         
         </div>
 
-        <div class="bg-dondonorange text-dondonwhite mt-6 w-3/5 py-2 mx-auto">
+        <div class="bg-dondonorange text-dondonwhite mt-6 w-full md:w-3/5 py-2 mx-auto">
           <p class="inline px-2 font-semibold">See our donuts below </p>
           <div class="text-xl animate-bounce inline-block font-bold">↓</div>
         </div>
@@ -82,7 +82,7 @@ eleventyImport:
           
           <p class="my-4 text-lg">Rp. {{ flavorType[1][1] }}</p>
           
-          <ul class="grid grid-cols-3 md:grid-cols-3 gap-3 md:gap-8 mt-8 px-4 mb-16">
+          <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 mt-8 px-4 mb-16">
             
               {%- for flavor in flavorType[1][0] -%}
                 
@@ -99,6 +99,18 @@ eleventyImport:
           </ul>
           {%- endfor -%}
         </div>
+
+        <div class="flex mx-auto w-60 overflow-hidden transition-all ease-in-out duration-300 rounded-3xl p-1.5 mb-4 border text-zinc-800 justify-center gap-4 hover:bg-teal-600 hover:text-zinc-100">
+          <a href="https://api.whatsapp.com/send/?phone=6281519231874&amp;text&amp;type=phone_number&amp;app_absent=0" class="flex overflow-hidden relative" target="_blank">
+            <span class="inline-flex px-4 self-center text-sm">Order Now</span>
+            <div class="flex rounded-full justify-center bg-zinc-50 items-center">
+              <div class="flex justify-center items-center w-10 h-10"><img class="h-5 w-5 mx-auto"
+                  src="/assets/img/whatsapp-logo.svg">
+                </div>
+            </div>
+          </a>
+        </div>
+
       </div>
     </div>
   </div>
