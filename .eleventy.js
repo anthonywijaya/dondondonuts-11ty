@@ -34,7 +34,7 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addLayoutAlias('default', 'layouts/default.njk');
 
   // Passthrough
-  // eleventyConfig.addPassthroughCopy({ "src/static": "." });
+  eleventyConfig.addPassthroughCopy({ "src/static": "." });
   eleventyConfig.addPassthroughCopy({"src/assets/img/**/*": "assets/img/"});
 
   // Watch targets
