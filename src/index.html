@@ -85,7 +85,7 @@ eleventyImport:
           <h4 class="px-4 text-2xl font-semibold mt-8">{{flavorType[0]}}</h4>
 
           
-          <p class="my-4 text-lg">Rp. {{ flavorType[1][1] }}</p>
+          
           
           <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 mt-8 px-4 mb-16">
             
@@ -97,6 +97,7 @@ eleventyImport:
                   <img class="object-cover rounded-xl overflow-hidden w-full" src="{{ flavor.data.thumb }}">
                   <p class="text-lg font-medium mt-2 mb-1">{{ flavor.data.title }}</p>
                   <p class="">Our signature Ubedon™ {{ flavor.data.description }}</p>
+                  <p class="mt-4 text-sm font-bold">{{ flavor.data.price }}</p>
                 </li>
                 {% endif %}
               {%- endfor -%}
