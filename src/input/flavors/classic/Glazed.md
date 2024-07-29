@@ -3,7 +3,7 @@ thumb: "dondon-glazed-transparent.png"
 visible: yes
 category: "classic"
 description: "dipped in sugar glaze"
-price: "Rp. 10,000"
+price: 10000
 order: 1
 featured: true
 ---

@@ -80,6 +80,8 @@ eleventyImport:
         <div>
           <hr class="mt-12 mb-6 w-12 mx-auto"/>
           <h3 class="text-3xl font-bold mt-8">Our Donuts</h3>
+        
+
           
           {%- for flavorType in collections.flavors -%}
           <h4 class="px-4 text-2xl font-semibold mt-8">{{flavorType[0]}}</h4>
@@ -102,7 +104,7 @@ eleventyImport:
                   <img class="object-cover rounded-xl overflow-hidden w-full" src="{{ flavor.data.thumb }}">
                   <p class="text-lg font-medium mt-2 mb-1">{{ flavor.data.title }}</p>
                   <p class="">Our signature Ubedon™ {{ flavor.data.description }}</p>
-                  <p class="mt-4 text-sm font-bold">{{ flavor.data.price }}</p>
+                  <p class="mt-4 text-sm font-bold">Rp. {{ flavor.data.price | thousandseparator }}</p>
                 </li>
                 {% endif %}
               {%- endfor -%}

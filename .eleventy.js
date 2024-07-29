@@ -1,7 +1,9 @@
 const fs = require("fs");
 const htmlmin = require("html-minifier");
 
+
 const { eleventyImageTransformPlugin } = require("@11ty/eleventy-img");
+
 
 module.exports = function(eleventyConfig) {
 
@@ -40,6 +42,19 @@ module.exports = function(eleventyConfig) {
   // Watch targets
   eleventyConfig.addWatchTarget("./src/_includes/assets/css/");
 
+  //Alpine JS
+  eleventyConfig.addPassthroughCopy({
+    "./node_modules/alpinejs/dist/cdn.js": "./assets/js/alpine.js",
+  });
+
+  //Order JS
+  eleventyConfig.addPassthroughCopy({"./src/assets/js/order.js": "./assets/js/order.js"});
+
+  //Commaize
+  eleventyConfig.addFilter("thousandseparator", function (num, locale="en-us") {
+    return num.toLocaleString(locale);
+  });
+
   // Collections
 
 
@@ -53,6 +68,16 @@ module.exports = function(eleventyConfig) {
     };
     return flavors;
 	});
+
+  
+  // eleventyConfig.addCollection("flavors", function(collectionApi) {
+  //   return collectionApi.getFilteredByGlob("src/input/flavors/*/*.md").map(item => {
+  //     return {
+  //       name: item.fileSlug.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase()),
+  //       price: item.data.price
+  //     };
+  //   });
+  // });
   
 
   var pathPrefix = "";
@@ -67,6 +92,27 @@ module.exports = function(eleventyConfig) {
     pathPrefix
   }
 };
+
+function downloadCSV(csv, filename) {
+  const csvFile = new Blob([csv], { type: "text/csv" });
+  const downloadLink = document.createElement("a");
+  downloadLink.download = filename;
+  downloadLink.href = window.URL.createObjectURL(csvFile);
+  downloadLink.style.display = "none";
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+}
+
+function generateCSV(products) {
+  const rows = [['Product', 'Count']];
+  products.forEach(product => {
+      rows.push([product.name, product.count]);
+  });
+
+  const csvContent = rows.map(e => e.join(",")).join("\n");
+  downloadCSV(csvContent, 'order.csv');
+}
 
 function htmlminTransform(content, outputPath) {
   if( outputPath.endsWith(".html") ) {

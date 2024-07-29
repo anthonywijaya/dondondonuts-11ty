@@ -26,6 +26,7 @@
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0-alpha.6",
     "@11ty/eleventy-img": "^4.0.2",
+    "alpinejs": "^3.14.1",
     "autoprefixer": "^10.4.19",
     "cross-env": "^7.0.3",
     "cssnano": "^7.0.3",

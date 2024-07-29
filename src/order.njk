@@ -1,0 +1,110 @@
+---
+layout: default
+
+eleventyImport:
+  collections: ["flavors"]
+
+---
+
+<div class="">
+    <h1 class="invisible">Don Don Donuts</h1>
+    <img class="w-1/4 mx-auto mb-8" src="/assets/img/logo-illust-text.png">
+</div>
+{%- for flavorType in collections.flavors -%}
+    <h4 class="px-4 text-2xl font-semibold mt-8">{{flavorType[0]}}</h4>
+{%- endfor -%}
+
+<div x-data="{
+        orderText: '',
+        receiverName: '',
+        deliveryDate: '',
+        address: '',
+        phoneNumber: '',
+        order: [],
+        parseOrder() {
+            const parsed = parseOrderText(this.orderText);
+            this.receiverName = parsed.receiverName;
+            this.deliveryDate = parsed.deliveryDate;
+            this.address = parsed.address;
+            this.phoneNumber = parsed.phoneNumber;
+            this.order = parsed.order;
+        },
+        calculateTotal() {
+            const total = this.order.reduce((sum, item) => sum + (item.count * item.price), 0);
+            const totalQuantity = this.order.reduce((sum, item) => sum + item.count, 0);
+            const discount = calculateDiscount(totalQuantity);
+            return [total, discount, total - discount];
+        }
+    }">
+    <div class="order-field">
+        <label for="order-text">Order Text:</label>
+        <textarea id="order-text" x-model="orderText" placeholder="Paste order text here" rows="6" cols="50"></textarea>
+    </div>
+    <button type="button" @click="parseOrder">Parse Order</button>
+    <div class="order-field" x-show="receiverName">
+        <h2>Order Details</h2>
+        <p><strong>Receiver Name:</strong> <span x-text="receiverName"></span></p>
+        <p><strong>Tanggal Penerimaan:</strong> <span x-text="deliveryDate"></span></p>
+        <p><strong>Address:</strong> <span x-text="address"></span></p>
+        <p><strong>Phone Number:</strong> <span x-text="phoneNumber"></span></p>
+    </div>
+    <div class="order-field" x-show="order.length > 0">
+        <h2>Order</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Product Count</th>
+                    <th>Product Price (Rp)</th>
+                    <th>Total Price (Rp)</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template x-for="item in order" :key="item.name + item.count">
+                    <tr>
+                        <td x-text="item.name"></td>
+                        <td x-text="item.count"></td>
+                        Rp. <td x-text="item.price.toLocaleString('en-US')"></td>
+                        = Rp. <td x-text="(item.count * item.price).toLocaleString('en-US')"></td>
+                        <td x-text="item.notes"></td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+        <p><strong>Total Price:</strong> 
+        Rp. <span x-text="calculateTotal()[0].toLocaleString('en-US')"></span> 
+        - Rp. <span x-text="calculateTotal()[1].toLocaleString('en-US')">  </span> 
+       (discount) = Rp. <span x-text="calculateTotal()[2].toLocaleString('en-US')"></span> 
+        </p>
+
+        <div>
+        <p>Bank Account (BCA): 8700394701 a/n Anthony Wijaya</p>
+        <p>mohon mengirimkan bukti trf agar kami booked ya kak 🥰 </p>
+        <p>Thankyouu kak🌼🙏🏻</p>
+    </div>
+    </div>
+    
+</div>
+{# <div x-data="{
+    products: {{[collections.flavors[1][0]]}},
+    updateTotal() {
+        return this.products.reduce((total, product) => total + parseInt(product.count || 0), 0);
+    },
+    submitForm() {
+        generateCSV(this.products);
+    }
+}">
+    <form @submit.prevent="submitForm">
+        <template x-for="(product, index) in products" :key="index">
+            <div class="product-field">
+                <input type="text" x-model="product.name" placeholder="Product">
+                <p>Price</p>
+                <p>Rp. {{ flavor.data.price | thousandseparator }}</p>
+                <input type="number" x-model="product.count" placeholder="Count" @input="updateTotal()">
+            </div>
+        </template>
+        <button type="submit">Submit</button>
+    </form>
+    <p x-text="'Total Count: ' + updateTotal()"></p>
+</div> #}

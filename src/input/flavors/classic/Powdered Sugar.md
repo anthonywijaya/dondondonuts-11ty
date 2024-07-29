@@ -3,6 +3,6 @@ thumb: "dondon-icingsugar-transparent.png"
 visible: yes
 category: "classic"
 description: "+ icing sugar"
-price: "Rp. 10,000"
+price: 10000
 order: 2
 ---
