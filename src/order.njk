@@ -27,62 +27,154 @@ eleventyImport:
             this.deliveryDate = parsed.deliveryDate;
             this.address = parsed.address;
             this.phoneNumber = parsed.phoneNumber;
-            this.order = parsed.order;
+            this.order = sortOrderByPrice(parsed.order);
         },
         calculateTotal() {
             const total = this.order.reduce((sum, item) => sum + (item.count * item.price), 0);
             const totalQuantity = this.order.reduce((sum, item) => sum + item.count, 0);
+            return total;
+        },
+        calculateTotalDiscount() {
+            const totalQuantity = this.order.reduce((sum, item) => sum + item.count, 0);
             const discount = calculateDiscount(totalQuantity);
-            return [total, discount, total - discount];
+            return discount;
+        },
+        calculateTotalAfterDiscount() {
+            const total = this.order.reduce((sum, item) => sum + (item.count * item.price), 0);
+            const totalQuantity = this.order.reduce((sum, item) => sum + item.count, 0);
+            const discount = calculateDiscount(totalQuantity);
+            return total - discount;
+        },
+        getTotalQuantity() {
+            return this.order.reduce((sum, item) => sum + item.count, 0);
+        },
+        copyText() {
+            const text = 
+            `
+Receiver Name: ${this.receiverName}
+Phone Number: ${this.phoneNumber}
+Delivery Date: ${this.deliveryDate}
+
+Order Items:
+${this.order.map(item => `${item.name} - ${item.count} = Rp. ${(item.count * item.price).toLocaleString('en-US')} ${item.notes}`).join('\n')}
+
+Total Quantity: ${this.getTotalQuantity()}
+Total Price: Rp. ${this.calculateTotal().toLocaleString('en-US')} - Rp. ${this.calculateTotalDiscount().toLocaleString('en-US')} = Rp. ${this.calculateTotalAfterDiscount().toLocaleString('en-US')}
+
+Bank Account (BCA): 8700394701 a/n Anthony Wijaya
+Mohon mengirimkan bukti transfer agar kami booked ya kak 🥰
+Thankyouu kak🌼🙏🏻
+            `;
+            navigator.clipboard.writeText(text).then(() => alert('Order copied to clipboard'));
+        },
+        copyImage() {
+            const orderOutput = document.querySelector('#orderOutput');
+            const originalWidth = orderOutput.style.width;
+            
+            orderOutput.style.width = '800px'; // Set to desired width for desktop view
+            
+            html2canvas(orderOutput, { scale: 2 }).then(canvas => {
+                canvas.toBlob(blob => {
+                    if (!blob) {
+                        return;
+                    }
+                const item = new ClipboardItem({ 'image/png': blob });
+                navigator.clipboard.write([item]);
+                    
+                });
+                orderOutput.style.width = originalWidth; // Restore original width after capturing
+            });
+        },
+        downloadImage() {
+            const orderOutput = document.querySelector('#orderOutput');
+            const originalWidth = orderOutput.style.width;
+            
+            orderOutput.style.width = '800px'; // Set to desired width for desktop view
+            
+            html2canvas(orderOutput, { scale: 2 }).then(canvas => {
+                canvas.toBlob(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'Order ' + this.receiverName + ' ' + this.deliveryDate +'.png';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                });
+                orderOutput.style.width = originalWidth; // Restore original width after capturing
+            });
         }
     }">
-    <div class="order-field">
-        <label for="order-text">Order Text:</label>
+    <div class="order-field mb-4 text-center">
+        <p class="text-lg font-medium mb-4"><label class="text-sm mb-1" for="order-text">Order Form Text:</label></p>
         <textarea id="order-text" x-model="orderText" placeholder="Paste order text here" rows="6" cols="50"></textarea>
     </div>
-    <button type="button" @click="parseOrder">Parse Order</button>
-    <div class="order-field" x-show="receiverName">
-        <h2>Order Details</h2>
-        <p><strong>Receiver Name:</strong> <span x-text="receiverName"></span></p>
-        <p><strong>Tanggal Penerimaan:</strong> <span x-text="deliveryDate"></span></p>
-        <p><strong>Address:</strong> <span x-text="address"></span></p>
-        <p><strong>Phone Number:</strong> <span x-text="phoneNumber"></span></p>
-    </div>
-    <div class="order-field" x-show="order.length > 0">
-        <h2>Order</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Product Name</th>
-                    <th>Product Count</th>
-                    <th>Product Price (Rp)</th>
-                    <th>Total Price (Rp)</th>
-                    <th>Notes</th>
-                </tr>
-            </thead>
-            <tbody>
-                <template x-for="item in order" :key="item.name + item.count">
-                    <tr>
-                        <td x-text="item.name"></td>
-                        <td x-text="item.count"></td>
-                        Rp. <td x-text="item.price.toLocaleString('en-US')"></td>
-                        = Rp. <td x-text="(item.count * item.price).toLocaleString('en-US')"></td>
-                        <td x-text="item.notes"></td>
-                    </tr>
-                </template>
-            </tbody>
-        </table>
-        <p><strong>Total Price:</strong> 
-        Rp. <span x-text="calculateTotal()[0].toLocaleString('en-US')"></span> 
-        - Rp. <span x-text="calculateTotal()[1].toLocaleString('en-US')">  </span> 
-       (discount) = Rp. <span x-text="calculateTotal()[2].toLocaleString('en-US')"></span> 
-        </p>
+    <div class="text-center">
+        <button class="inline-flex px-4 py-2 items-center gap-x-2 text-sm font-semibold border transition-all border-transparent text-blue-600 hover:bg-dondonorange hover:text-dondonwhite focus:outline-none focus:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:text-blue-400" type="button" @click="parseOrder">Parse Order</button>
+        
+        <button class="inline-flex px-4 py-2 items-center gap-x-2 text-sm font-semibold border transition-all border-transparent text-blue-600 hover:bg-dondonorange hover:text-dondonwhite focus:outline-none focus:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:text-blue-400" @click="copyText">Copy as Text</button>
+        <button class="inline-flex px-4 py-2 items-center gap-x-2 text-sm font-semibold border transition-all border-transparent text-blue-600 hover:bg-dondonorange hover:text-dondonwhite focus:outline-none focus:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:text-blue-400" @click="copyImage">Copy as Image</button>
+        <button class="inline-flex px-4 py-2 items-center gap-x-2 text-sm font-semibold border transition-all border-transparent text-blue-600 hover:bg-dondonorange hover:text-dondonwhite focus:outline-none focus:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:text-blue-400" @click="downloadImage">Download as Image</button>
 
-        <div>
-        <p>Bank Account (BCA): 8700394701 a/n Anthony Wijaya</p>
-        <p>mohon mengirimkan bukti trf agar kami booked ya kak 🥰 </p>
-        <p>Thankyouu kak🌼🙏🏻</p>
     </div>
+    <div id="orderOutput" class="order-field px-8 pt-4 pb-8" x-show="receiverName">
+        <h2 class="text-xl font-bold my-4">Order Details</h2>
+        
+        <p class="text-sm mb-1">Receiver Name: </p>
+        <p class="font-medium mb-2" x-text="receiverName"></p>
+        <p class="text-sm mb-1">Receive Date: </p>
+        <p class="font-medium mb-2" x-text="deliveryDate"></p>
+        {# <p>Address: <span x-text="address"></span></p> #}
+        <p class="text-sm mb-1">Phone Number: </p>
+        <p class="font-medium mb-2" x-text="phoneNumber"></p>
+    
+
+        <div class="flex flex-col" x-show="order.length > 0">
+            <h3 class="text-lg font-bold my-4">Order List</h3>
+            <div class="-m-1.5 overflow-x-auto">
+                <div class="p-1.5 min-w-full inline-block align-middle">
+                    <div class="border rounded-lg shadow overflow-hidden">
+                        <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr class="divide-x divide-gray-200">
+                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Product Name</th>
+                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Product Count</th>
+                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Product Price</th>
+                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Sub Total</th>
+                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <template x-for="item in order" :key="item.name + item.count">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800" x-text="item.name"></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800" x-text="item.count"></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800" x-text="'Rp. ' + item.price.toLocaleString('en-US')"></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800" x-text="'Rp. ' + (item.count * item.price).toLocaleString('en-US')"></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800" x-text="item.notes"></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                        </table>
+                        <hr/>
+                        <div class="px-4 mt-4 mb-2">
+                            <p><strong>Total Quantity:</strong> <span x-text="getTotalQuantity()"></span></p>
+                            <p><strong>Total Price:</strong> 
+                            Rp. <span x-text="calculateTotal().toLocaleString('en-US')"></span> 
+                            - Rp. <span x-text="calculateTotalDiscount().toLocaleString('en-US')">  </span> 
+                        (discount) = <strong>Rp. <span x-text="calculateTotalAfterDiscount().toLocaleString('en-US')"></strong></span> 
+                            </p>
+
+                            <div class="mt-2 mb-8">
+                                <p>Bank Account (BCA): <strong>8700394701</strong> a/n <strong>Anthony Wijaya</strong></p>
+                                <p>Mohon mengirimkan bukti transfer agar kami booked ya kak 🥰 </p>
+                                <p>Thankyouu kak🌼🙏🏻</p>
+                            </div>
+                        </div>
+                            
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     
 </div>
@@ -108,3 +200,4 @@ eleventyImport:
     </form>
     <p x-text="'Total Count: ' + updateTotal()"></p>
 </div> #}
+

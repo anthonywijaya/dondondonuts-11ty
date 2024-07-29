@@ -21,29 +21,6 @@ const discountPrices = [
     { threshold: 12, discount: 25000 }
 ];
 
-// function calculateDiscount(totalQuantity) {
-//     let discount = 0;
-//     discountPrices.forEach(d => {
-//         if (totalQuantity >= d.threshold) {
-//             discount += d.discount * Math.floor(totalQuantity / d.threshold);
-//             totalQuantity %= d.threshold;
-//         }
-//     });
-//     return discount;
-// }
-
-function calculateDiscount(totalQuantity) {
-    let discount = 0;
-    discountPrices.sort((a, b) => b.threshold - a.threshold); // Sort descending by threshold
-
-    for (let d of discountPrices) {
-        if (totalQuantity >= d.threshold) {
-            discount += d.discount * Math.floor(totalQuantity / d.threshold);
-            totalQuantity %= d.threshold;
-        }
-    }
-    return discount;
-}
 
 
 function getSimilarity(a, b) {
@@ -131,9 +108,28 @@ function parseDate(dateStr) {
     return `${String(day).padStart(2, '0')} ${String(month)} ${year}`;
 }
 
+function copyImage() {
+    const orderOutput = document.querySelector("#orderOutput");
+    const originalWidth = orderOutput.style.width;
+    
+    orderOutput.style.width = "800px"; // Set to desired width for desktop view
+    
+    html2canvas(orderOutput, { scale: 2 }).then(canvas => {
+        canvas.toBlob(blob => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'order.png';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+        orderOutput.style.width = originalWidth; // Restore original width after capturing
+    });
+}
+
 function parseOrderText(text) {
     const lines = text.split('\n').map(line => line.trim()).filter(line => line);
-    const receiverName = lines[0].split(':')[1].trim();
+    const receiverName = toTitleCase(lines[0].split(':')[1].trim());
     const phoneNumber = lines[1].split(':')[1].trim();
     const deliveryDateStr = lines[2].split(':')[1].trim();
     const deliveryDate = parseDate(deliveryDateStr);
@@ -174,66 +170,21 @@ function parseOrderText(text) {
 
     return { receiverName, phoneNumber, deliveryDate, order };
 }
-// function parseOrderText(text) {
-//     const lines = text.split('\n').map(line => line.trim()).filter(line => line);
-//     const receiverName = lines[0].split(':')[1].trim();
-//     const phoneNumber = lines[1].split(':')[1].trim();
-//     const deliveryDateStr = lines[2].split(':')[1].trim();
-//     const deliveryDate = parseDate(deliveryDateStr);
-//     const orderLines = lines.slice(4); // Skip the "Pesanan:" line and the empty line
 
-    // const order = orderLines.map(line => {
-    //     const match = line.match(/(\d+)\s(.+)/);
-    //     if (match) {
-    //         const count = parseInt(match[1]);
-    //         const name = toTitleCase(match[2].trim());
-    //         // Assuming a fixed price for demonstration purposes; update this as needed
-    //         let closestProduct = findClosestProduct(name);
-    //         const price = productPrices[closestProduct] || 0; // Get price from productPrices or default to 0 if not found
-    //         return { name: closestProduct, count, price };
-    //     }
-    // }).filter(item => item);
+function sortOrderByPrice(order) {
+    return order.slice().sort((a, b) => a.price - b.price);
+}
 
-    // const order = orderLines.map(line => {
-    //     if (line.startsWith('-') || line.match(/1\s.+|.+\s1/)) {
-    //         const name = toTitleCase(line.replace('-', '').replace('1', '').trim());
-    //         const closestProduct = findClosestProduct(name);
-    //         const price = productPrices[closestProduct] || 0; // Get price from products or default to 0 if not found
-    //         return { name: closestProduct, count: 1, price };
-    //     } else {
-    //         const match = line.match(/(\d+)\s(.+)/);
-    //         if (match) {
-    //             const count = parseInt(match[1]);
-    //             const name = toTitleCase(match[2].trim());
-    //             const closestProduct = findClosestProduct(name);
-    //             const price = productPrices[closestProduct] || 0; // Get price from products or default to 0 if not found
-    //             return { name: closestProduct, count, price };
-    //         }
-    //     }
-    // }).filter(item => item);
 
-    // const order = orderLines.map(line => {
-    //     let count = 1; // Default count
-    //     let name;
+function calculateDiscount(totalQuantity) {
+    let discount = 0;
+    discountPrices.sort((a, b) => b.threshold - a.threshold); // Sort descending by threshold
 
-    //     // Check if line contains a count at the beginning or end
-    //     if (line.match(/^(\d+)\s/)) {
-    //         // Count at the beginning
-    //         const match = line.match(/^(\d+)\s(.+)/);
-    //         count = parseInt(match[1]);
-    //         name = toTitleCase(match[2].trim());
-    //     } else if (line.match(/\s(\d+)$/)) {
-    //         // Count at the end
-    //         const match = line.match(/(.+)\s(\d+)$/);
-    //         count = parseInt(match[2]);
-    //         name = toTitleCase(match[1].trim());
-    //     } else if (line.startsWith('-') || line.match(/^\d*\s?-?\s?/)) {
-    //         // Handle lines starting with '-' or a single number
-    //         name = toTitleCase(line.replace(/^\d*\s?-?\s?/, '').trim());
-    //     }
-
-    //     const closestProduct = findClosestProduct(name);
-    //     const price = productPrices[closestProduct] || 0; // Get price from products or default to 0 if not found
-    //     return { name: closestProduct.name, count, price };
-    // }).filter(item => item);
-// }
+    for (let d of discountPrices) {
+        if (totalQuantity >= d.threshold) {
+            discount += d.discount * Math.floor(totalQuantity / d.threshold);
+            totalQuantity %= d.threshold;
+        }
+    }
+    return discount;
+}
