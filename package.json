@@ -24,7 +24,7 @@
   "license": "Unlicense",
   "homepage": "https://anthonywijaya.com",
   "devDependencies": {
-    "@11ty/eleventy": "^3.0.0-alpha.6",
+    "@11ty/eleventy": "^3.0.0-alpha.18",
     "@11ty/eleventy-img": "^4.0.2",
     "alpinejs": "^3.14.1",
     "autoprefixer": "^10.4.19",
