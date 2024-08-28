@@ -1,0 +1,337 @@
+---
+layout: default
+eleventyImport:
+  collections: ["flavors"]
+eleventyExcludeFromCollections: true
+---
+
+
+<div class="mx-auto w-full max-w-7xl lg:px-8">
+  <div class="relative px-4 sm:px-8 lg:px-12">
+    <div class="mx-auto max-w-2xl lg:max-w-5xl">
+      <h1 class="text-3xl font-bold mb-8">Place Your Order</h1>
+
+      <form x-data="orderForm()" x-cloak @submit.prevent="submitForm" class="space-y-6">
+        <!-- Customer Information -->
+        <div class="bg-white rounded-lg shadow-md p-6 space-y-6 mb-8">
+          <h2 class="text-2xl font-bold text-dondonblue mb-4">Customer Information</h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="receiverName" class="block text-sm font-medium text-gray-700 mb-1">Receiver Name (Nama Penerima)</label>
+              <input type="text" id="receiverName" x-model="receiverName" required 
+                     class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-dondonorange focus:border-transparent">
+            </div>
+            <div>
+              <label for="deliveryDate" class="block text-sm font-medium text-gray-700 mb-1">Delivery Date (Tanggal Pengiriman)</label>
+              <div class="relative">
+                <input type="date" id="deliveryDate" x-model="deliveryDate" required 
+                       class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-dondonorange focus:border-transparent appearance-none"
+                       :min="getTomorrowDate()"
+                       :class="{'border-red-500': deliveryDateError}">
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+              </div>
+              <p x-show="deliveryDateError" class="mt-1 text-sm text-red-600" x-text="deliveryDateError"></p>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Delivery Option (Opsi Pengiriman)</label>
+            <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+              <label class="inline-flex items-center">
+                <input type="radio" x-model="deliveryOption" value="selfPickup" 
+                       class="form-radio text-dondonorange focus:ring-dondonorange">
+                <span class="ml-2">Self Pickup</span>
+              </label>
+              <label class="inline-flex items-center">
+                <input type="radio" x-model="deliveryOption" value="delivery" 
+                       class="form-radio text-dondonorange focus:ring-dondonorange">
+                <span class="ml-2">Gosend/Grabsend/Lalamove</span>
+              </label>
+            </div>
+          </div>
+
+          <div x-show="deliveryOption === 'delivery'" 
+               x-transition:enter="transition ease-out duration-300" 
+               x-transition:enter-start="opacity-0 transform scale-95" 
+               x-transition:enter-end="opacity-100 transform scale-100">
+            <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address (Alamat)</label>
+            <textarea id="address" x-model="address" :required="deliveryOption === 'delivery'" rows="3"
+                      class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-dondonorange focus:border-transparent"></textarea>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-1">Phone Number (Nomor Telepon)</label>
+              <input type="tel" id="phoneNumber" x-model="phoneNumber" 
+                     @input="validatePhoneNumber" 
+                     :class="{'border-red-500': phoneNumberError}"
+                     required 
+                     class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-dondonorange focus:border-transparent">
+              <p x-show="phoneNumberError" class="mt-1 text-sm text-red-600" x-text="phoneNumberError"></p>
+            </div>
+            <div>
+              <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+              <textarea id="notes" x-model="notes" rows="3"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-dondonorange focus:border-transparent"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Flavors -->
+        <div class="space-y-6">
+          <h2 class="text-3xl font-bold mt-8">Our Donuts</h2>
+          {% for flavorType, flavorInfo in collections.flavors %}
+            <h3 class="text-2xl font-semibold mt-8">{{ flavorType }} - Rp. {{ flavorInfo[1] }}</h3>
+            <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 mt-8 px-4 mb-16">
+              {% for flavor in flavorInfo[0] %}
+                {% if flavor.data.visible %}
+                  <li class="mb-4">
+                    {% if flavor.data.featured %}
+                      <div class="relative">
+                        <div class="absolute top-0 right-1 bg-dondonorange text-dondonwhite px-2 py-1 text-sm font-bold">Best Sellers</div>
+                      </div>
+                    {% endif %}
+                    <img class="object-cover rounded-xl overflow-hidden w-full" src="{{ flavor.data.thumb }}">
+                    <p class="text-lg font-medium mt-2 mb-1">{{ flavor.data.title }}</p>
+                    <p class="">Our signature Ubedon™ {{ flavor.data.description }}</p>
+                    <div class="mt-4 flex justify-between items-center">
+                      <p class="text-sm font-bold">Rp. {{ flavorInfo[1] }}</p>
+                      <input type="number" x-model.number="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity" min="0" class="w-16 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    </div>
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          {% endfor %}
+        </div>
+
+        <!-- Total Price -->
+        <div class="mt-8 bg-white rounded-lg shadow-md p-6 space-y-4">
+          <h3 class="text-2xl font-bold text-dondonblue mb-4">Order Summary</h3>
+          
+          <div class="flex justify-between items-center py-2 border-b border-gray-200">
+            <span class="text-gray-600">Total Quantity:</span>
+            <span class="text-xl font-semibold" x-text="getTotalQuantity()"></span>
+          </div>
+          
+          <div class="flex justify-between items-center py-2 border-b border-gray-200">
+            <span class="text-gray-600">Subtotal:</span>
+            <span class="text-xl font-semibold">Rp. <span x-text="getSubtotal().toLocaleString('en-US')"></span></span>
+          </div>
+          
+          <div class="flex justify-between items-center py-2 border-b border-gray-200">
+            <span class="text-gray-600">Discount:</span>
+            <span class="text-xl font-semibold text-green-600">- Rp. <span x-text="getDiscount().toLocaleString('en-US')"></span></span>
+          </div>
+          
+          <div class="flex justify-between items-center py-3 border-b-2 border-dondonorange">
+            <span class="text-lg font-bold text-dondonblue">Total Price:</span>
+            <span class="text-2xl font-bold text-dondonorange">Rp. <span x-text="getTotalPrice().toLocaleString('en-US')"></span></span>
+          </div>
+
+          <div x-show="getNextDiscountTier()" 
+               x-transition:enter="transition ease-out duration-300"
+               x-transition:enter-start="opacity-0 transform scale-90"
+               x-transition:enter-end="opacity-100 transform scale-100"
+               x-transition:leave="transition ease-in duration-300"
+               x-transition:leave-start="opacity-100 transform scale-100"
+               x-transition:leave-end="opacity-0 transform scale-90"
+               :class="{'bg-yellow-100 text-yellow-800': !getNextDiscountTier().hasReachedTier, 'bg-green-100 text-green-800': getNextDiscountTier().hasReachedTier}"
+               class="mt-4 p-4 rounded-md shadow-sm relative overflow-hidden">
+            <div x-show="getNextDiscountTier().hasReachedTier" 
+                 class="absolute inset-0 bg-green-500 opacity-20 animate-pulse"></div>
+            <div class="relative z-10">
+              <p class="text-base font-semibold mb-2" x-html="
+                getNextDiscountTier().isFirstTier
+                  ? `🎉 Buy ${getNextDiscountTier().quantity} to get your first discount!`
+                  : getNextDiscountTier().hasReachedTier
+                    ? `🎊 Congratulations! You've unlocked a discount!`
+                    : `🚀 You're close to the next discount tier!`
+              "></p>
+              <p class="text-sm" x-html="
+                getNextDiscountTier().isFirstTier
+                  ? `Get Rp. ${getNextDiscountTier().discount.toLocaleString('en-US')} off your order!`
+                  : getNextDiscountTier().hasReachedTier
+                    ? `You're saving Rp. ${getNextDiscountTier().currentDiscount.toLocaleString('en-US')}! Add ${getNextDiscountTier().quantity} more to save an additional Rp. ${getNextDiscountTier().nextDiscount.toLocaleString('en-US')}!`
+                    : `Add ${getNextDiscountTier().quantity} more to get Rp. ${getNextDiscountTier().discount.toLocaleString('en-US')} off!`
+              "></p>
+            </div>
+            <div x-show="getNextDiscountTier().hasReachedTier" 
+                 class="absolute top-0 right-0 mt-2 mr-2 animate-bounce">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="w-full bg-dondonorange text-dondonwhite py-3 px-4 rounded-md hover:bg-orange-600 transition duration-300 mt-6 text-lg font-semibold">
+          Place Order via WhatsApp
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function orderForm() {
+  return {
+    receiverName: '',
+    deliveryDate: '',
+    deliveryOption: 'selfPickup',
+    address: '',
+    phoneNumber: '',
+    notes: '',
+    flavors: {},
+    discounts: {{ discounts | dump | safe }},
+    phoneNumberError: '',
+    deliveryDateError: '',
+    init() {
+      this.initFlavors();
+      this.deliveryDate = this.getTomorrowDate(); // Set initial value to tomorrow's date
+    },
+    initFlavors() {
+      {% for flavorType, flavorInfo in collections.flavors %}
+        this.flavors['{{ flavorType }}'] = [];
+        {% for flavor in flavorInfo[0] %}
+          {% if flavor.data.visible %}
+            this.flavors['{{ flavorType }}'].push({
+              name: '{{ flavor.data.title }}',
+              price: {{ flavorInfo[1] | replace(',', '') }},
+              quantity: 0
+            });
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+    },
+    getDiscount() {
+      const totalQuantity = this.getTotalQuantity();
+      let discount = 0;
+      
+      const thresholds = Object.keys(this.discounts).map(Number).sort((a, b) => b - a);
+      
+      let remainingQuantity = totalQuantity;
+      for (const threshold of thresholds) {
+        const applicableUnits = Math.floor(remainingQuantity / threshold);
+        if (applicableUnits > 0) {
+          discount += applicableUnits * this.discounts[threshold];
+          remainingQuantity -= applicableUnits * threshold;
+        }
+      }
+      
+      return discount;
+    },
+    getSubtotal() {
+      return Object.values(this.flavors).flat().reduce((total, flavor) => total + flavor.price * flavor.quantity, 0);
+    },
+    getTotalPrice() {
+      return this.getSubtotal() - this.getDiscount();
+    },
+    getTotalQuantity() {
+      return Object.values(this.flavors).flat().reduce((total, flavor) => total + flavor.quantity, 0);
+    },
+    getNextDiscountTier() {
+      const totalQuantity = this.getTotalQuantity();
+      const thresholds = Object.keys(this.discounts).map(Number).sort((a, b) => a - b);
+      
+      if (totalQuantity === 0) {
+        return {
+          quantity: thresholds[0],
+          discount: this.discounts[thresholds[0]],
+          isFirstTier: true
+        };
+      }
+      
+      const currentThreshold = thresholds.filter(t => totalQuantity >= t).pop();
+      const nextThreshold = thresholds.find(t => t > totalQuantity);
+      
+      if (currentThreshold) {
+        const nextIncrement = nextThreshold ? nextThreshold - totalQuantity : thresholds[0];
+        const nextIncrementDiscount = nextThreshold ? this.discounts[nextThreshold] - this.discounts[currentThreshold] : this.discounts[thresholds[0]];
+        const currentDiscount = this.getDiscount();
+        return {
+          quantity: nextIncrement,
+          currentDiscount: currentDiscount,
+          nextDiscount: nextIncrementDiscount,
+          isFirstTier: false,
+          hasReachedTier: true
+        };
+      } else {
+        // We're between tiers
+        return {
+          quantity: nextThreshold - totalQuantity,
+          discount: this.discounts[nextThreshold],
+          isFirstTier: false,
+          hasReachedTier: false
+        };
+      }
+    },
+    validatePhoneNumber() {
+      this.phoneNumber = this.phoneNumber.replace(/[^0-9+]/g, '');
+      if (this.phoneNumber.length < 6 || this.phoneNumber.length > 15) {
+        this.phoneNumberError = 'Please enter a valid phone number (6-15 digits)';
+      } else {
+        this.phoneNumberError = '';
+      }
+    },
+    getTomorrowDate() {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const year = tomorrow.getFullYear();
+      const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+      const day = String(tomorrow.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    },
+    validateDeliveryDate() {
+      const selectedDate = new Date(this.deliveryDate);
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+
+      if (selectedDate < tomorrow) {
+        this.deliveryDateError = 'Please select a date from tomorrow onwards';
+      } else {
+        this.deliveryDateError = '';
+      }
+    },
+    submitForm() {
+      this.validatePhoneNumber();
+      this.validateDeliveryDate();
+      if (this.phoneNumberError || this.deliveryDateError) {
+        return; // Don't submit if there are errors
+      }
+      
+      const orderDetails = Object.entries(this.flavors).flatMap(([type, flavors]) => 
+        flavors.filter(f => f.quantity > 0).map(f => `${f.name} (${type}): ${f.quantity}`)
+      ).join('\n');
+
+      const subtotal = this.getSubtotal();
+      const discount = this.getDiscount();
+      const message = `
+Receiver Name: ${this.receiverName}
+Delivery Date: ${this.deliveryDate}
+Delivery Option: ${this.deliveryOption === 'selfPickup' ? 'Self Pickup' : 'Gosend/Grabsend/Lalamove'}
+${this.deliveryOption === 'delivery' ? `Address: ${this.address}` : ''}
+Phone Number: ${this.phoneNumber}
+Notes: ${this.notes}
+
+Order Details:
+${orderDetails}
+
+Subtotal: Rp. ${subtotal.toLocaleString('en-US')}
+Discount: Rp. ${discount.toLocaleString('en-US')}
+Total Price: Rp. ${this.getTotalPrice().toLocaleString('en-US')}
+      `;
+
+      const encodedMessage = encodeURIComponent(message);
+      window.open(`https://api.whatsapp.com/send/?phone=6281519231874&text=${encodedMessage}`, '_blank');
+    }
+  };
+}
+</script>
