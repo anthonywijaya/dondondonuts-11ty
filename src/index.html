@@ -12,11 +12,11 @@ eleventyImport:
       <div class="max-w-md md:max-w-3xl mx-auto">
         <div class="">
           <h1 class="invisible">Don Don Donuts</h1>
-          <img class="w-1/4 mx-auto mb-8" src="/assets/img/logo-illust-text.png">
+          <img class="w-1/4 mx-auto mb-8" src="/assets/img/logo-illust-text.png" alt="Don Don Donuts Logo">
         </div>
         
         <div class="w-full h-[50vh] mb-8">
-          <img class="object-cover h-full rounded-xl overflow-hidden w-full" src="/assets/img/hero-main.jpg">
+          <img class="object-cover h-full rounded-xl overflow-hidden w-full" src="/assets/img/hero-main.jpg" alt="Donuts Hero Image">
         </div>
           <!-- <div class="">
             <img class="object-cover rounded-xl overflow-hidden w-full" src="/assets/img/hero-2.jpg">
@@ -40,7 +40,7 @@ eleventyImport:
                 <span class="inline-flex px-4 self-center text-sm">Pesan Dari WhatsApp</span>
                 <div class="flex rounded-full justify-center bg-zinc-50 items-center">
                   <div class="flex justify-center items-center w-10 h-10"><img class="h-5 w-5 mx-auto"
-                      src="/assets/img/whatsapp-logo.svg">
+                      src="/assets/img/whatsapp-logo.svg" alt="WhatsApp Logo">
                     </div>
                 </div>
               </a>
@@ -80,37 +80,28 @@ eleventyImport:
         <div>
           <hr class="mt-12 mb-6 w-12 mx-auto"/>
           <h3 class="text-3xl font-bold mt-8">Our Donuts</h3>
-        
 
-          
-          {%- for flavorType in collections.flavors -%}
-          <h4 class="px-4 text-2xl font-semibold mt-8">{{flavorType[0]}}</h4>
+          {% for flavorType in collections.flavors %}
+            <h4 class="px-4 text-2xl font-semibold mt-8">{{ flavorType[0] }}</h4>
 
-          
-          
-          
-          <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 mt-8 px-4 mb-16">
-            
-              {%- for flavor in flavorType[1][0] -%}
-                
+            <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 mt-8 px-4 mb-16">
+              {% for flavor in flavorType[1] %}
                 {% if flavor.data.visible %}
-                
-                <li class="mb-4">
-                  {% if flavor.data.featured %}
-                  <div class="relative">
-                    <div class="absolute top-0 right-1 bg-dondonorange text-dondonwhite px-2 py-1 text-sm font-bold">Best Sellers</div>
-                  </div>
-                  {% endif %}
-                  <img class="object-cover rounded-xl overflow-hidden w-full" src="{{ flavor.data.thumb }}">
-                  <p class="text-lg font-medium mt-2 mb-1">{{ flavor.data.title }}</p>
-                  <p class="">Our signature Ubedon™ {{ flavor.data.description }}</p>
-                  <p class="mt-4 text-sm font-bold">Rp. {{ flavor.data.price | thousandseparator }}</p>
-                </li>
+                  <li class="mb-4">
+                    {% if flavor.data.featured %}
+                      <div class="relative">
+                        <div class="absolute top-0 right-1 bg-dondonorange text-dondonwhite px-2 py-1 text-sm font-bold">Best Sellers</div>
+                      </div>
+                    {% endif %}
+                    <img class="object-cover rounded-xl overflow-hidden w-full" src="{{ flavor.data.thumb }}" alt="{{ flavor.data.title }}">
+                    <p class="text-lg font-medium mt-2 mb-1">{{ flavor.data.title }}</p>
+                    <p>Our signature Ubedon™ {{ flavor.data.description }}</p>
+                    <p class="mt-4 text-sm font-bold">Rp. {{ flavor.data.price | thousandseparator }}</p>
+                  </li>
                 {% endif %}
-              {%- endfor -%}
-            
-          </ul>
-          {%- endfor -%}
+              {% endfor %}
+            </ul>
+          {% endfor %}
         </div>
 
 
@@ -121,7 +112,7 @@ eleventyImport:
             <span class="inline-flex px-4 self-center text-sm">Order Now</span>
             <div class="flex rounded-full justify-center bg-zinc-50 items-center">
               <div class="flex justify-center items-center w-10 h-10"><img class="h-5 w-5 mx-auto"
-                  src="/assets/img/whatsapp-logo.svg">
+                  src="/assets/img/whatsapp-logo.svg" alt="WhatsApp Logo">
                 </div>
             </div>
           </a>

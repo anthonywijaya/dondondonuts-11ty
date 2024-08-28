@@ -85,10 +85,10 @@ eleventyExcludeFromCollections: true
         <!-- Flavors -->
         <div class="space-y-6">
           <h2 class="text-3xl font-bold mt-8">Our Donuts</h2>
-          {% for flavorType, flavorInfo in collections.flavors %}
-            <h3 class="text-2xl font-semibold mt-8">{{ flavorType }} - Rp. {{ flavorInfo[1] }}</h3>
+          {% for flavorType, flavors in collections.flavors %}
+            <h3 class="text-2xl font-semibold mt-8">{{ flavorType }}</h3>
             <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 mt-8 px-4 mb-16">
-              {% for flavor in flavorInfo[0] %}
+              {% for flavor in flavors %}
                 {% if flavor.data.visible %}
                   <li class="mb-4">
                     {% if flavor.data.featured %}
@@ -96,12 +96,30 @@ eleventyExcludeFromCollections: true
                         <div class="absolute top-0 right-1 bg-dondonorange text-dondonwhite px-2 py-1 text-sm font-bold">Best Sellers</div>
                       </div>
                     {% endif %}
-                    <img class="object-cover rounded-xl overflow-hidden w-full" src="{{ flavor.data.thumb }}">
+                    <img class="object-cover rounded-xl overflow-hidden w-full" src="{{ flavor.data.thumb }}" alt="{{ flavor.data.title }}">
                     <p class="text-lg font-medium mt-2 mb-1">{{ flavor.data.title }}</p>
-                    <p class="">Our signature Ubedon™ {{ flavor.data.description }}</p>
+                    <p>Our signature Ubedon™ {{ flavor.data.description }}</p>
                     <div class="mt-4 flex justify-between items-center">
-                      <p class="text-sm font-bold">Rp. {{ flavorInfo[1] }}</p>
-                      <input type="number" x-model.number="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity" min="0" class="w-16 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                      <p class="text-sm font-bold">Rp. {{ flavor.data.price | thousandseparator }}</p>
+                      <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+                        <button type="button" 
+                                x-show="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity > 0"
+                                @click="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity--"
+                                class="px-3 py-2 bg-gray-100 text-gray-600 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-dondonorange">
+                          -
+                        </button>
+                        <input type="text" 
+                               x-model.number="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity" 
+                               class="w-12 px-2 py-1 text-center border-none focus:ring-0 focus:outline-none"
+                               inputmode="numeric"
+                               pattern="[0-9]*"
+                               @input="$event.target.value = $event.target.value.replace(/[^0-9]/g, '')">
+                        <button type="button" 
+                                @click="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity++"
+                                class="px-3 py-2 bg-gray-100 text-gray-600 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-dondonorange">
+                          +
+                        </button>
+                      </div>
                     </div>
                   </li>
                 {% endif %}
@@ -111,7 +129,7 @@ eleventyExcludeFromCollections: true
         </div>
 
         <!-- Total Price -->
-        <div class="mt-8 bg-white rounded-lg shadow-md p-6 space-y-4">
+        <div id="orderSummary" class="mt-8 bg-white rounded-lg shadow-md p-6 space-y-4">
           <h3 class="text-2xl font-bold text-dondonblue mb-4">Order Summary</h3>
           
           <div class="flex justify-between items-center py-2 border-b border-gray-200">
@@ -130,7 +148,7 @@ eleventyExcludeFromCollections: true
           </div>
           
           <div class="flex justify-between items-center py-3 border-b-2 border-dondonorange">
-            <span class="text-lg font-bold text-dondonblue">Total Price:</span>
+            <span class="text-lg font-bold text-dondonorange">Total Price:</span>
             <span class="text-2xl font-bold text-dondonorange">Rp. <span x-text="getTotalPrice().toLocaleString('en-US')"></span></span>
           </div>
 
@@ -170,6 +188,34 @@ eleventyExcludeFromCollections: true
           </div>
         </div>
 
+        <!-- Floating Order Summary Bar -->
+        <div x-data="{ showFloatingBar: true }"
+             x-init="window.addEventListener('scroll', () => {
+               const orderSummary = document.getElementById('orderSummary');
+               const rect = orderSummary.getBoundingClientRect();
+               showFloatingBar = rect.top > window.innerHeight;
+             })"
+             x-show="showFloatingBar"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 transform translate-y-full"
+             x-transition:enter-end="opacity-100 transform translate-y-0"
+             x-transition:leave="transition ease-in duration-300"
+             x-transition:leave-start="opacity-100 transform translate-y-0"
+             x-transition:leave-end="opacity-0 transform translate-y-full"
+             class="fixed bottom-0 left-0 right-0 bg-dondonwhite bg-opacity-95 border-t border-gray-200 shadow-md p-4 z-50">
+          <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+              <span class="text-sm font-medium">Total Items: <span x-text="getTotalQuantity()" class="font-bold"></span></span>
+              <span class="text-sm font-medium">Total: <span x-text="`Rp. ${getTotalPrice().toLocaleString('en-US')}`" class="font-bold"></span></span>
+              <span x-show="getDiscount() > 0" class="text-sm font-medium text-green-600">Discount: <span x-text="`Rp. ${getDiscount().toLocaleString('en-US')}`" class="font-bold"></span></span>
+            </div>
+            <div x-show="getNextDiscountTier()" class="text-sm">
+              <span x-show="!getNextDiscountTier().hasReachedTier" x-text="`Add ${getNextDiscountTier().quantity} more for Rp. ${getNextDiscountTier().discount.toLocaleString('en-US')} off!`" class="text-yellow-600"></span>
+              <span x-show="getNextDiscountTier().hasReachedTier" x-text="`You're saving Rp. ${getNextDiscountTier().currentDiscount.toLocaleString('en-US')}! Add ${getNextDiscountTier().quantity} more to save an additional Rp. ${getNextDiscountTier().nextDiscount.toLocaleString('en-US')}!`" class="text-green-600"></span>
+            </div>
+          </div>
+        </div>
+
         <!-- Submit Button -->
         <button type="submit" class="w-full bg-dondonorange text-dondonwhite py-3 px-4 rounded-md hover:bg-orange-600 transition duration-300 mt-6 text-lg font-semibold">
           Place Order via WhatsApp
@@ -194,16 +240,16 @@ function orderForm() {
     deliveryDateError: '',
     init() {
       this.initFlavors();
-      this.deliveryDate = this.getTomorrowDate(); // Set initial value to tomorrow's date
+      this.deliveryDate = this.getTomorrowDate();
     },
     initFlavors() {
-      {% for flavorType, flavorInfo in collections.flavors %}
+      {% for flavorType, flavors in collections.flavors %}
         this.flavors['{{ flavorType }}'] = [];
-        {% for flavor in flavorInfo[0] %}
+        {% for flavor in flavors %}
           {% if flavor.data.visible %}
             this.flavors['{{ flavorType }}'].push({
               name: '{{ flavor.data.title }}',
-              price: {{ flavorInfo[1] | replace(',', '') }},
+              price: {{ flavor.data.price | replace(',', '') }},
               quantity: 0
             });
           {% endif %}

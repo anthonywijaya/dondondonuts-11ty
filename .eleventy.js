@@ -63,8 +63,8 @@ module.exports = function(eleventyConfig) {
         .sort((a, b) => a.data.order - b.data.order);
     const premiumFlavors = collectionApi.getFilteredByGlob("src/input/flavors/premium/*.md");
     const flavors = {
-      "Classic": [classicFlavors, "12,000"],
-      "Premium": [premiumFlavors, "15,000"]
+      "Classic": classicFlavors,
+      "Premium": premiumFlavors
     };
     return flavors;
 	});
