@@ -8,6 +8,13 @@ eleventyExcludeFromCollections: true
 <div class="mx-auto w-full max-w-7xl lg:px-8">
   <div class="relative px-4 sm:px-8 lg:px-12">
     <div class="mx-auto max-w-2xl lg:max-w-5xl">
+      <!-- Logo -->
+      <div class="text-center mb-4">
+        <a href="/">
+          <img class="w-1/12 mx-auto" src="/assets/img/logo-illust-text.png" alt="Don Don Donuts Logo">
+        </a>
+      </div>
+
       <!-- Back to Homepage link -->
       <a href="/" class="inline-block mb-6 text-dondonblue hover:text-dondonorange transition duration-300">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -94,15 +101,18 @@ eleventyExcludeFromCollections: true
           <h2 class="text-3xl font-bold mt-8">Our Donuts</h2>
           {% for flavorType, flavors in collections.flavors %}
             <h3 class="text-2xl font-semibold mt-8">{{ flavorType }}</h3>
-            <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 mt-8 px-4 mb-16">
+            <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mt-8 px-4 mb-16">
               {% for flavor in flavors %}
                 {% if flavor.data.visible %}
                   <li class="mb-4">
-                    {% if flavor.data.featured %}
-                      <div class="relative">
-                        <div class="absolute top-0 right-1 bg-dondonorange text-dondonwhite px-2 py-1 text-sm font-bold">Best Sellers</div>
-                      </div>
-                    {% endif %}
+                    <div class="relative">
+                      {% if flavor.data.featured %}
+                        <div class="absolute top-0 right-1 bg-dondonorange text-dondonwhite px-2 py-1 text-sm font-bold">Best Selling</div>
+                      {% endif %}
+                      {% if flavor.data.new %}
+                        <div class="absolute top-0 left-1 bg-dondonblue text-dondonwhite px-2 py-1 text-sm font-bold">New!</div>
+                      {% endif %}
+                    </div>
                     <img class="object-cover rounded-xl overflow-hidden w-full" src="{{ flavor.data.thumb }}" alt="{{ flavor.data.title }}">
                     <p class="text-lg font-medium mt-2 mb-1">{{ flavor.data.title }}</p>
                     <p>Our signature Ubedon™ {{ flavor.data.description }}</p>
