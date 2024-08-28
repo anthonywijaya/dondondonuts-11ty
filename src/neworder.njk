@@ -5,10 +5,17 @@ eleventyImport:
 eleventyExcludeFromCollections: true
 ---
 
-
 <div class="mx-auto w-full max-w-7xl lg:px-8">
   <div class="relative px-4 sm:px-8 lg:px-12">
     <div class="mx-auto max-w-2xl lg:max-w-5xl">
+      <!-- Back to Homepage link -->
+      <a href="/" class="inline-block mb-6 text-dondonblue hover:text-dondonorange transition duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Homepage
+      </a>
+
       <h1 class="text-3xl font-bold mb-8">Place Your Order</h1>
 
       <form x-data="orderForm()" x-cloak @submit.prevent="submitForm" class="space-y-6">
@@ -45,12 +52,12 @@ eleventyExcludeFromCollections: true
               <label class="inline-flex items-center">
                 <input type="radio" x-model="deliveryOption" value="selfPickup" 
                        class="form-radio text-dondonorange focus:ring-dondonorange">
-                <span class="ml-2">Self Pickup</span>
+                <span class="ml-2">Self Pickup (Ke alamat kami)</span>
               </label>
               <label class="inline-flex items-center">
                 <input type="radio" x-model="deliveryOption" value="delivery" 
                        class="form-radio text-dondonorange focus:ring-dondonorange">
-                <span class="ml-2">Gosend/Grabsend/Lalamove</span>
+                <span class="ml-2">Kami Yang Kirim (Gosend/Grabsend/Lalamove)</span>
               </label>
             </div>
           </div>
@@ -172,7 +179,7 @@ eleventyExcludeFromCollections: true
             <div class="relative z-10">
               <p class="text-base font-semibold mb-2" x-text="
                 getNextDiscountTier().isFirstTier
-                  ? `⭐ Buy ${getNextDiscountTier().quantity} more to get your first discount!`
+                  ? `🚀 Buy ${getNextDiscountTier().quantity} more to get your first discount!`
                   : getNextDiscountTier().hasReachedTier
                     ? `🌟 Congratulations! You've unlocked a discount!`
                     : `🚀 You're close to the next discount tier!`
