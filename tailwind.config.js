@@ -4,7 +4,11 @@ module.exports = {
     colors: {
       'dondonblue': '#1E367B',
       'dondonwhite': '#FFFAF2',
+      'dondonwhite-dark': '#fff0d9',
       'dondonorange': '#F37D07',
+      'dondonorange-light': '#F5A54C',
+      'dondonorange-dark': '#D16006',
+      // ... add more variations as needed
     },
     extend: {
       animation: {
