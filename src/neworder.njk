@@ -114,7 +114,7 @@ eleventyExcludeFromCollections: true
                         <button type="button" 
                                 x-show="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity > 0"
                                 @click="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity--"
-                                class="px-3 py-2 bg-dondonwhite-dark text-dondonblue hover:bg-dondonorange-light focus:outline-none focus:ring-2 focus:ring-dondonorange">
+                                class="px-3 py-2 bg-dondonwhite-dark text-dondonblue hover:bg-dondonorange-light focus:outline-none focus:ring-2 focus:ring-dondonorange touch-manipulation">
                           -
                         </button>
                         <input type="text" 
@@ -125,7 +125,7 @@ eleventyExcludeFromCollections: true
                                @input="$event.target.value = $event.target.value.replace(/[^0-9]/g, '')">
                         <button type="button" 
                                 @click="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity++"
-                                class="px-3 py-2 bg-dondonwhite-dark text-dondonblue hover:bg-dondonorange-light focus:outline-none focus:ring-2 focus:ring-dondonorange">
+                                class="px-3 py-2 bg-dondonwhite-dark text-dondonblue hover:bg-dondonorange-light focus:outline-none focus:ring-2 focus:ring-dondonorange touch-manipulation">
                           +
                         </button>
                       </div>
