@@ -149,8 +149,9 @@ eleventyExcludeFromCollections: true
           <div x-show="getTotalQuantity() > 0" class="mb-4 border-b border-dondonorange-light pb-4 bg-dondonwhite rounded-md p-3">
             <ul class="space-y-1 text-xs">
               <template x-for="item in getSortedItems()" :key="item.name">
-                <li x-show="item.quantity > 0" class="flex justify-between items-center">
-                  <span x-text="`${item.name} ${item.quantity} x Rp. ${item.price.toLocaleString('en-US')}`" class="text-dondonblue"></span>
+                <li class="flex justify-between items-center">
+                  <span x-text="`${item.name}`" class="text-dondonblue"></span>
+                  <span x-text="`${item.quantity} x Rp. ${item.price.toLocaleString('en-US')}`" class="text-dondonblue"></span>
                 </li>
               </template>
             </ul>
