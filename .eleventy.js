@@ -55,6 +55,10 @@ module.exports = function(eleventyConfig) {
     return num.toLocaleString(locale);
   });
 
+  //Json
+  eleventyConfig.addDataExtension("json", contents => JSON.parse(contents));
+
+
   // Collections
 
 
@@ -87,7 +91,8 @@ module.exports = function(eleventyConfig) {
 
   return {
     dir: {
-      input: "src"
+      input: "src",
+      data: "_data"
     },
     //pathPrefix
   }

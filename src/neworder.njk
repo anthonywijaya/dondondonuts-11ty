@@ -23,7 +23,15 @@ eleventyExcludeFromCollections: true
         Back to Homepage
       </a>
 
-      <h1 class="text-3xl font-bold mb-8">Place Your Order</h1>
+      <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold">Place Your Order</h1>
+        <a href="https://api.whatsapp.com/send/?phone=6281519231874" target="_blank" class="bg-dondonorange hover:bg-dondonorange-dark text-dondonwhite font-bold py-2 px-4 rounded inline-flex items-center">
+          <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+            <path fill="white" d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+          </svg>
+          Need Help? Contact us by WhatsApp
+        </a>
+      </div>
 
       <form x-data="orderForm()" x-cloak @submit.prevent="submitForm" class="space-y-6">
         <!-- Customer Information -->
@@ -32,17 +40,19 @@ eleventyExcludeFromCollections: true
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label for="receiverName" class="block text-sm font-medium text-dondonblue mb-1">Receiver Name (Nama Penerima)</label>
+              <label for="receiverName" class="block text-sm font-medium text-dondonblue mb-1">Full Name (Receiver Name)</label>
               <input type="text" id="receiverName" x-model="receiverName" required 
                      class="w-full px-4 py-2 border border-dondonorange-light rounded-md shadow-sm focus:ring-2 focus:ring-dondonorange focus:border-transparent">
             </div>
             <div>
-              <label for="deliveryDate" class="block text-sm font-medium text-dondonblue mb-1">Delivery Date (Tanggal Pengiriman)</label>
+              <label for="deliveryDate" class="block text-sm font-medium text-dondonblue mb-1">Delivery Date (Closed every Friday)</label>
+              
               <div class="relative">
-                <input type="date" id="deliveryDate" x-model="deliveryDate" required 
+                <input type="text" id="deliveryDate" x-model="deliveryDate" required 
+                       x-ref="datepicker"
                        class="w-full px-4 py-2 border border-dondonorange-light rounded-md shadow-sm focus:ring-2 focus:ring-dondonorange focus:border-transparent appearance-none"
-                       :min="getTomorrowDate()"
-                       :class="{'border-dondonorange-dark': deliveryDateError}">
+                       :class="{'border-dondonorange-dark': deliveryDateError}"
+                       placeholder="Select date">
                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                   <svg class="h-5 w-5 text-dondonorange-light" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
@@ -53,39 +63,21 @@ eleventyExcludeFromCollections: true
             </div>
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-dondonblue mb-2">Delivery Option (Opsi Pengiriman)</label>
-            <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-              <label class="inline-flex items-center">
-                <input type="radio" x-model="deliveryOption" value="selfPickup" 
-                       class="form-radio text-dondonorange focus:ring-dondonorange">
-                <span class="ml-2">Self Pickup (Ke alamat kami)</span>
-              </label>
-              <label class="inline-flex items-center">
-                <input type="radio" x-model="deliveryOption" value="delivery" 
-                       class="form-radio text-dondonorange focus:ring-dondonorange">
-                <span class="ml-2">Kami Yang Kirim (Gosend/Grabsend/Lalamove)</span>
-              </label>
-            </div>
-          </div>
-
-          <div x-show="deliveryOption === 'delivery'" 
-               x-transition:enter="transition ease-out duration-300" 
-               x-transition:enter-start="opacity-0 transform scale-95" 
-               x-transition:enter-end="opacity-100 transform scale-100">
-            <label for="address" class="block text-sm font-medium text-dondonblue mb-1">Address (Alamat)</label>
-            <textarea id="address" x-model="address" :required="deliveryOption === 'delivery'" rows="3"
-                      class="w-full px-4 py-2 border border-dondonorange-light rounded-md shadow-sm focus:ring-2 focus:ring-dondonorange focus:border-transparent"></textarea>
-          </div>
-
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label for="phoneNumber" class="block text-sm font-medium text-dondonblue mb-1">Phone Number (Nomor Telepon)</label>
-              <input type="tel" id="phoneNumber" x-model="phoneNumber" 
-                     @input="validatePhoneNumber" 
-                     :class="{'border-dondonorange-dark': phoneNumberError}"
-                     required 
-                     class="w-full px-4 py-2 border border-dondonorange-light rounded-md shadow-sm focus:ring-2 focus:ring-dondonorange focus:border-transparent">
+              <label for="phoneNumber" class="block text-sm font-medium text-dondonblue mb-1">Phone Number</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg class="h-5 w-5 text-dondonorange-light" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                  </svg>
+                </div>
+                <input type="tel" id="phoneNumber" x-model="phoneNumber" 
+                      @input="validatePhoneNumber" 
+                      :class="{'border-dondonorange-dark': phoneNumberError}"
+                      required 
+                      class="w-full pl-10 pr-4 py-2 border border-dondonorange-light rounded-md shadow-sm focus:ring-2 focus:ring-dondonorange focus:border-transparent">
+              </div>
               <p x-show="phoneNumberError" class="mt-1 text-sm text-dondonorange-dark" x-text="phoneNumberError"></p>
             </div>
             <div>
@@ -145,9 +137,24 @@ eleventyExcludeFromCollections: true
           {% endfor %}
         </div>
 
+        <div class="mt-8 mb-4 text-right">
+          <button type="button" @click="confirmReset" class="bg-dondonorange-light text-dondonwhite py-2 px-4 rounded-md hover:bg-dondonorange transition duration-300 text-sm font-semibold">
+            Reset Order
+          </button>
+        </div>
         <!-- Total Price -->
         <div id="orderSummary" class="mt-8 bg-dondonwhite-dark rounded-lg shadow-md p-6 space-y-4">
           <h3 class="text-2xl font-bold text-dondonblue mb-4">Order Summary</h3>
+          
+          <div x-show="getTotalQuantity() > 0" class="mb-4 border-b border-dondonorange-light pb-4 bg-dondonwhite rounded-md p-3">
+            <ul class="space-y-1 text-xs">
+              <template x-for="item in getSortedItems()" :key="item.name">
+                <li x-show="item.quantity > 0" class="flex justify-between items-center">
+                  <span x-text="`${item.name} ${item.quantity} x Rp. ${item.price.toLocaleString('en-US')}`" class="text-dondonblue"></span>
+                </li>
+              </template>
+            </ul>
+          </div>
           
           <div class="flex justify-between items-center py-2 border-b border-dondonorange-light">
             <span class="text-dondonblue">Total Quantity:</span>
@@ -253,17 +260,32 @@ function orderForm() {
   return {
     receiverName: '',
     deliveryDate: '',
-    deliveryOption: 'selfPickup',
-    address: '',
     phoneNumber: '',
     notes: '',
     flavors: {},
     discounts: {{ discounts | dump | safe }},
+    blackoutDates: {{ blackoutdates | dump | safe }},
     phoneNumberError: '',
     deliveryDateError: '',
     init() {
       this.initFlavors();
-      this.deliveryDate = this.getTomorrowDate();
+      this.deliveryDate = this.getNextAvailableDate();
+      this.$nextTick(() => {
+        this.initDatePicker();
+      });
+    },
+    confirmReset() {
+      if (confirm('Are you sure you want to reset your order? This will remove all selected items.')) {
+        this.resetOrder();
+      }
+    },
+
+    resetOrder() {
+      for (let flavorType in this.flavors) {
+        this.flavors[flavorType].forEach(flavor => {
+          flavor.quantity = 0;
+        });
+      }
     },
     initFlavors() {
       {% for flavorType, flavors in collections.flavors %}
@@ -287,7 +309,6 @@ function orderForm() {
       const clampedQuantity = Math.min(totalQuantity, maxQuantity).toString();
       const discountValue = this.discounts[clampedQuantity].discount;
       
-      // Ensure we're returning a number
       return parseInt(discountValue, 10) || 0;
     },
     getSubtotal() {
@@ -298,6 +319,15 @@ function orderForm() {
     },
     getTotalQuantity() {
       return Object.values(this.flavors).flat().reduce((total, flavor) => total + flavor.quantity, 0);
+    },
+    getSortedItems() {
+      const items = Object.values(this.flavors).flat().filter(f => f.quantity > 0);
+      return items.sort((a, b) => {
+        if (a.price !== b.price) {
+          return b.price - a.price; // Sort by price descending
+        }
+        return a.name.localeCompare(b.name); // Then sort alphabetically
+      });
     },
     getNextDiscountTier() {
       const totalQuantity = this.getTotalQuantity();
@@ -345,13 +375,54 @@ function orderForm() {
         this.phoneNumberError = '';
       }
     },
-    getTomorrowDate() {
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      const year = tomorrow.getFullYear();
-      const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
-      const day = String(tomorrow.getDate()).padStart(2, '0');
+    getNextAvailableDate() {
+      let date = new Date();
+      date.setDate(date.getDate() + 1); // Start with tomorrow
+
+      while (this.isDateDisabled(date)) {
+        date.setDate(date.getDate() + 1);
+      }
+
+      return this.formatDate(date);
+    },
+    isDateDisabled(date) {
+      const formattedDate = this.formatDateYMD(date);
+      if (this.blackoutDates.specificDates.includes(formattedDate)) {
+        return true;
+      }
+      if (this.blackoutDates.recurringDays.includes(date.getDay())) {
+        return true;
+      }
+      return false;
+    },
+    formatDateYMD(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
+    },
+    formatDate(date) {
+      const options = { day: 'numeric', month: 'long', year: 'numeric' };
+      return date.toLocaleDateString('en-US', options);
+    },
+    initDatePicker() {
+      const datepicker = this.$refs.datepicker;
+      flatpickr(datepicker, {
+        dateFormat: 'j F Y',
+        minDate: 'today',
+        defaultDate: this.getNextAvailableDate(),
+        disable: [
+          (date) => this.isDateDisabled(date)
+        ],
+        onChange: (selectedDates, dateStr) => {
+          this.deliveryDate = dateStr;
+          this.validateDeliveryDate();
+        },
+        onDayCreate: function(dObj, dStr, fp, dayElem) {
+          dayElem.classList.add('rounded-full');
+        },
+        monthSelectorType: 'static'
+      });
     },
     validateDeliveryDate() {
       const selectedDate = new Date(this.deliveryDate);
@@ -366,23 +437,21 @@ function orderForm() {
       }
     },
     submitForm() {
-      this.validatePhoneNumber();
-      this.validateDeliveryDate();
-      if (this.phoneNumberError || this.deliveryDateError) {
-        return; // Don't submit if there are errors
-      }
-      
-      const orderDetails = Object.entries(this.flavors).flatMap(([type, flavors]) => 
-        flavors.filter(f => f.quantity > 0).map(f => `${f.name} (${type}): ${f.quantity}`)
-      ).join('\n');
+  this.validatePhoneNumber();
+  this.validateDeliveryDate();
+  if (this.phoneNumberError || this.deliveryDateError) {
+    return; // Don't submit if there are errors
+  }
+  
+  const orderDetails = Object.entries(this.flavors).flatMap(([type, flavors]) => 
+    flavors.filter(f => f.quantity > 0).map(f => `${f.name}: ${f.quantity}`)
+  ).join('\n');
 
-      const subtotal = this.getSubtotal();
-      const discount = this.getDiscount();
-      const message = `
-Receiver Name: ${this.receiverName}
+  const subtotal = this.getSubtotal();
+  const discount = this.getDiscount();
+  const message = `
+Full Name: ${this.receiverName}
 Delivery Date: ${this.deliveryDate}
-Delivery Option: ${this.deliveryOption === 'selfPickup' ? 'Self Pickup' : 'Gosend/Grabsend/Lalamove'}
-${this.deliveryOption === 'delivery' ? `Address: ${this.address}` : ''}
 Phone Number: ${this.phoneNumber}
 Notes: ${this.notes}
 
@@ -392,11 +461,15 @@ ${orderDetails}
 Subtotal: Rp. ${subtotal.toLocaleString('en-US')}
 Discount: Rp. ${discount.toLocaleString('en-US')}
 Total Price: Rp. ${this.getTotalPrice().toLocaleString('en-US')}
-      `;
+  `;
 
-      const encodedMessage = encodeURIComponent(message);
-      window.open(`https://api.whatsapp.com/send/?phone=6281519231874&text=${encodedMessage}`, '_blank');
-    }
+  const encodedMessage = encodeURIComponent(message);
+  window.open(`https://api.whatsapp.com/send/?phone=6281519231874&text=${encodedMessage}`, '_blank');
+}
   };
 }
+
+document.addEventListener('alpine:init', () => {
+  Alpine.data('orderForm', orderForm);
+});
 </script>
