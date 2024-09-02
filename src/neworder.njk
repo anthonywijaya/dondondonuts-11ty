@@ -309,6 +309,7 @@ function orderForm() {
         this.initDatePicker();
       });
     },
+    
     confirmReset() {
       if (confirm('Are you sure you want to reset your order? This will remove all selected items.')) {
         this.resetOrder();
@@ -472,6 +473,8 @@ function orderForm() {
       }
     },
     submitForm() {
+
+
   this.validatePhoneNumber();
   this.validateDeliveryDate();
   if (this.phoneNumberError || this.deliveryDateError) {
@@ -481,6 +484,15 @@ function orderForm() {
   const orderDetails = Object.entries(this.flavors).flatMap(([type, flavors]) => 
     flavors.filter(f => f.quantity > 0).map(f => `${f.name}: ${f.quantity}`)
   ).join('\n');
+
+  // Calculate the total value for classic and premium categories
+      const classicValue = this.flavors['Classic']
+        .filter(f => f.quantity > 0)
+        .reduce((total, f) => total + f.quantity, 0);
+
+      const premiumValue = this.flavors['Premium']
+        .filter(f => f.quantity > 0)
+        .reduce((total, f) => total + f.quantity, 0);
 
   const subtotal = this.getSubtotal();
   const discount = this.getDiscount();
@@ -507,6 +519,8 @@ Subtotal: Rp. ${subtotal.toLocaleString('en-US')}
 Discount: - Rp. ${discount.toLocaleString('en-US')}
 ${this.birthdayTopper ? `Birthday Topper: Rp. 15,000\n` : ''}
 Total Price: Rp. ${this.getTotalPrice().toLocaleString('en-US')}
+
+L${classicValue}U${premiumValue}
   `;
 
   const encodedMessage = encodeURIComponent(message);
