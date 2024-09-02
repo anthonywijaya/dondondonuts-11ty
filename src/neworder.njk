@@ -40,12 +40,12 @@ eleventyExcludeFromCollections: true
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label for="receiverName" class="block text-sm font-medium text-dondonblue mb-1">Full Name (Receiver Name)</label>
+              <label for="receiverName" class="block text-sm font-medium text-dondonblue mb-1">Nama Lengkap (Nama Penerima)</label>
               <input type="text" id="receiverName" x-model="receiverName" required 
                      class="w-full px-4 py-2 border border-dondonorange-light rounded-md shadow-sm focus:ring-2 focus:ring-dondonorange focus:border-transparent">
             </div>
             <div>
-              <label for="deliveryDate" class="block text-sm font-medium text-dondonblue mb-1">Delivery Date (Closed every Friday)</label>
+              <label for="deliveryDate" class="block text-sm font-medium text-dondonblue mb-1">Tanggal Pengiriman (Libur setiap Jumat)</label>
               
               <div class="relative">
                 <input type="text" id="deliveryDate" x-model="deliveryDate" required 
@@ -150,13 +150,13 @@ eleventyExcludeFromCollections: true
             <input type="checkbox" id="birthdayTopper" x-model="birthdayTopper" class="h-5 w-5 text-dondonorange focus:ring-dondonorange border-dondonorange-light rounded">
             <label for="birthdayTopper" class="flex-grow">
               <span class="text-lg font-semibold text-dondonblue">Birthday Additionals</span>
-              <span class="block text-sm text-dondonblue-light">Add candles, ribbons, a card and more for a special celebration!</span>
+              <span class="block text-sm text-dondonblue-light">Add a candle, ribbons, a card and more for a special celebration!</span>
             </label>
             <span class="text-dondonorange font-semibold">Rp. 15,000</span>
           </div>
           <div class="flex items-center mt-4">
             <img src="/assets/img/birthday-topper-all.jpg" alt="Birthday Topper" class="w-24 h-24 object-cover rounded-lg shadow-md mr-4">
-            <p class="text-sm ml-4 text-dondonblue-light">Includes candle, ribbons, 2 butterfly toppers, and a card with your message to make your Ubedon™ order extra special!</p>
+            <p class="text-sm ml-4 text-dondonblue-light">Includes a candle, ribbons, 2 butterfly toppers, and a card with your message to make your Ubedon™ order extra special!</p>
           </div>
           <!-- Birthday Card Message -->
           <div x-show="birthdayTopper" class="mt-4">
