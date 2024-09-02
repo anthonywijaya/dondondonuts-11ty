@@ -137,11 +137,36 @@ eleventyExcludeFromCollections: true
           {% endfor %}
         </div>
 
+        <!-- Reset Button -->
         <div class="mt-8 mb-4 text-right">
           <button type="button" @click="confirmReset" class="bg-dondonorange-light text-dondonwhite py-2 px-4 rounded-md hover:bg-dondonorange transition duration-300 text-sm font-semibold">
             Reset Order
           </button>
         </div>
+
+        <!-- Birthday Topper Option -->
+        <div class="mt-8 bg-dondonwhite-dark rounded-lg shadow-md p-6">
+          <div class="flex items-center space-x-4">
+            <input type="checkbox" id="birthdayTopper" x-model="birthdayTopper" class="h-5 w-5 text-dondonorange focus:ring-dondonorange border-dondonorange-light rounded">
+            <label for="birthdayTopper" class="flex-grow">
+              <span class="text-lg font-semibold text-dondonblue">Birthday Additionals</span>
+              <span class="block text-sm text-dondonblue-light">Add candles, ribbons, a card and more for a special celebration!</span>
+            </label>
+            <span class="text-dondonorange font-semibold">Rp. 15,000</span>
+          </div>
+          <div class="flex items-center mt-4">
+            <img src="/assets/img/birthday-topper-all.jpg" alt="Birthday Topper" class="w-24 h-24 object-cover rounded-lg shadow-md mr-4">
+            <p class="text-sm ml-4 text-dondonblue-light">Includes candle, ribbons, 2 butterfly toppers, and a card with your message to make your Ubedon™ order extra special!</p>
+          </div>
+          <!-- Birthday Card Message -->
+          <div x-show="birthdayTopper" class="mt-4">
+            <label for="birthdayCardMessage" class="block text-sm font-medium text-dondonblue mb-1">Birthday Card Message</label>
+            <textarea id="birthdayCardMessage" x-model="birthdayCardMessage" rows="2"
+                      class="w-full px-4 py-2 border border-dondonorange-light rounded-md shadow-sm focus:ring-2 focus:ring-dondonorange focus:border-transparent"
+                      placeholder="Enter the message you'd like on the birthday card"></textarea>
+          </div>
+        </div>
+
         <!-- Total Price -->
         <div id="orderSummary" class="mt-8 bg-dondonwhite-dark rounded-lg shadow-md p-6 space-y-4">
           <h3 class="text-2xl font-bold text-dondonblue mb-4">Order Summary</h3>
@@ -174,6 +199,13 @@ eleventyExcludeFromCollections: true
             </span>
           </div>
           
+          <!-- Add Birthday Topper to the order summary if selected -->
+          <div x-show="birthdayTopper" class="flex justify-between items-center py-2 border-b border-dondonorange-light">
+            <span class="text-dondonblue">Birthday Additionals:</span>
+            <span class="text-xl font-semibold">Rp. 15,000</span>
+          </div>
+          
+          <!-- Update the Total Price calculation -->
           <div class="flex justify-between items-center py-3 border-b-2 border-dondonorange">
             <span class="text-lg font-bold text-dondonorange">Total Price:</span>
             <span class="text-2xl font-bold text-dondonorange">Rp. <span x-text="getTotalPrice().toLocaleString('en-US')"></span></span>
@@ -268,6 +300,8 @@ function orderForm() {
     blackoutDates: {{ blackoutdates | dump | safe }},
     phoneNumberError: '',
     deliveryDateError: '',
+    birthdayTopper: false,
+    birthdayCardMessage: '',
     init() {
       this.initFlavors();
       this.deliveryDate = this.getNextAvailableDate();
@@ -316,7 +350,7 @@ function orderForm() {
       return Object.values(this.flavors).flat().reduce((total, flavor) => total + flavor.price * flavor.quantity, 0);
     },
     getTotalPrice() {
-      return this.getSubtotal() - this.getDiscount();
+      return this.getSubtotal() - this.getDiscount() + (this.birthdayTopper ? 15000 : 0);
     },
     getTotalQuantity() {
       return Object.values(this.flavors).flat().reduce((total, flavor) => total + flavor.quantity, 0);
@@ -450,7 +484,8 @@ function orderForm() {
 
   const subtotal = this.getSubtotal();
   const discount = this.getDiscount();
-  const message = `
+  const birthdayTopperPrice = this.birthdayTopper ? 15000 : 0;
+  let message = `
 Full Name: ${this.receiverName}
 Delivery Date: ${this.deliveryDate}
 Phone Number: ${this.phoneNumber}
@@ -458,14 +493,24 @@ Notes: ${this.notes}
 
 Order Details:
 ${orderDetails}
+`;
 
+if (this.birthdayTopper) {
+            message += `
+Birthday Additionals: Yes
+Birthday Card Message: ${this.birthdayCardMessage}
+            `;
+        }
+
+message += `
 Subtotal: Rp. ${subtotal.toLocaleString('en-US')}
-Discount: Rp. ${discount.toLocaleString('en-US')}
+Discount: - Rp. ${discount.toLocaleString('en-US')}
+${this.birthdayTopper ? `Birthday Topper: Rp. 15,000\n` : ''}
 Total Price: Rp. ${this.getTotalPrice().toLocaleString('en-US')}
   `;
 
   const encodedMessage = encodeURIComponent(message);
-  window.open(`https://api.whatsapp.com/send/?phone=6281519231874&text=${encodedMessage}`, '_blank');
+  window.open(`https://wa.me/6281519231874?text=${encodedMessage}`, '_blank');
 }
   };
 }
