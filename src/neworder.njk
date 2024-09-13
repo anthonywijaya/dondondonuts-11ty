@@ -280,7 +280,9 @@ eleventyExcludeFromCollections: true
         </div>
 
         <!-- Submit Button -->
-        <button type="submit" class="w-full bg-dondonorange text-dondonwhite py-3 px-4 rounded-md hover:bg-dondonorange-dark transition duration-300 mt-6 text-lg font-semibold">
+        <button type="submit" 
+          class="w-full bg-dondonorange text-dondonwhite py-3 px-4 rounded-md hover:bg-dondonorange-dark transition duration-300 mt-6 text-lg font-semibold"
+          onclick="gtag('event', 'place_order', { 'event_category': 'Order', 'event_label': 'Place Order via WhatsApp' });">
           Place Order via WhatsApp
         </button>
       </form>
