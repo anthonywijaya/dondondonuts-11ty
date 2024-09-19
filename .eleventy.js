@@ -47,6 +47,11 @@ module.exports = function(eleventyConfig) {
     "./node_modules/alpinejs/dist/cdn.js": "./assets/js/alpine.js",
   });
 
+  //Alpine JS
+  eleventyConfig.addPassthroughCopy({
+    "./src/assets/js/meta-conversions-api.js": "./assets/js/meta-conversions-api.js",
+  });
+
   //Order JS
   eleventyConfig.addPassthroughCopy({"./src/assets/js/order.js": "./assets/js/order.js"});
 
