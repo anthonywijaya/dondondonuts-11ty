@@ -89,6 +89,8 @@ module.exports = function(eleventyConfig) {
     pathPrefix = process.env.GITHUB_REPOSITORY.split('/')[1];
   }
 
+  eleventyConfig.addTransform("addMetaPixel", addMetaPixel);
+
   return {
     dir: {
       input: "src",
@@ -127,6 +129,33 @@ function htmlminTransform(content, outputPath) {
       collapseWhitespace: true
     });
     return minified;
+  }
+  return content;
+}
+
+function addMetaPixel(content, outputPath) {
+  if (outputPath && outputPath.endsWith('.html')) {
+    const metaPixelCode = `
+      <!-- Meta Pixel Code -->
+      <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '1064819841680904');
+      fbq('track', 'PageView');
+      </script>
+      <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=1064819841680904&ev=PageView&noscript=1"
+      /></noscript>
+      <!-- End Meta Pixel Code -->
+    `;
+    
+    return content.replace('</head>', metaPixelCode + '</head>');
   }
   return content;
 }
