@@ -55,6 +55,10 @@ module.exports = function(eleventyConfig) {
   //Order JS
   eleventyConfig.addPassthroughCopy({"./src/assets/js/order.js": "./assets/js/order.js"});
 
+
+  //Tracking JS
+  eleventyConfig.addPassthroughCopy({"./src/assets/js/tracking.js": "./assets/js/tracking.js"});
+
   //Commaize
   eleventyConfig.addFilter("thousandseparator", function (num, locale="en-us") {
     return num.toLocaleString(locale);
