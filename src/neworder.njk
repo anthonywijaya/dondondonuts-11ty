@@ -84,8 +84,8 @@ eleventyExcludeFromCollections: true
                 
               </div>
               <div class="mt-2 flex space-x-2">
-                <span class="text-xs bg-dondonorange p-2 text-dondonwhite flex-1 text-center">28 Sep: <span class="line-through">Full</span></span>
                 <span class="text-xs bg-dondonorange p-2 text-dondonwhite flex-1 text-center">29 Sep: <span class="line-through">Full</span></span>
+                <span class="text-xs bg-dondonorange p-2 text-dondonwhite flex-1 text-center">30 Sep: <span class="line-through">Full</span></span>
                 <span x-text="getNextAvailableDate(1)" class="text-xs bg-dondonorange p-2 text-dondonwhite flex-1 text-center"></span>
                 {# <span x-text="getNextAvailableDate(2)" class="text-xs bg-dondonorange p-2 text-dondonwhite flex-1 text-center"></span> #}
               </div>
@@ -124,7 +124,7 @@ eleventyExcludeFromCollections: true
           <h2 class="text-3xl font-bold mt-8">Our Donuts</h2>
           {% for flavorType, flavors in collections.flavors %}
             <h3 class="text-2xl font-semibold mt-8">{{ flavorType }}</h3>
-            <ul class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-8 mt-8 px-4 mb-16">
+            <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mt-8 px-4 mb-16">
               {% for flavor in flavors %}
                 {% if flavor.data.visible %}
                   <li class="mb-4">
