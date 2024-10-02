@@ -127,38 +127,40 @@ eleventyExcludeFromCollections: true
             <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mt-8 px-4 mb-16">
               {% for flavor in flavors %}
                 {% if flavor.data.visible %}
-                  <li class="mb-4">
-                    <div class="relative">
+                  <li class="mb-4 flex flex-col">
+                    <div class="relative flex-grow">
                       {% if flavor.data.featured %}
                         <div class="absolute top-0 right-1 bg-dondonorange text-dondonwhite px-2 py-1 text-sm font-bold">Best Selling</div>
                       {% endif %}
                       {% if flavor.data.new %}
                         <div class="absolute top-0 left-1 bg-dondonblue text-dondonwhite px-2 py-1 text-sm font-bold">New!</div>
                       {% endif %}
+                      <img class="object-cover rounded-xl overflow-hidden w-full" src="{{ flavor.data.thumb }}" alt="{{ flavor.data.title }}">
+                      <p class="text-lg font-medium mt-2 mb-1">{{ flavor.data.title }}</p>
+                      <p class="text-sm mb-4">Our signature Ubedon™ {{ flavor.data.description }}</p>
                     </div>
-                    <img class="object-cover rounded-xl overflow-hidden w-full" src="{{ flavor.data.thumb }}" alt="{{ flavor.data.title }}">
-                    <p class="text-lg font-medium mt-2 mb-1">{{ flavor.data.title }}</p>
-                    <p>Our signature Ubedon™ {{ flavor.data.description }}</p>
-                    <div class="mt-4 flex justify-between items-center">
-                      <p class="text-sm font-bold">Rp. {{ flavor.data.price | thousandseparator }}</p>
-                      <div class="flex items-center border border-dondonorange-light rounded-lg overflow-hidden">
-                        <button type="button" 
-                                x-show="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity > 0"
-                                @click="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity--"
-                                class="px-3 py-2 bg-dondonwhite-dark text-dondonblue hover:bg-dondonorange-light focus:outline-none focus:ring-2 focus:ring-dondonorange touch-manipulation">
-                          -
-                        </button>
-                        <input type="text" 
-                               x-model.number="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity" 
-                               class="w-12 px-2 py-1 text-center bg-dondonwhite border-none focus:ring-0 focus:outline-none"
-                               inputmode="numeric"
-                               pattern="[0-9]*"
-                               @input="$event.target.value = $event.target.value.replace(/[^0-9]/g, '')">
-                        <button type="button" 
-                                @click="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity++"
-                                class="px-3 py-2 bg-dondonwhite-dark text-dondonblue hover:bg-dondonorange-light focus:outline-none focus:ring-2 focus:ring-dondonorange touch-manipulation">
-                          +
-                        </button>
+                    <div class="mt-auto">
+                      <div class="flex justify-between items-center">
+                        <p class="text-sm font-bold">Rp. {{ flavor.data.price | thousandseparator }}</p>
+                        <div class="flex items-center border border-dondonorange-light rounded-lg overflow-hidden">
+                          <button type="button" 
+                                  x-show="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity > 0"
+                                  @click="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity--"
+                                  class="px-3 py-2 bg-dondonwhite-dark text-dondonblue hover:bg-dondonorange-light focus:outline-none focus:ring-2 focus:ring-dondonorange touch-manipulation">
+                            -
+                          </button>
+                          <input type="text" 
+                                 x-model.number="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity" 
+                                 class="w-12 px-2 py-1 text-center bg-dondonwhite border-none focus:ring-0 focus:outline-none"
+                                 inputmode="numeric"
+                                 pattern="[0-9]*"
+                                 @input="$event.target.value = $event.target.value.replace(/[^0-9]/g, '')">
+                          <button type="button" 
+                                  @click="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity++"
+                                  class="px-3 py-2 bg-dondonwhite-dark text-dondonblue hover:bg-dondonorange-light focus:outline-none focus:ring-2 focus:ring-dondonorange touch-manipulation">
+                            +
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </li>
