@@ -13,7 +13,7 @@ I want you to also make a CMS using Strapi with PostgresSQL for our website. Thi
     •	Supabase for authentication
     •	Connected to Strapi as the backend
     •   GA4 for analytics & Meta conversions API for ads retargetting and ads conversions.
-	2.	Backend (CMS + API): Strapi (hosted on Render or Heroku)
+	2.	Backend (CMS + API): Strapi (hosted on Render)
 	•	PostgreSQL and Storage via Supabase
 	3.	Dashboard (Orders & CRM): Next.js (hosted on Vercel)
 	•	Strapi API for managing orders, customers, etc.
