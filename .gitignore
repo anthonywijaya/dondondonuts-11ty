@@ -131,3 +131,6 @@ dist
 
 _site/
 .DS_Store
+
+dondondonuts-next/
+dondondonuts-cms/

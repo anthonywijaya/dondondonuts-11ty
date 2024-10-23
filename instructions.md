@@ -54,3 +54,8 @@ Keep the functions of the current static site intact. And then I want to add the
          1. Promotion updates
          2. Notifications that orders can now be picked up.
 3. We will also implement extensive google analytics tracking for events (GA4), and meta conversions api for ads retargetting, and ads conversions. Consider the order statuses as well.
+
+
+# URLS
+1. 
+
