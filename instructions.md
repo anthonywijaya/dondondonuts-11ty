@@ -57,5 +57,14 @@ Keep the functions of the current static site intact. And then I want to add the
 
 
 # URLS
-1. 
+
+
+# Models
+1. Flavors
+   1. Name
+   2. Description
+   3. Image
+   4. Price
+   5. Tags [Best Seller, New]
+   6. Categories [Classic, Premium]
 
