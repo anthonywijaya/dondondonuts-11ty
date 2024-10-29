@@ -2,7 +2,7 @@
 layout: default
 
 eleventyImport:
-  collections: ["flavors"]
+  collections: ["flavors", "specials"]
 
 ---
 
@@ -84,6 +84,27 @@ eleventyImport:
           <hr class="mt-12 mb-6 w-12 mx-auto"/>
           <h3 class="text-3xl font-bold mt-8">Our Donuts</h3>
 
+          <!-- <h4 class="px-4 text-2xl font-semibold mt-8">Christmas Specials</h4>
+
+          
+
+
+          <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 px-4 mb-16">
+            {% for flavor in collections.specials %}
+                  <li class="flex flex-col">
+                    <div class="relative aspect-w-1 aspect-h-1 w-full">
+                      <img class="object-cover w-full h-full rounded-xl overflow-hidden" src="{{ flavor.data.thumb }}" alt="{{ flavor.data.title }}">
+                    </div>
+                    <div class="flex-grow">
+                      <p class="text-lg font-medium mb-1">{{ flavor.data.title }}</p>
+                      <p class="text-sm">{{ flavor.data.description }}</p>
+                    </div>
+                    <p class="mt-2 text-sm font-bold">Rp. {{ flavor.data.price | thousandseparator }}</p>
+                  </li>
+                
+              {% endfor %}
+          </ul> -->
+
           {% for flavorType in collections.flavors %}
             <h4 class="px-4 text-2xl font-semibold mt-8">{{ flavorType[0] }}</h4>
 
@@ -157,4 +178,37 @@ eleventyImport:
       </div>
     </div>
   </div>
+</div>
+
+<!-- <div class="bg-gradient-to-b from-red-100 to-green-100 rounded-xl p-8 mb-16">
+  <h4 class="text-3xl font-bold text-red-700 text-center mb-8 animate-bounce">
+    🎄 Christmas Specials 🎄
+  </h4>
+
+  <ul class="space-y-6">
+    {% for flavor in collections.specials %}
+      <li class="transform hover:scale-[1.02] transition-all duration-300 animate-fadeIn">
+        <div class="flex flex-col md:flex-row bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-red-200">
+          <div class="md:w-1/3 relative aspect-w-1 aspect-h-1">
+            <img 
+              class="object-cover w-full h-full" 
+              src="{{ flavor.data.thumb }}" 
+              alt="{{ flavor.data.title }}"
+            >
+          </div>
+          
+          <div class="flex-1 p-6 flex flex-col justify-between">
+            <div>
+              <h3 class="text-2xl font-bold text-red-700 mb-2">{{ flavor.data.title }}</h3>
+              <p class="text-gray-600">{{ flavor.data.description }}</p>
+            </div>
+            <div class="mt-4 flex items-center justify-between">
+              <p class="text-lg font-bold text-green-700">Rp. {{ flavor.data.price | thousandseparator }}</p>
+              <div class="text-2xl">🎅 ✨</div>
+            </div>
+          </div>
+        </div>
+      </li>
+    {% endfor %}
+  </ul> -->
 </div>

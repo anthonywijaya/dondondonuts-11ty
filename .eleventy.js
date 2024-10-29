@@ -72,15 +72,25 @@ module.exports = function(eleventyConfig) {
 
 
   eleventyConfig.addCollection("flavors", function (collectionApi) {
+    // const christmasFlavors = collectionApi.getFilteredByGlob("src/input/flavors/christmas/*.md")
+    //   .sort((a, b) => (a.data.sort || Infinity) - (b.data.sort || Infinity));
 		const classicFlavors = collectionApi.getFilteredByGlob("src/input/flavors/classic/*.md")
-        .sort((a, b) => a.data.order - b.data.order);
-    const premiumFlavors = collectionApi.getFilteredByGlob("src/input/flavors/premium/*.md");
+        .sort((a, b) => a.data.price - b.data.price);
+    const premiumFlavors = collectionApi.getFilteredByGlob("src/input/flavors/premium/*.md")
+      .sort((a, b) => a.data.price - b.data.price);
     const flavors = {
+      // "Christmas": christmasFlavors,
       "Classic": classicFlavors,
-      "Premium": premiumFlavors
+      "Premium": premiumFlavors,
     };
     return flavors;
 	});
+
+  eleventyConfig.addCollection("specials", function (collectionApi) {
+    const specials = collectionApi.getFilteredByGlob("src/input/flavors/christmas/*.md")
+      .sort((a, b) => (a.data.sort || Infinity) - (b.data.sort || Infinity));
+    return specials;
+  });
 
   
   // eleventyConfig.addCollection("flavors", function(collectionApi) {
