@@ -92,6 +92,10 @@ module.exports = function(eleventyConfig) {
     return specials;
   });
 
+  eleventyConfig.addFilter("times", function(value, multiplier) {
+    return value * multiplier;
+  });
+
   
   // eleventyConfig.addCollection("flavors", function(collectionApi) {
   //   return collectionApi.getFilteredByGlob("src/input/flavors/*/*.md").map(item => {
