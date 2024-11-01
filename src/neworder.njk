@@ -5,6 +5,19 @@ eleventyImport:
 eleventyExcludeFromCollections: true
 ---
 
+
+<!-- Snow effect -->
+<div class="absolute inset-0 pointer-events-none" x-data="snowfall()">
+  <template x-for="snowflake in snowflakes" :key="snowflake.id">
+    <div 
+      class="absolute text-white animate-fall"
+      x-bind:style="`left: ${snowflake.x}%; animation-delay: -${snowflake.delay}s; animation-duration: ${snowflake.duration}s`"
+    >
+      ❄
+    </div>
+  </template>
+</div>
+
 <div class="mx-auto w-full max-w-7xl lg:px-8">
   <div class="relative px-4 sm:px-8 lg:px-12">
     <div class="mx-auto max-w-2xl lg:max-w-5xl">
@@ -14,6 +27,7 @@ eleventyExcludeFromCollections: true
           <img class="w-1/12 mx-auto" src="/assets/img/logo-illust-text.png" alt="Don Don Donuts Logo">
         </a>
       </div>
+
 
       <!-- Back to Homepage link -->
       <a href="/" class="inline-block mb-6 text-dondonblue hover:text-dondonorange transition duration-300">
@@ -84,8 +98,8 @@ eleventyExcludeFromCollections: true
                 
               </div>
               <div class="mt-2 flex space-x-2">
-                <span class="text-xs bg-dondonorange p-2 text-dondonwhite flex-1 text-center">31 Okt: <span class="line-through">Full</span></span>
                 <span class="text-xs bg-dondonorange p-2 text-dondonwhite flex-1 text-center">2 Nov: <span class="line-through">Full</span></span>
+                <span class="text-xs bg-dondonorange p-2 text-dondonwhite flex-1 text-center">3 Nov: <span class="line-through">Full</span></span>
                 <span x-text="getNextAvailableDate(1)" class="text-xs bg-dondonorange p-2 text-dondonwhite flex-1 text-center"></span>
                 {# <span x-text="getNextAvailableDate(2)" class="text-xs bg-dondonorange p-2 text-dondonwhite flex-1 text-center"></span> #}
               </div>
@@ -322,6 +336,64 @@ eleventyExcludeFromCollections: true
     </div>
   </div>
 </div>
+
+<!-- Manual Contact Instructions -->
+            {# <div class="mt-6">
+              <button @click="showManualInstructions = !showManualInstructions"
+                      class="w-full text-center text-sm text-dondonorange hover:text-dondonorange-dark underline">
+                Having trouble? See below for manual contact instructions.
+              </button>
+
+              <div x-show="showManualInstructions"
+                   x-transition
+                   class="mt-4 bg-white rounded-lg shadow-md p-4 space-y-4">
+                <div class="border-b pb-4">
+                  <h3 class="font-bold text-lg text-dondonblue mb-2">How to Contact Us Manually</h3>
+                  <ol class="list-decimal list-inside space-y-2 text-sm">
+                    <li>Save our WhatsApp number: <span class="font-mono bg-gray-100 px-2 py-1 rounded">+62 815-1923-1874</span></li>
+                    <li>Copy your order details using the button below</li>
+                    <li>Open WhatsApp and find our contact (Don Don Donuts)</li>
+                    <li>Paste and send your order details</li>
+                  </ol>
+                </div>
+                
+
+                <!-- Store Profile -->
+                <div class="bg-dondonwhite-dark rounded-lg p-4">
+                  <div class="flex items-center space-x-3 mb-3">
+                    <img src="/assets/img/logo-illust-text.png" alt="Don Don Donuts" class="w-12 h-12 object-contain">
+                    <div>
+                      <h4 class="font-bold text-dondonblue">Don Don Donuts</h4>
+                      <p class="text-sm text-gray-600">Premium Ube Donuts</p>
+                    </div>
+                  </div>
+                  <div class="space-y-2 text-sm">
+                    <p class="flex items-center">
+                      <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
+                      </svg>
+                      +62 815-1923-1874
+                    </p>
+                    <p class="flex items-center">
+                      <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                      </svg>
+                      Lilikoi Kitchen, Sunter
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Copy Order Button -->
+                <button @click="
+                  navigator.clipboard.writeText(generateOrderMessage());
+                  $el.innerText = 'Order Copied!';
+                  setTimeout(() => { $el.innerText = 'Copy Order Details' }, 2000)
+                "
+                class="w-full bg-dondonblue text-dondonwhite py-2 px-4 rounded hover:bg-dondonblue-dark transition duration-300">
+                  Copy Order Details
+                </button>
+              </div>
+            </div> #}
 
 <script>
 function orderForm() {
@@ -600,7 +672,21 @@ L${classicValue}U${premiumValue}
 
 
       const encodedMessage = encodeURIComponent(message);
-      window.open(`https://wa.me/6281519231874?text=${encodedMessage}`, '_blank');
+      
+      // Try the api.whatsapp.com URL first (more reliable on mobile)
+      const apiUrl = `https://api.whatsapp.com/send/?phone=6281519231874&text=${encodedMessage}`;
+      const waUrl = `https://wa.me/6281519231874?text=${encodedMessage}`;
+
+      // Try to detect mobile devices
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+      if (isMobile) {
+        // On mobile, try the API URL first
+        window.location.href = waUrl;
+      } else {
+        // On desktop, open in new tab
+        window.open(waUrl, '_blank');
+      }
     }
   };
 }
@@ -609,3 +695,34 @@ document.addEventListener('alpine:init', () => {
   Alpine.data('orderForm', orderForm);
 });
 </script>
+
+
+<script>
+  function snowfall() {
+    return {
+      snowflakes: Array.from({ length: 50 }, (_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        delay: Math.random() * 16,
+        duration: 10 + Math.random() * 10
+      }))
+    }
+  }
+</script>
+
+<style>
+  @keyframes fall {
+    0% {
+      transform: translateY(-10vh) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(100vh) rotate(360deg);
+      opacity: 0.3;
+    }
+  }
+
+  .animate-fall {
+    animation: fall linear infinite;
+  }
+</style>

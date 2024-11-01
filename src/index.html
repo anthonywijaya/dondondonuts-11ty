@@ -6,13 +6,64 @@ eleventyImport:
 
 ---
 
+<!-- Snow effect -->
+<div class="absolute inset-0 pointer-events-none" x-data="snowfall()">
+  <template x-for="snowflake in snowflakes" :key="snowflake.id">
+    <div 
+      class="absolute text-white animate-fall"
+      x-bind:style="`left: ${snowflake.x}%; animation-delay: -${snowflake.delay}s; animation-duration: ${snowflake.duration}s`"
+    >
+      ❄
+    </div>
+  </template>
+</div>
+
 <div class="mx-auto w-full max-w-7xl lg:px-8">
   <div class="relative px-4 sm:px-8 lg:px-12">
     <div class="mx-auto max-w-2xl lg:max-w-5xl text-center">
       <div class="max-w-md md:max-w-3xl mx-auto">
-        <div class="">
+        <div class="relative">
           <h1 class="invisible">Don Don Donuts</h1>
           <img class="w-1/4 mx-auto mb-8" src="/assets/img/logo-illust-text.png" alt="Don Don Donuts Logo">
+
+          <!-- Speech Bubble -->
+  <div class="absolute top-28 left-1/2 sm:right-1/4 transform translate-x-1/2 sm:translate-x-1/2 -translate-y-full">
+    <div class="relative animate-bounce-gentle">
+      <div class="bg-red-600 text-dondonwhite px-6 py-4 rounded-full shadow-lg animate-bounce-gentle" 
+       style="width: 180px; min-height: 3rem; display: flex; align-items: center; justify-content: center;">
+    <div class="whitespace-normal break-words text-center text-sm">
+          <span class="inline-block animate-text-reveal" style="--letter-index: 0">C</span>
+          <span class="inline-block animate-text-reveal" style="--letter-index: 1">h</span>
+          <span class="inline-block animate-text-reveal" style="--letter-index: 2">r</span>
+          <span class="inline-block animate-text-reveal" style="--letter-index: 3">i</span>
+          <span class="inline-block animate-text-reveal" style="--letter-index: 4">s</span>
+          <span class="inline-block animate-text-reveal" style="--letter-index: 5">t</span>
+          <span class="inline-block animate-text-reveal" style="--letter-index: 6">m</span>
+          <span class="inline-block animate-text-reveal" style="--letter-index: 7">a</span>
+          <span class="inline-block animate-text-reveal" style="--letter-index: 8">s</span>
+          <span class="inline-block animate-text-reveal" style="--letter-index: 9"> </span>
+          <span class="inline-block animate-text-reveal" style="--letter-index: 10">i</span>
+          <span class="inline-block animate-text-reveal" style="--letter-index: 11">s</span>
+          <span class="inline-block animate-text-reveal" style="--letter-index: 12"> </span>
+          <span class="inline-block animate-text-reveal" style="--letter-index: 13">c</span>
+          <span class="inline-block animate-text-reveal" style="--letter-index: 14">o</span>
+          <span class="inline-block animate-text-reveal" style="--letter-index: 15">m</span>
+          <span class="inline-block animate-text-reveal" style="--letter-index: 16">i</span>
+          <span class="inline-block animate-text-reveal" style="--letter-index: 17">n</span>
+          <span class="inline-block animate-text-reveal" style="--letter-index: 18">g</span>
+          <span class="inline-block animate-text-reveal" style="--letter-index: 19">!</span>
+          <span class="inline-block animate-text-reveal" style="--letter-index: 20">🎄</span>
+        </div>
+      </div>
+      <!-- Left-pointing triangle -->
+      <div class="absolute left-2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div 
+          class="w-8 h-8 bg-red-600 transform rotate-90"
+          style="clip-path: polygon(0% 50%, 100% 0%, 100% 100%);"
+        ></div>
+      </div>
+          </div>
+        </div>
         </div>
         
         <div class="w-full h-[50vh] mb-8">
@@ -181,17 +232,7 @@ eleventyImport:
 </div>
 
 <div class=" rounded-xl p-8 mb-16">
-  <!-- Snow effect -->
-  <div class="absolute inset-0 pointer-events-none" x-data="snowfall()">
-    <template x-for="snowflake in snowflakes" :key="snowflake.id">
-      <div 
-        class="absolute text-white animate-fall"
-        x-bind:style="`left: ${snowflake.x}%; animation-delay: -${snowflake.delay}s; animation-duration: ${snowflake.duration}s`"
-      >
-        ❄
-      </div>
-    </template>
-  </div>
+  
   <!-- Christmas header -->
   <!-- <div class="text-center pt-16 pb-12 relative">
     <h2 class="text-5xl font-bold text-red-700 mb-4 animate-bounce">
@@ -272,5 +313,11 @@ eleventyImport:
 
   .animate-fall {
     animation: fall linear infinite;
+  }
+
+  .animate-text-reveal {
+  opacity: 0;
+  animation: text-reveal 0.2s ease-out forwards;
+    animation-delay: calc(var(--letter-index) * 0.05s);
   }
 </style>
