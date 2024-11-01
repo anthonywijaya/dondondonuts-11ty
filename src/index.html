@@ -10,7 +10,7 @@ eleventyImport:
 <div class="absolute inset-0 pointer-events-none" x-data="snowfall()">
   <template x-for="snowflake in snowflakes" :key="snowflake.id">
     <div 
-      class="absolute text-white animate-fall"
+      class="absolute text-dondonblue animate-fall"
       x-bind:style="`left: ${snowflake.x}%; animation-delay: -${snowflake.delay}s; animation-duration: ${snowflake.duration}s`"
     >
       ❄
@@ -27,11 +27,11 @@ eleventyImport:
           <img class="w-1/4 mx-auto mb-8" src="/assets/img/logo-illust-text.png" alt="Don Don Donuts Logo">
 
           <!-- Speech Bubble -->
-  <div class="absolute top-28 left-1/2 sm:right-1/4 transform translate-x-1/2 sm:translate-x-1/2 -translate-y-full">
+  <div class="absolute top-28 left-1/2 sm:right-1/4 transform translate-x-1/2 -translate-y-full">
     <div class="relative animate-bounce-gentle">
-      <div class="bg-red-600 text-dondonwhite px-6 py-4 rounded-full shadow-lg animate-bounce-gentle" 
-       style="width: 180px; min-height: 3rem; display: flex; align-items: center; justify-content: center;">
-    <div class="whitespace-normal break-words text-center text-sm">
+      <div class="bg-red-600 text-dondonwhite px-4 py-8 rounded-full shadow-lg animate-bounce-gentle max-w-[120px] min-h-[4rem] flex items-center" 
+       style="display: flex;">
+    <div class="whitespace-normal break-words text-center text-xs">
           <span class="inline-block animate-text-reveal" style="--letter-index: 0">C</span>
           <span class="inline-block animate-text-reveal" style="--letter-index: 1">h</span>
           <span class="inline-block animate-text-reveal" style="--letter-index: 2">r</span>
