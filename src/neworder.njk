@@ -92,7 +92,7 @@ eleventyExcludeFromCollections: true
       <!-- Add Compact Pickup Information Section -->
       <div class="bg-dondonorange-light rounded-lg shadow-md p-4 mb-6 text-sm">
         <h2 class="text-lg font-bold text-dondonwhite mb-2">Pickup Information</h2>
-        <p class="mb-2 text-dondonwhite"><strong>Langkah Order:</strong> Pesan (Pilih Tanggal)-> Kami Goreng Fresh di Tanggal Yang Anda Pilih -> Tinggal Pickup/Delivery!</p>
+        <p class="mb-2 text-dondonwhite"><strong>Langkah Order:</strong> Pesan (Pilih Tanggal)-> Kami Goreng Fresh di Tanggal Yang Anda Pilih -> Tinggal Pickup di hari H! (Grab/Gosend)</p>
         <div class="text-dondonwhite flex flex-wrap gap-x-4">
           <p><strong>Waktu Buka:</strong> 13:00 - 21:00</p>
           <p><strong>Lokasi:</strong> Lilikoi Kitchen, Sunter 
@@ -225,6 +225,47 @@ eleventyExcludeFromCollections: true
                                 class="px-3 py-2 bg-dondonwhite-dark text-dondonblue hover:bg-dondonorange-light focus:outline-none focus:ring-2 focus:ring-dondonorange touch-manipulation">
                           +
                         </button>
+                      </div>
+                    </div>
+
+                    <!-- New Customization Section -->
+                    <div x-show="flavors['Christmas Specials'][{{ loop.index0 }}].quantity > 0"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 transform -translate-y-2"
+                         x-transition:enter-end="opacity-100 transform translate-y-0"
+                         class="mt-4 pt-4 border-t border-red-100">
+                      
+                      <!-- Package Navigation -->
+                      <div class="flex items-center justify-between mb-3" 
+                           x-show="flavors['Christmas Specials'][{{ loop.index0 }}].quantity > 1">
+                        <button type="button"
+                                @click="flavors['Christmas Specials'][{{ loop.index0 }}].currentPackage = Math.max(1, flavors['Christmas Specials'][{{ loop.index0 }}].currentPackage - 1)"
+                                :class="{'opacity-50 cursor-not-allowed': flavors['Christmas Specials'][{{ loop.index0 }}].currentPackage === 1}"
+                                class="text-red-600 hover:text-red-700">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                          </svg>
+                        </button>
+                        <span class="text-sm font-medium text-gray-600">
+                          Package <span x-text="Math.max(1, flavors['Christmas Specials'][{{ loop.index0 }}].currentPackage)"></span> of 
+                          <span x-text="flavors['Christmas Specials'][{{ loop.index0 }}].quantity"></span>
+                        </span>
+                        <button type="button"
+                                @click="flavors['Christmas Specials'][{{ loop.index0 }}].currentPackage = Math.min(flavors['Christmas Specials'][{{ loop.index0 }}].quantity, flavors['Christmas Specials'][{{ loop.index0 }}].currentPackage + 1)"
+                                :class="{'opacity-50 cursor-not-allowed': flavors['Christmas Specials'][{{ loop.index0 }}].currentPackage === flavors['Christmas Specials'][{{ loop.index0 }}].quantity}"
+                                class="text-red-600 hover:text-red-700">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                          </svg>
+                        </button>
+                      </div>
+
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">To:</label>
+                        <input type="text" 
+                               x-model="flavors['Christmas Specials'][{{ loop.index0 }}].customizations[flavors['Christmas Specials'][{{ loop.index0 }}].currentPackage - 1].recipient"
+                               class="w-full px-3 py-2 border border-red-100 rounded-md shadow-sm focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm"
+                               placeholder="Recipient's name">
                       </div>
                     </div>
                   </div>
@@ -550,9 +591,33 @@ function orderForm() {
         this.flavors['Christmas Specials'].push({
           name: '{{ flavor.data.title }}',
           price: {{ flavor.data.price | replace(',', '') }},
-          quantity: 0
+          quantity: 0,
+          currentPackage: 1,
+          customizations: [],
+          // Watch for quantity changes and update customizations array
+          quantityWatcher: function() {
+            const quantity = this.quantity;
+            // Adjust customizations array length to match quantity
+            while (this.customizations.length < quantity) {
+              this.customizations.push({ recipient: '' });
+            }
+            while (this.customizations.length > quantity) {
+              this.customizations.pop();
+            }
+            // Ensure currentPackage is valid
+            if (this.currentPackage > quantity) {
+              this.currentPackage = quantity;
+            }
+          }
         });
       {% endfor %}
+
+      // Set up watchers for quantity changes
+      this.$nextTick(() => {
+        this.flavors['Christmas Specials'].forEach(flavor => {
+          this.$watch(() => flavor.quantity, () => flavor.quantityWatcher());
+        });
+      });
 
       {% for flavorType, flavors in collections.flavors %}
         this.flavors['{{ flavorType }}'] = [];
@@ -561,7 +626,9 @@ function orderForm() {
             this.flavors['{{ flavorType }}'].push({
               name: '{{ flavor.data.title }}',
               price: {{ flavor.data.price | replace(',', '') }},
-              quantity: 0
+              quantity: 0,
+              recipient: '',
+              notes: ''
             });
           {% endif %}
         {% endfor %}
@@ -738,73 +805,41 @@ function orderForm() {
       if (this.phoneNumberError || this.deliveryDateError) {
         return; // Don't submit if there are errors
       }
-      
-      const orderDetails = Object.entries(this.flavors).flatMap(([type, flavors]) => 
-        flavors.filter(f => f.quantity > 0).map(f => `${this.unescapeHTML(f.name)}: ${f.quantity}`)
-      ).join('\n');
 
+      // Calculate order details for tracking
       const orderDetailsForTracking = {
         total: this.getTotalPrice(),
         items: Object.values(this.flavors).flat().filter(f => f.quantity > 0).map(f => ({
           item_name: f.name,
           quantity: f.quantity,
-          price: f.price
+          price: f.price,
+          customizations: f.customizations || null // Include customizations if they exist
         }))
       };
 
       trackOrderSubmission(orderDetailsForTracking);
 
-
-      // Calculate the total value for classic and premium categories, for counting hole/whole donuts
-      const classicValue = this.flavors['Classic']
-        .filter(f => f.quantity > 0)
-        .reduce((total, f) => total + f.quantity, 0);
-
-      const premiumValue = this.flavors['Premium']
-        .filter(f => f.quantity > 0)
-        .reduce((total, f) => total + f.quantity, 0);
-
-      const subtotal = this.getSubtotal();
-      const discount = this.getDiscount();
-      const birthdayTopperPrice = this.birthdayTopper ? 15000 : 0;
-      let message = `
-Full Name: ${this.receiverName}
-Delivery Date: ${this.deliveryDate}
-Phone Number: ${this.phoneNumber}
-Notes: ${this.notes}
-
-Order Details:
-${orderDetails}
-`;
-
-      if (this.birthdayTopper) {
-        message += `
-Birthday/Anniversary Additionals: Yes
-Birthday/Anniversary Card Message: ${this.birthdayCardMessage}
-        `;
-      }
-
-      message += `
-Subtotal: Rp. ${subtotal.toLocaleString('en-US')}
-Discount: - Rp. ${discount.toLocaleString('en-US')}
-${this.birthdayTopper ? `Birthday Topper: Rp. 15,000\n` : ''}
-Total Price: Rp. ${this.getTotalPrice().toLocaleString('en-US')}
-
-L${classicValue}U${premiumValue}
-Kode Pesanan: (Mohon disertakan saat pickup/delivery)
-${this.receiverName} ${this.phoneNumber.slice(-4)}
-      `;
-
-
+      // Generate the message using our updated generateOrderMessage function
+      const message = this.generateOrderMessage();
       const encodedMessage = encodeURIComponent(message);
       
-      // Try the api.whatsapp.com URL first (more reliable on mobile)
+      // WhatsApp URLs
       const apiUrl = `https://api.whatsapp.com/send/?phone=6281519231874&text=${encodedMessage}`;
       const waUrl = `https://wa.me/6281519231874?text=${encodedMessage}`;
 
       // Try to detect mobile devices
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
+      // Track the order submission
+      if (typeof gtag === 'function') {
+        gtag('event', 'place_order', {
+          'event_category': 'Order',
+          'event_label': 'Place Order via WhatsApp',
+          'value': this.getTotalPrice()
+        });
+      }
+
+      // Open WhatsApp
       if (isMobile) {
         // On mobile, try the API URL first
         window.location.href = waUrl;
@@ -814,10 +849,29 @@ ${this.receiverName} ${this.phoneNumber.slice(-4)}
       }
     },
     generateOrderMessage() {
-      // Get order details
-      const orderDetails = Object.entries(this.flavors).flatMap(([type, flavors]) => 
-        flavors.filter(f => f.quantity > 0).map(f => `${this.unescapeHTML(f.name)}: ${f.quantity}`)
-      ).join('\n');
+      // Get order details for non-Christmas products
+      const regularOrders = Object.entries(this.flavors)
+        .filter(([type]) => type !== 'Christmas Specials')
+        .flatMap(([type, flavors]) => 
+          flavors.filter(f => f.quantity > 0)
+            .map(f => `${this.unescapeHTML(f.name)}: ${f.quantity}${f.notes ? `\n  Notes: ${f.notes}` : ''}`)
+        ).join('\n');
+
+      // Get Christmas Specials details
+      const christmasOrders = this.flavors['Christmas Specials']
+        .filter(f => f.quantity > 0)
+        .map(f => {
+          const packageDetails = f.customizations
+            .map((custom, index) => `
+  Package ${index + 1}:
+    To: ${custom.recipient || 'N/A'}`)
+            .join('\n');
+          
+          return `
+${this.unescapeHTML(f.name)}: ${f.quantity}
+${packageDetails}`;
+        })
+        .join('\n\n');
 
       // Calculate totals
       const classicValue = this.flavors['Classic']
@@ -839,10 +893,14 @@ Phone Number: ${this.phoneNumber}
 Notes: ${this.notes}
 
 Order Details:
-${orderDetails}`;
+${regularOrders}`;
+
+      if (christmasOrders) {
+        message += `\n\nChristmas Packages Details:\n${christmasOrders}`;
+      }
 
       if (this.birthdayTopper) {
-        message += `\nBirthday/Anniversary Additionals: Yes
+        message += `\n\nBirthday/Anniversary Additionals: Yes
 Birthday/Anniversary Card Message: ${this.birthdayCardMessage}`;
       }
 
@@ -853,9 +911,8 @@ ${this.birthdayTopper ? `Birthday Topper: Rp. 15,000\n` : ''}
 Total Price: Rp. ${this.getTotalPrice().toLocaleString('en-US')}
 
 L${classicValue}U${premiumValue}
-Kode Pesanan: (Mohon disertakan saat pickup/delivery)
+Kode Pesanan: (Mohon disertakan saat pickup)
 ${this.receiverName} ${this.phoneNumber.slice(-4)}`;
-
 
       return message.trim();
     }
