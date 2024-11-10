@@ -91,12 +91,7 @@ eleventyImport:
                 class="flex overflow-hidden relative" 
                 target="_blank" 
                 onclick="gtag('event', 'to_order_form', { 'event_category': 'To Order Form', 'event_label': 'Pesan dari WhatsApp' });">
-                <span class="inline-flex px-4 self-center text-sm">Pesan Dari WhatsApp</span>
-                <div class="flex rounded-full justify-center bg-zinc-50 items-center">
-                  <div class="flex justify-center items-center w-10 h-10"><img class="h-5 w-5 mx-auto"
-                      src="/assets/img/whatsapp-logo.svg" alt="WhatsApp Logo">
-                    </div>
-                </div>
+                <span class="inline-flex px-4 py-2 self-center text-sm">Pesan Sekarang</span>
               </a>
             </li>
 <!--         
@@ -186,6 +181,15 @@ eleventyImport:
               {% endfor %}
             </ul>
           </div>
+        </div>
+
+        <div class="flex mx-auto w-60 overflow-hidden transition-all ease-in-out duration-300 rounded-3xl p-1.5 mb-4 border text-zinc-800 justify-center gap-4 hover:bg-dondonorange hover:text-dondonwhite">
+          <a href="/neworder" 
+            class="flex overflow-hidden relative" 
+            target="_blank" 
+            onclick="gtag('event', 'to_order_form', { 'event_category': 'To Order Form', 'event_label': 'Order below Christmas' });">
+            <span class="inline-flex px-4 py-2 self-center text-sm">Order Now</span>
+          </a>
         </div>
 
         <!-- Resume container -->
