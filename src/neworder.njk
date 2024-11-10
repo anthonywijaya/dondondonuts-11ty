@@ -1,13 +1,13 @@
 ---
 layout: default
 eleventyImport:
-  collections: ["flavors"]
+  collections: ["flavors", "specials"]
 eleventyExcludeFromCollections: true
 ---
 
 
 <!-- Snow effect -->
-<div class="absolute inset-0 pointer-events-none" x-data="snowfall()">
+<div class="absolute inset-0 h-[200vh] pointer-events-none" x-data="snowfall()">
   <template x-for="snowflake in snowflakes" :key="snowflake.id">
     <div 
       class="absolute text-dondonblue animate-fall"
@@ -176,6 +176,63 @@ eleventyExcludeFromCollections: true
         <!-- Flavors -->
         <div class="space-y-6">
           <h2 class="text-3xl font-bold mt-8">Our Donuts</h2>
+          <div class="text-center pt-16 pb-12 relative">
+            <h2 class="text-5xl font-bold text-red-700 mb-4 animate-bounce">
+              🎄 Christmas Collection 🎄
+            </h2>
+            <p class="text-xl text-dondonblue max-w-2xl mx-auto">
+              Christmas is coming! Celebrate the season with our special Christmas package! Special Box, Ribbon, and Christmas Tags included!
+            </p>
+          </div>
+          <ul class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {% for flavor in collections.specials %}
+              <li 
+                class="" 
+              >
+                <div class="group h-full bg-white/90 backdrop-blur-md rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-red-100">
+                  <div class="relative aspect-w-4 aspect-h-3 overflow-hidden">
+                    <img 
+                      class="object-cover w-full h-full transform transition-transform duration-700 group-hover:scale-110" 
+                      src="{{ flavor.data.thumb }}" 
+                      alt="{{ flavor.data.title }} - Christmas Special Donut"
+                    >
+                  </div>
+                  
+                  <div class="p-6">
+                    <h3 class="text-2xl font-bold text-red-700 mb-3">{{ flavor.data.title }}</h3>
+                    <p class="text-gray-600 mb-4">{{ flavor.data.description }}</p>
+
+                    <p class="text-xs text-dondonblue line-through">Rp. {{ flavor.data.originalprice | thousandseparator }}</p>
+                    <p class="text-xs font-bold text-dondonblue">Early Bird Pricing!</p>
+                    <div class="flex justify-between items-center">
+                      
+                      <p class="text-sm font-bold text-red-700">Rp. {{ flavor.data.price | thousandseparator }}</p>
+                      <div class="flex items-center border border-dondonorange-light rounded-lg overflow-hidden">
+                        <button type="button" 
+                                x-show="flavors['Christmas Specials'][{{ loop.index0 }}].quantity > 0"
+                                @click="flavors['Christmas Specials'][{{ loop.index0 }}].quantity--"
+                                class="px-3 py-2 bg-dondonwhite-dark text-dondonblue hover:bg-dondonorange-light focus:outline-none focus:ring-2 focus:ring-dondonorange touch-manipulation">
+                          -
+                        </button>
+                        <input type="text" 
+                               x-model.number="flavors['Christmas Specials'][{{ loop.index0 }}].quantity" 
+                               class="w-12 px-2 py-1 text-center bg-dondonwhite border-none focus:ring-0 focus:outline-none"
+                               inputmode="numeric"
+                               pattern="[0-9]*"
+                               @input="$event.target.value = $event.target.value.replace(/[^0-9]/g, '')">
+                        <button type="button" 
+                                @click="flavors['Christmas Specials'][{{ loop.index0 }}].quantity++"
+                                class="px-3 py-2 bg-dondonwhite-dark text-dondonblue hover:bg-dondonorange-light focus:outline-none focus:ring-2 focus:ring-dondonorange touch-manipulation">
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+          
           {% for flavorType, flavors in collections.flavors %}
             <h3 class="text-2xl font-semibold mt-8">{{ flavorType }}</h3>
             <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mt-8 px-4 mb-16">
@@ -484,6 +541,19 @@ function orderForm() {
       }
     },
     initFlavors() {
+      this.flavors = {
+        'Christmas Specials': [],
+        // ... existing flavor types ...
+      };
+
+      {% for flavor in collections.specials %}
+        this.flavors['Christmas Specials'].push({
+          name: '{{ flavor.data.title }}',
+          price: {{ flavor.data.price | replace(',', '') }},
+          quantity: 0
+        });
+      {% endfor %}
+
       {% for flavorType, flavors in collections.flavors %}
         this.flavors['{{ flavorType }}'] = [];
         {% for flavor in flavors %}
@@ -805,7 +875,7 @@ document.addEventListener('alpine:init', () => {
         id: i,
         x: Math.random() * 100,
         delay: Math.random() * 16,
-        duration: 10 + Math.random() * 10
+        duration: 15 + Math.random() * 20
       }))
     }
   }
@@ -818,12 +888,13 @@ document.addEventListener('alpine:init', () => {
       opacity: 1;
     }
     100% {
-      transform: translateY(100vh) rotate(360deg);
+      transform: translateY(200vh) rotate(360deg);
       opacity: 0.3;
     }
   }
 
   .animate-fall {
     animation: fall linear infinite;
+    animation-duration: 20s;
   }
 </style>

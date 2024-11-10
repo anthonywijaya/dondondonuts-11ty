@@ -129,161 +129,168 @@ eleventyImport:
           <p class="inline px-2 font-semibold">See our donuts below </p>
           <div class="text-xl animate-bounce inline-block font-bold">↓</div>
         </div>
-        
+        <div class="">
+  
+          <!-- Break out of container -->
+          </div>
+        </div>
 
-        <div>
-          <hr class="mt-12 mb-6 w-12 mx-auto"/>
-          <h3 class="text-3xl font-bold mt-8">Our Donuts</h3>
+        <!-- Full width Christmas section -->
+        <div class="w-full bg-white/50 backdrop-blur-sm py-8">
+          <!-- Christmas header -->
+          <div class="text-center pt-16 pb-12 relative">
+            <h2 class="text-5xl font-bold text-red-700 mb-4 animate-bounce">
+              🎄 Christmas Collection 🎄
+            </h2>
+            <p class="text-xl text-dondonblue max-w-2xl mx-auto">
+              Celebrate the season with our special Christmas package! Special Box, Ribbon, and Christmas Tags included!
+            </p>
+          </div>
 
-          <!-- <h4 class="px-4 text-2xl font-semibold mt-8">Christmas Specials</h4>
-
-          
-
-
-          <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 px-4 mb-16">
-            {% for flavor in collections.specials %}
-                  <li class="flex flex-col">
-                    <div class="relative aspect-w-1 aspect-h-1 w-full">
-                      <img class="object-cover w-full h-full rounded-xl overflow-hidden" src="{{ flavor.data.thumb }}" alt="{{ flavor.data.title }}">
-                    </div>
-                    <div class="flex-grow">
-                      <p class="text-lg font-medium mb-1">{{ flavor.data.title }}</p>
-                      <p class="text-sm">{{ flavor.data.description }}</p>
-                    </div>
-                    <p class="mt-2 text-sm font-bold">Rp. {{ flavor.data.price | thousandseparator }}</p>
-                  </li>
-                
-              {% endfor %}
-          </ul> -->
-
-          {% for flavorType in collections.flavors %}
-            <h4 class="px-4 text-2xl font-semibold mt-8">{{ flavorType[0] }}</h4>
-
-            <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 px-4 mb-16">
-              {% for flavor in flavorType[1] %}
-                {% if flavor.data.visible %}
-                  <li class="flex flex-col">
-                    <div class="relative aspect-w-1 aspect-h-1 w-full">
-                      <img class="object-cover w-full h-full rounded-xl overflow-hidden" src="{{ flavor.data.thumb }}" alt="{{ flavor.data.title }}">
-                      {% if flavor.data.featured %}
-                        <div class="absolute top-2 right-2 bg-dondonorange text-dondonwhite px-2 py-1 text-sm font-bold rounded-md">Best Selling</div>
-                      {% endif %}
+          <!-- Menu items -->
+          <div class="mx-auto pb-16 px-4 sm:px-6 lg:px-8 max-w-[90rem]">
+            <ul class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {% for flavor in collections.specials %}
+                <li 
+                  class="transform hover:scale-[1.02] transition-all duration-500" 
+                  x-show="visible"
+                  x-transition:enter="transition ease-out duration-500"
+                  x-transition:enter-start="opacity-0 translate-y-8"
+                  x-transition:enter-end="opacity-100 translate-y-0"
+                  style="--animation-delay: {{ loop.index | times: 200 }}ms"
+                >
+                  <div class="group h-full bg-white/90 backdrop-blur-md rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-red-100">
+                    <div class="relative aspect-w-4 aspect-h-3 overflow-hidden">
+                      <img 
+                        class="object-cover w-full h-full transform transition-transform duration-700 group-hover:scale-110" 
+                        src="{{ flavor.data.thumb }}" 
+                        alt="{{ flavor.data.title }} - Christmas Special Donut"
+                        loading="lazy"
+                      >
                       {% if flavor.data.new %}
-                        <div class="absolute top-2 left-2 bg-dondonblue text-dondonwhite px-2 py-1 text-sm font-bold rounded-md">New!</div>
+                        <div class="absolute top-4 left-4 bg-gradient-to-r from-red-600 to-green-600 text-white px-4 py-2 text-sm font-bold rounded-full shadow-lg">
+                          New! 🎄
+                        </div>
                       {% endif %}
                     </div>
-                    <div class="flex-grow">
-                      <p class="text-lg font-medium mb-1">{{ flavor.data.title }}</p>
-                      <p class="text-sm">Our signature Ubedon™ {{ flavor.data.description }}</p>
+                    
+                    <div class="p-6">
+                      <h3 class="text-2xl font-bold text-red-700 mb-3">{{ flavor.data.title }}</h3>
+                      <p class="text-gray-600 mb-4">{{ flavor.data.description }}</p>
+                      <div class="text-center items-center">
+                        <p class="text-xl font-bold text-green-700">Rp. {{ flavor.data.price | thousandseparator }}</p>
+                      </div>
                     </div>
-                    <p class="mt-2 text-sm font-bold">Rp. {{ flavor.data.price | thousandseparator }}</p>
-                  </li>
-                {% endif %}
+                  </div>
+                </li>
               {% endfor %}
             </ul>
-          {% endfor %}
+          </div>
         </div>
 
+        <!-- Resume container -->
+        <div class="mx-auto w-full max-w-7xl lg:px-8">
+          <div class="relative px-4 sm:px-8 lg:px-12">
+            <div class="mx-auto max-w-2xl lg:max-w-5xl">
+              <div>
+                <hr class="mt-12 mb-6 w-12 mx-auto"/>
+                <h3 class="text-3xl font-bold mt-8">Our Donuts</h3>
 
-        
+                <!-- <h4 class="px-4 text-2xl font-semibold mt-8">Christmas Specials</h4>
 
-        <div class="flex mx-auto w-60 overflow-hidden transition-all ease-in-out duration-300 rounded-3xl p-1.5 mb-4 border text-zinc-800 justify-center gap-4 hover:bg-dondonorange hover:text-dondonwhite">
-          <a href="/neworder" 
-            class="flex overflow-hidden relative" 
-            target="_blank" 
-            onclick="gtag('event', 'to_order_form', { 'event_category': 'To Order Form', 'event_label': 'Order Now' });">
-            <span class="inline-flex px-4 self-center text-sm">Order Now</span>
-            <div class="flex rounded-full justify-center bg-zinc-50 items-center">
-              <div class="flex justify-center items-center w-10 h-10"><img class="h-5 w-5 mx-auto"
-                  src="/assets/img/whatsapp-logo.svg" alt="WhatsApp Logo">
-                </div>
+                
+
+
+                <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 px-4 mb-16">
+                  {% for flavor in collections.specials %}
+                        <li class="flex flex-col">
+                          <div class="relative aspect-w-1 aspect-h-1 w-full">
+                            <img class="object-cover w-full h-full rounded-xl overflow-hidden" src="{{ flavor.data.thumb }}" alt="{{ flavor.data.title }}">
+                          </div>
+                          <div class="flex-grow">
+                            <p class="text-lg font-medium mb-1">{{ flavor.data.title }}</p>
+                            <p class="text-sm">{{ flavor.data.description }}</p>
+                          </div>
+                          <p class="mt-2 text-sm font-bold">Rp. {{ flavor.data.price | thousandseparator }}</p>
+                        </li>
+                      
+                    {% endfor %}
+                </ul> -->
+
+                {% for flavorType in collections.flavors %}
+                  <h4 class="px-4 text-2xl font-semibold mt-8">{{ flavorType[0] }}</h4>
+
+                  <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 px-4 mb-16">
+                    {% for flavor in flavorType[1] %}
+                      {% if flavor.data.visible %}
+                        <li class="flex flex-col">
+                          <div class="relative aspect-w-1 aspect-h-1 w-full">
+                            <img class="object-cover w-full h-full rounded-xl overflow-hidden" src="{{ flavor.data.thumb }}" alt="{{ flavor.data.title }}">
+                            {% if flavor.data.featured %}
+                              <div class="absolute top-2 right-2 bg-dondonorange text-dondonwhite px-2 py-1 text-sm font-bold rounded-md">Best Selling</div>
+                            {% endif %}
+                            {% if flavor.data.new %}
+                              <div class="absolute top-2 left-2 bg-dondonblue text-dondonwhite px-2 py-1 text-sm font-bold rounded-md">New!</div>
+                            {% endif %}
+                          </div>
+                          <div class="flex-grow">
+                            <p class="text-lg font-medium mb-1">{{ flavor.data.title }}</p>
+                            <p class="text-sm">Our signature Ubedon™ {{ flavor.data.description }}</p>
+                          </div>
+                          <p class="mt-2 text-sm font-bold">Rp. {{ flavor.data.price | thousandseparator }}</p>
+                        </li>
+                      {% endif %}
+                    {% endfor %}
+                  </ul>
+                {% endfor %}
+              </div>
+
+              <div class="flex mx-auto w-60 overflow-hidden transition-all ease-in-out duration-300 rounded-3xl p-1.5 mb-4 border text-zinc-800 justify-center gap-4 hover:bg-dondonorange hover:text-dondonwhite">
+                <a href="/neworder" 
+                  class="flex overflow-hidden relative" 
+                  target="_blank" 
+                  onclick="gtag('event', 'to_order_form', { 'event_category': 'To Order Form', 'event_label': 'Order Now' });">
+                  <span class="inline-flex px-4 self-center text-sm">Order Now</span>
+                  <div class="flex rounded-full justify-center bg-zinc-50 items-center">
+                    <div class="flex justify-center items-center w-10 h-10"><img class="h-5 w-5 mx-auto"
+                        src="/assets/img/whatsapp-logo.svg" alt="WhatsApp Logo">
+                    </div>
+                  </div>
+                </a>
+              </div>
+
+              {% include "partials/promo.njk" %}
+              
+              <hr class="mt-12 mb-6 w-12 mx-auto"/>
+              <h2 class="text-xl font-bold mb-8">Frequently Asked Questions:</h2>
+              <h4 class="font-semibold text-lg mb-4">Q: How do I store my donuts?</h4>
+              <div class="mb-8">
+                <p>For donuts with fillings: 1 day on the counter/ 3 days in fridge</p>
+                <p>For donuts without fillings: 2 days on the counter/ 3 days in fridge</p>
+                <br/>
+                <p class="font-medium">To reheat you can use several methods:</p>
+                
+                
+                <ul class="mt-2">
+                  <li>Microwave for 20 seconds on high (or until hot)</p>
+                  <li>Oven for around 2 minutes on 180°c</p>
+                  <li>Airfryer for around 2 minutes on 180°c</p>
+                </ul>
+                <p class="italic text-sm">Use longer time if taken out of fridge</p>
+              </div>
+              
+              <h4 class="font-semibold mb-4 text-lg">Q: How do you deliver the donuts?</h4>
+              <p>We do our deliveries using Gosend Instant delivery or equivalent for the fastest deliveries possible.</p>
+              <p>Deliveries is made from Sunter, Jakarta.</p>
             </div>
-          </a>
+          </div>
         </div>
-
-        {% include "partials/promo.njk" %}
-        
-        <hr class="mt-12 mb-6 w-12 mx-auto"/>
-        <h2 class="text-xl font-bold mb-8">Frequently Asked Questions:</h2>
-        <h4 class="font-semibold text-lg mb-4">Q: How do I store my donuts?</h4>
-        <div class="mb-8">
-          <p>For donuts with fillings: 1 day on the counter/ 3 days in fridge</p>
-          <p>For donuts without fillings: 2 days on the counter/ 3 days in fridge</p>
-          <br/>
-          <p class="font-medium">To reheat you can use several methods:</p>
-          
-          
-          <ul class="mt-2">
-            <li>Microwave for 20 seconds on high (or until hot)</p>
-            <li>Oven for around 2 minutes on 180°c</p>
-            <li>Airfryer for around 2 minutes on 180°c</p>
-          </ul>
-          <p class="italic text-sm">Use longer time if taken out of fridge</p>
-        </div>
-        
-        <h4 class="font-semibold mb-4 text-lg">Q: How do you deliver the donuts?</h4>
-        <p>We do our deliveries using Gosend Instant delivery or equivalent for the fastest deliveries possible.</p>
-        <p>Deliveries is made from Sunter, Jakarta.</p>
-        
-
       </div>
     </div>
   </div>
 </div>
 
-<div class=" rounded-xl p-8 mb-16">
-  
-  <!-- Christmas header -->
-  <!-- <div class="text-center pt-16 pb-12 relative">
-    <h2 class="text-5xl font-bold text-red-700 mb-4 animate-bounce">
-      🎄 Christmas Collection 🎄
-    </h2>
-    <p class="text-xl text-green-700 max-w-2xl mx-auto">
-      Celebrate the season with our special holiday donuts, crafted with joy and festive flavors
-    </p>
-  </div> -->
 
-  <!-- Menu items -->
-  <!-- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-    <ul class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      {% for flavor in collections.specials %}
-        <li 
-          class="transform hover:scale-[1.02] transition-all duration-500" 
-          x-show="visible"
-          x-transition:enter="transition ease-out duration-500"
-          x-transition:enter-start="opacity-0 translate-y-8"
-          x-transition:enter-end="opacity-100 translate-y-0"
-          style="--animation-delay: {{ loop.index | times: 200 }}ms"
-        >
-          <div class="group h-full bg-white/90 backdrop-blur-md rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-red-100">
-            <div class="relative aspect-w-4 aspect-h-3 overflow-hidden">
-              <img 
-                class="object-cover w-full h-full transform transition-transform duration-700 group-hover:scale-110" 
-                src="{{ flavor.data.thumb }}" 
-                alt="{{ flavor.data.title }} - Christmas Special Donut"
-                loading="lazy"
-              >
-              {% if flavor.data.new %}
-                <div class="absolute top-4 left-4 bg-gradient-to-r from-red-600 to-green-600 text-white px-4 py-2 text-sm font-bold rounded-full shadow-lg">
-                  New! 🎄
-                </div>
-              {% endif %}
-            </div>
-            
-            <div class="p-6">
-              <h3 class="text-2xl font-bold text-red-700 mb-3">{{ flavor.data.title }}</h3>
-              <p class="text-gray-600 mb-4">{{ flavor.data.description }}</p>
-              <div class="flex items-center justify-between">
-                <p class="text-xl font-bold text-green-700">Rp. {{ flavor.data.price | thousandseparator }}</p>
-                <span class="text-2xl">✨</span>
-              </div>
-            </div>
-          </div>
-        </li>
-      {% endfor %}
-    </ul>
-  </div> -->
-</div>
 
 
 <script>
