@@ -26,12 +26,12 @@ module.exports = {
         '800': '#166534',
         '900': '#14532d'
       },
-      'dondonblue': '#1E367B',
-      'dondonwhite': '#FFFAF2',
-      'dondonwhite-dark': '#fff0d9',
-      'dondonorange': '#F37D07',
-      'dondonorange-light': '#F5A54C',
-      'dondonorange-dark': '#D16006',
+      dondonblue: '#1E367B',
+      dondonwhite: '#FFFAF2',
+      dondonwhiteDark: '#fff0d9',
+      dondonorange: '#F37D07',
+      dondonorangeLight: '#F5A54C',
+      dondonorangeDark: '#D16006',
       // ... add more variations as needed
     },
     extend: {
