@@ -4,5 +4,5 @@ visible: yes
 category: "premium"
 description: "+ homemade srikaya brulee & coconut shavings"
 price: 15000
-new: true
+new: false
 ---

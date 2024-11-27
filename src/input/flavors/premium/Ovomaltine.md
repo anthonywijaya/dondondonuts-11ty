@@ -4,5 +4,5 @@ visible: yes
 category: "premium"
 description: "+ Ovomaltine"
 price: 15000
-new: true
+new: false
 ---

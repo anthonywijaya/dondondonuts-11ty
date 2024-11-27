@@ -4,5 +4,5 @@ visible: yes
 category: "premium"
 description: "+ beef abon & signature savory sauce"
 price: 18000
-new: true
+new: false
 ---

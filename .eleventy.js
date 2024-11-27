@@ -75,9 +75,23 @@ module.exports = function(eleventyConfig) {
     // const christmasFlavors = collectionApi.getFilteredByGlob("src/input/flavors/christmas/*.md")
     //   .sort((a, b) => (a.data.sort || Infinity) - (b.data.sort || Infinity));
 		const classicFlavors = collectionApi.getFilteredByGlob("src/input/flavors/classic/*.md")
-        .sort((a, b) => a.data.price - b.data.price);
+        .sort((a, b) => {
+          // First sort by "new" flag
+          if (a.data.new !== b.data.new) {
+            return b.data.new ? 1 : -1; // New items come first
+          }
+          // Then sort by price
+          return a.data.price - b.data.price;
+        });
     const premiumFlavors = collectionApi.getFilteredByGlob("src/input/flavors/premium/*.md")
-      .sort((a, b) => a.data.price - b.data.price);
+      .sort((a, b) => {
+        // First sort by "new" flag
+        if (a.data.new !== b.data.new) {
+          return b.data.new ? 1 : -1; // New items come first
+        }
+        // Then sort by price
+        return a.data.price - b.data.price;
+      });
     const flavors = {
       // "Christmas": christmasFlavors,
       "Classic": classicFlavors,
