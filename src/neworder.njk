@@ -283,7 +283,7 @@ eleventyExcludeFromCollections: true
             <h3 class="text-2xl font-semibold mt-8">{{ flavorType }}</h3>
             <ul class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mt-8 mb-16">
               {% for flavor in flavors %}
-                {% if flavor.data.visible %}
+                {% if flavor.data.visible == "yes" %}
                   <li class="mb-4 flex flex-col">
                     <div class="relative flex-grow">
                       {% if flavor.data.featured %}
@@ -318,6 +318,44 @@ eleventyExcludeFromCollections: true
                           <button type="button" 
                                   @click="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity++"
                                   class="px-3 py-1 bg-dondonwhite-dark text-dondonblue hover:bg-dondonorange-light focus:outline-none focus:ring-2 focus:ring-dondonorange touch-manipulation">
+                            +
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                {% elif flavor.data.visible == "no" %}
+                  <li class="mb-4 flex flex-col opacity-60">
+                    <div class="relative flex-grow">
+                      <!-- Sold Out Badge -->
+                      <div class="absolute top-2 right-2 bg-dondonblue text-dondonwhite px-2 py-1 text-sm font-bold rounded-md z-10 shadow-md">
+                        Sold Out
+                      </div>
+                      
+                      <img class="object-cover rounded-xl overflow-hidden w-full grayscale" src="{{ flavor.data.thumb }}" alt="{{ flavor.data.title }}">
+                      <p class="text-lg font-medium mt-2 mb-1">{{ flavor.data.title }}</p>
+                      <p class="text-sm mb-4">Our signature Ubedon™ {{ flavor.data.description }}</p>
+                    </div>
+                    <div class="mt-auto">
+                      <!-- Price and quantity controls (disabled) -->
+                      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                        <p class="text-sm font-bold">Rp. {{ flavor.data.price | thousandseparator }}</p>
+                        
+                        <!-- Disabled quantity controls -->
+                        <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden w-fit">
+                          <button type="button" 
+                                  disabled
+                                  class="px-3 py-1 bg-gray-100 text-gray-400 cursor-not-allowed">
+                            -
+                          </button>
+                          <input type="text" 
+                                 disabled
+                                 value="0"
+                                 class="w-12 px-2 py-1 text-center text-sm bg-gray-50 border-none cursor-not-allowed"
+                                 inputmode="numeric">
+                          <button type="button" 
+                                  disabled
+                                  class="px-3 py-1 bg-gray-100 text-gray-400 cursor-not-allowed">
                             +
                           </button>
                         </div>

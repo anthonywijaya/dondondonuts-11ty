@@ -1,6 +1,6 @@
 ---
 thumb: "dondon-pistachio-transparent.png"
-visible: yes
+visible: no
 category: "premium"
 description: "+ pistachio cream"
 price: 18000
