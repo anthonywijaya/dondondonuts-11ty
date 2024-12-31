@@ -6,18 +6,6 @@ eleventyExcludeFromCollections: true
 ---
 
 
-<!-- Snow effect -->
-<div class="absolute inset-0 h-[200vh] pointer-events-none" x-data="snowfall()">
-  <template x-for="snowflake in snowflakes" :key="snowflake.id">
-    <div 
-      class="absolute text-dondonblue animate-fall"
-      x-bind:style="`left: ${snowflake.x}%; animation-delay: -${snowflake.delay}s; animation-duration: ${snowflake.duration}s`"
-    >
-      ❄
-    </div>
-  </template>
-</div>
-
 <div class="mx-auto w-full max-w-7xl lg:px-8">
   <div class="relative px-4 sm:px-6 lg:px-12">
     <div class="mx-auto max-w-2xl lg:max-w-5xl">
@@ -29,45 +17,7 @@ eleventyExcludeFromCollections: true
       </div>
 
 
-         <!-- Speech Bubble -->
-  <div class="absolute top-20 left-1/2 transform translate-x-1/2 -translate-y-full">
-    <div class="relative">
-      <div class="bg-red-600 text-dondonwhite px-4 py-8 rounded-full shadow-lg max-w-[120px] min-h-[4rem] flex items-center" 
-       style="display: flex;">
-    <div class="whitespace-normal break-words text-center text-xs">
-          <span class="inline-block animate-text-reveal" style="--letter-index: 0">C</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 1">h</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 2">r</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 3">i</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 4">s</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 5">t</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 6">m</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 7">a</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 8">s</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 9"> </span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 10">i</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 11">s</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 12"> </span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 13">c</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 14">o</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 15">m</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 16">i</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 17">n</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 18">g</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 19">!</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 20">🎄</span>
-        </div>
-      </div>
-      <!-- Left-pointing triangle -->
-      <div class="absolute left-2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-        <div 
-          class="w-8 h-8 bg-red-600 transform rotate-90"
-          style="clip-path: polygon(0% 50%, 100% 0%, 100% 100%);"
-        ></div>
-      </div>
-          </div>
-        </div>
-
+        
 
       <!-- Back to Homepage link -->
       <a href="/" class="inline-block mb-6 text-dondonblue hover:text-dondonorange transition duration-300">
@@ -138,7 +88,7 @@ eleventyExcludeFromCollections: true
                 
               </div>
               <div class="mt-2 flex space-x-2">
-                <span class="text-xs bg-dondonorange p-2 text-dondonwhite flex-1 text-center">31 Dec: <span class="line-through">Full</span></span>
+                <span class="text-xs bg-dondonorange p-2 text-dondonwhite flex-1 text-center">1 Jan: <span class="line-through">Full</span></span>
                 {# <span class="text-xs bg-dondonorange p-2 text-dondonwhite flex-1 text-center">21 Dec: <span class="line-through">Full</span></span> #}
                 {# <span class="text-xs bg-dondonorange p-2 text-dondonwhite flex-1 text-center">3 Nov: <span class="line-through">Full</span></span> #}
                 <span x-text="getNextAvailableDate(1)" class="text-xs bg-dondonorange p-2 text-dondonwhite flex-1 text-center"></span>
@@ -177,108 +127,6 @@ eleventyExcludeFromCollections: true
         <!-- Flavors -->
         <div class="space-y-6">
           <h2 class="text-3xl font-bold mt-8">Our Donuts</h2>
-          <div class="text-center pt-16 pb-12 relative">
-            <h2 class="text-5xl font-bold text-red-700 mb-4">
-              🎄 Christmas Collection 🎄
-            </h2>
-            <p class="text-xl text-dondonblue max-w-2xl mx-auto">
-              Christmas is coming! Celebrate the season with our special Christmas package! Special Box, Ribbon, and Christmas Tags included!
-            </p>
-          </div>
-          <ul class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">
-            {% for flavor in collections.specials %}
-              <li class="">
-                <div class="group h-full bg-white/90 backdrop-blur-md rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-red-100">
-                  <div class="flex lg:block">
-                    <!-- Image container -->
-                    <div class="relative w-1/3 lg:w-full aspect-w-4 overflow-hidden">
-                      <img 
-                        class="object-cover w-full h-full transform transition-transform duration-700 group-hover:scale-110" 
-                        src="{{ flavor.data.thumb }}" 
-                        alt="{{ flavor.data.title }} - Christmas Special Donut"
-                      >
-                    </div>
-                    
-                    <!-- Content container -->
-                    <div class="w-2/3 lg:w-full p-3 lg:p-6">
-                      <h3 class="text-lg lg:text-2xl font-bold text-red-700 mb-1 lg:mb-3">{{ flavor.data.title }}</h3>
-                      <p class="text-xs lg:text-base text-gray-600 mb-2 lg:mb-4">{{ flavor.data.description }}</p>
-{# 
-                      <!-- Price and Early Bird section -->
-                      <div class="flex items-center gap-2 mb-2">
-                        <p class="text-xs text-dondonblue line-through">Rp. {{ flavor.data.originalprice | thousandseparator }}</p>
-                        <p class="text-xs font-bold text-dondonblue">Early Bird!</p>
-                      </div> #}
-                      
-                      <!-- Price and quantity controls -->
-                      <div class="flex flex-col gap-2 lg:flex-row lg:justify-between lg:items-center">
-                        <p class="text-sm font-bold text-red-700">Rp. {{ flavor.data.price | thousandseparator }}</p>
-                        <div class="flex items-center border border-dondonorange-light rounded-lg overflow-hidden w-min">
-                          <button type="button" 
-                                  @click="flavors['Christmas Specials'][{{ loop.index0 }}].quantity--"
-                                  class="px-2 py-1 bg-dondonwhite-dark text-dondonblue hover:bg-dondonorange-light focus:outline-none focus:ring-2 focus:ring-dondonorange touch-manipulation">
-                            -
-                          </button>
-                          <input type="text" 
-                                 x-model.number="flavors['Christmas Specials'][{{ loop.index0 }}].quantity" 
-                                 class="w-8 px-1 py-1 text-center text-sm bg-dondonwhite border-none focus:ring-0 focus:outline-none"
-                                 inputmode="numeric"
-                                 pattern="[0-9]*"
-                                 @input="$event.target.value = $event.target.value.replace(/[^0-9]/g, '')">
-                          <button type="button" 
-                                  @click="flavors['Christmas Specials'][{{ loop.index0 }}].quantity++"
-                                  class="px-2 py-1 bg-dondonwhite-dark text-dondonblue hover:bg-dondonorange-light focus:outline-none focus:ring-2 focus:ring-dondonorange touch-manipulation">
-                            +
-                          </button>
-                        </div>
-                      </div>
-
-                      <!-- Customization section -->
-                      <div x-show="flavors['Christmas Specials'][{{ loop.index0 }}].quantity > 0"
-                           x-transition:enter="transition ease-out duration-300"
-                           x-transition:enter-start="opacity-0 transform -translate-y-2"
-                           x-transition:enter-end="opacity-100 transform translate-y-0"
-                           class="mt-3 pt-3 border-t border-red-100">
-                        <!-- Package Navigation -->
-                        <div class="flex items-center justify-between mb-3" 
-                             x-show="flavors['Christmas Specials'][{{ loop.index0 }}].quantity > 1">
-                          <button type="button"
-                                  @click="flavors['Christmas Specials'][{{ loop.index0 }}].currentPackage = Math.max(1, flavors['Christmas Specials'][{{ loop.index0 }}].currentPackage - 1)"
-                                  :class="{'opacity-50 cursor-not-allowed': flavors['Christmas Specials'][{{ loop.index0 }}].currentPackage === 1}"
-                                  class="text-red-600 hover:text-red-700">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                              <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-                            </svg>
-                          </button>
-                          <span class="text-sm font-medium text-gray-600">
-                            Package <span x-text="Math.max(1, flavors['Christmas Specials'][{{ loop.index0 }}].currentPackage)"></span> of 
-                            <span x-text="flavors['Christmas Specials'][{{ loop.index0 }}].quantity"></span>
-                          </span>
-                          <button type="button"
-                                  @click="flavors['Christmas Specials'][{{ loop.index0 }}].currentPackage = Math.min(flavors['Christmas Specials'][{{ loop.index0 }}].quantity, flavors['Christmas Specials'][{{ loop.index0 }}].currentPackage + 1)"
-                                  :class="{'opacity-50 cursor-not-allowed': flavors['Christmas Specials'][{{ loop.index0 }}].currentPackage === flavors['Christmas Specials'][{{ loop.index0 }}].quantity}"
-                                  class="text-red-600 hover:text-red-700">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                            </svg>
-                          </button>
-                        </div>
-
-                        <div>
-                          <label class="block text-sm font-medium text-gray-700 mb-1">To:</label>
-                          <input type="text" 
-                                 x-model="flavors['Christmas Specials'][{{ loop.index0 }}].customizations[flavors['Christmas Specials'][{{ loop.index0 }}].currentPackage - 1].recipient"
-                                 class="w-full px-3 py-2 border border-red-100 rounded-md shadow-sm focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm"
-                                 placeholder="Recipient's name">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </li>
-            {% endfor %}
-          </ul>
-          
           {% for flavorType, flavors in collections.flavors %}
             <h3 class="text-2xl font-semibold mt-8">{{ flavorType }}</h3>
             <ul class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mt-8 mb-16">
@@ -423,7 +271,7 @@ eleventyExcludeFromCollections: true
             <span class="text-xl font-semibold">Rp. <span x-text="getSubtotal().toLocaleString('en-US')"></span></span>
           </div>
           
-          <div class="flex justify-between items-center py-2 border-b border-dondonorange-light">
+          <div class="flex justify-between items-center py-2 border-b border-dondonorange-light" x-show="enableDiscounts">
             <span class="text-dondonblue">Discount:</span>
             <span class="text-xl font-semibold" :class="{'text-dondonorange': getDiscount() > 0}">
               - Rp. <span x-text="getDiscount().toLocaleString('en-US')"></span>
@@ -606,6 +454,7 @@ function orderForm() {
     deliveryDateError: '',
     birthdayTopper: false,
     birthdayCardMessage: '',
+    enableDiscounts: false,
     init() {
       this.initFlavors();
       this.deliveryDate = this.getNextAvailableDate();
@@ -681,6 +530,8 @@ function orderForm() {
       {% endfor %}
     },
     getDiscount() {
+      if (!this.enableDiscounts) return 0;
+      
       const totalQuantity = this.getTotalQuantity();
       if (totalQuantity === 0) return 0;
       
@@ -719,6 +570,8 @@ function orderForm() {
       }));
     },
     getNextDiscountTier() {
+      if (!this.enableDiscounts) return null;
+      
       const totalQuantity = this.getTotalQuantity();
       const maxQuantity = Math.max(...Object.keys(this.discounts).map(Number));
       
@@ -952,8 +805,7 @@ Birthday/Anniversary Card Message: ${this.birthdayCardMessage}`;
 
       message += `\n
 Subtotal: Rp. ${subtotal.toLocaleString('en-US')}
-Discount: - Rp. ${discount.toLocaleString('en-US')}
-${this.birthdayTopper ? `Birthday Topper: Rp. 15,000\n` : ''}
+${this.enableDiscounts ? `Discount: - Rp. ${discount.toLocaleString('en-US')}\n` : ''}${this.birthdayTopper ? `Birthday Topper: Rp. 15,000\n` : ''}
 Total Price: Rp. ${this.getTotalPrice().toLocaleString('en-US')}
 
 L${classicValue}U${premiumValue}

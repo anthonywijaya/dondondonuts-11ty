@@ -6,17 +6,6 @@ eleventyImport:
 
 ---
 
-<!-- Snow effect -->
-<div class="absolute inset-0 pointer-events-none" x-data="snowfall()">
-  <template x-for="snowflake in snowflakes" :key="snowflake.id">
-    <div 
-      class="absolute text-dondonblue animate-fall"
-      x-bind:style="`left: ${snowflake.x}%; animation-delay: -${snowflake.delay}s; animation-duration: ${snowflake.duration}s`"
-    >
-      ❄
-    </div>
-  </template>
-</div>
 
 <div class="mx-auto w-full max-w-7xl lg:px-8">
   <div class="relative px-4 sm:px-8 lg:px-12">
@@ -26,45 +15,7 @@ eleventyImport:
           <h1 class="invisible">Don Don Donuts</h1>
           <img class="w-1/4 mx-auto mb-8" src="/assets/img/logo-illust-text.png" alt="Don Don Donuts Logo">
 
-          <!-- Speech Bubble -->
-  <div class="absolute top-28 left-1/2 sm:right-1/4 transform translate-x-1/2 -translate-y-full">
-    <div class="relative animate-bounce-gentle">
-      <div class="bg-red-600 text-dondonwhite px-4 py-8 rounded-full shadow-lg animate-bounce-gentle max-w-[120px] min-h-[4rem] flex items-center" 
-       style="display: flex;">
-    <div class="whitespace-normal break-words text-center text-xs">
-          <span class="inline-block animate-text-reveal" style="--letter-index: 0">C</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 1">h</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 2">r</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 3">i</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 4">s</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 5">t</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 6">m</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 7">a</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 8">s</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 9"> </span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 10">i</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 11">s</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 12"> </span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 13">c</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 14">o</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 15">m</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 16">i</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 17">n</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 18">g</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 19">!</span>
-          <span class="inline-block animate-text-reveal" style="--letter-index: 20">🎄</span>
-        </div>
-      </div>
-      <!-- Left-pointing triangle -->
-      <div class="absolute left-2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-        <div 
-          class="w-8 h-8 bg-red-600 transform rotate-90"
-          style="clip-path: polygon(0% 50%, 100% 0%, 100% 100%);"
-        ></div>
-      </div>
-          </div>
-        </div>
-        </div>
+         
         
         <div class="w-full h-[50vh] mb-8">
           <img class="object-cover h-full rounded-xl overflow-hidden w-full" src="/assets/img/hero-main.jpg" alt="Donuts Hero Image">
@@ -132,65 +83,7 @@ eleventyImport:
 
         <!-- Full width Christmas section -->
         <div class="w-full bg-white/50 backdrop-blur-sm py-8">
-          <!-- Christmas header -->
-          <div class="text-center pt-16 pb-12 relative">
-            <h2 class="text-5xl font-bold text-red-700 mb-4 animate-bounce">
-              🎄 Christmas Collection 🎄
-            </h2>
-            <p class="text-xl text-dondonblue max-w-2xl mx-auto">
-              Celebrate the season with our special Christmas package! Special Box, Ribbon, and Christmas Tags included!
-            </p>
-          </div>
-
-          <!-- Menu items -->
-          <div class="mx-auto pb-16 px-4 sm:px-6 lg:px-8 max-w-[90rem]">
-            <ul class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {% for flavor in collections.specials %}
-                <li 
-                  class="transform hover:scale-[1.02] transition-all duration-500" 
-                  x-show="visible"
-                  x-transition:enter="transition ease-out duration-500"
-                  x-transition:enter-start="opacity-0 translate-y-8"
-                  x-transition:enter-end="opacity-100 translate-y-0"
-                  style="--animation-delay: {{ loop.index | times: 200 }}ms"
-                >
-                  <div class="group h-full bg-white/90 backdrop-blur-md rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-red-100">
-                    <div class="relative aspect-w-4 aspect-h-3 overflow-hidden">
-                      <img 
-                        class="object-cover w-full h-full transform transition-transform duration-700 group-hover:scale-110" 
-                        src="{{ flavor.data.thumb }}" 
-                        alt="{{ flavor.data.title }} - Christmas Special Donut"
-                        loading="lazy"
-                      >
-                      {% if flavor.data.new %}
-                        <div class="absolute top-4 left-4 bg-gradient-to-r from-red-600 to-green-600 text-white px-4 py-2 text-sm font-bold rounded-full shadow-lg">
-                          New! 🎄
-                        </div>
-                      {% endif %}
-                    </div>
-                    
-                    <div class="p-6">
-                      <h3 class="text-2xl font-bold text-red-700 mb-3">{{ flavor.data.title }}</h3>
-                      <p class="text-gray-600 mb-4">{{ flavor.data.description }}</p>
-                      <div class="text-center items-center">
-                        <p class="text-xl font-bold text-green-700">Rp. {{ flavor.data.price | thousandseparator }}</p>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              {% endfor %}
-            </ul>
-          </div>
-        </div>
-
-        <div class="flex mx-auto w-60 overflow-hidden transition-all ease-in-out duration-300 rounded-3xl p-1.5 mb-4 border text-zinc-800 justify-center gap-4 hover:bg-dondonorange hover:text-dondonwhite">
-          <a href="/neworder" 
-            class="flex overflow-hidden relative" 
-            target="_blank" 
-            onclick="gtag('event', 'to_order_form', { 'event_category': 'To Order Form', 'event_label': 'Order below Christmas' });">
-            <span class="inline-flex px-4 py-2 self-center text-sm">Order Now</span>
-          </a>
-        </div>
+          
 
         <!-- Resume container -->
         <div class="mx-auto w-full max-w-7xl lg:px-8">
@@ -258,7 +151,7 @@ eleventyImport:
                 </a>
               </div>
 
-              {% include "partials/promo.njk" %}
+              <!-- {% include "partials/promo.njk" %} -->
               
               <hr class="mt-12 mb-6 w-12 mx-auto"/>
               <h2 class="text-xl font-bold mb-8">Frequently Asked Questions:</h2>
