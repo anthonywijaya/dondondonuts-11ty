@@ -128,6 +128,22 @@ module.exports = function(eleventyConfig) {
 
   eleventyConfig.addTransform("addMetaPixel", addMetaPixel);
 
+  eleventyConfig.addCollection("cny", function(collectionApi) {
+    return collectionApi.getFilteredByGlob("src/input/flavors/cny/*.md")
+      .sort((a, b) => (a.data.sort || 0) - (b.data.sort || 0));
+  });
+
+  eleventyConfig.addFilter("getFlavor", function(collections, flavorPath) {
+    // Flatten all flavors into a single array
+    const allFlavors = Object.values(collections).flat();
+    
+    // Find the flavor that matches the path
+    return allFlavors.find(flavor => {
+      const flavorFilePath = flavor.filePathStem.replace('/input/flavors/', '');
+      return flavorFilePath === flavorPath;
+    });
+  });
+
   return {
     dir: {
       input: "src",
