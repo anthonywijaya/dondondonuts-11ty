@@ -120,11 +120,11 @@ module.exports = function(eleventyConfig) {
   //   });
   // });
   
-
-  var pathPrefix = "";
-  if (process.env.GITHUB_REPOSITORY) {
-    pathPrefix = process.env.GITHUB_REPOSITORY.split('/')[1];
-  }
+  // For github pages
+  // var pathPrefix = "";
+  // if (process.env.GITHUB_REPOSITORY) {
+  //   pathPrefix = process.env.GITHUB_REPOSITORY.split('/')[1];
+  // }
 
   eleventyConfig.addTransform("addMetaPixel", addMetaPixel);
 
@@ -144,13 +144,43 @@ module.exports = function(eleventyConfig) {
     });
   });
 
+  // Add 404 page handling for Netlify
+  eleventyConfig.setBrowserSyncConfig({
+    callbacks: {
+      ready: function(err, browserSync) {
+        const content_404 = fs.readFileSync('_site/404.html');
+
+        browserSync.addMiddleware("*", (req, res) => {
+          res.writeHead(404, {"Content-Type": "text/html; charset=UTF-8"});
+          res.write(content_404);
+          res.end();
+        });
+      },
+    }
+  });
+
+  // Add environment-specific settings
+  if (process.env.NETLIFY) {
+    // Netlify-specific configurations can go here
+    console.log("Building for Netlify...");
+  }
+
   return {
     dir: {
       input: "src",
-      data: "_data"
+      data: "_data",
+      output: "_site"  // explicitly set output directory
     },
-    //pathPrefix
-  }
+    pathPrefix: "/",   // ensure no path prefix for Netlify
+    htmlTemplateEngine: "njk",
+    markdownTemplateEngine: "njk",
+    templateFormats: [
+      "md",
+      "njk",
+      "html",
+      "liquid"
+    ]
+  };
 };
 
 function downloadCSV(csv, filename) {
@@ -185,6 +215,27 @@ function htmlminTransform(content, outputPath) {
   }
   return content;
 }
+
+function addTiktokPixel(content, outputPath) {
+  if (outputPath && outputPath.endsWith('.html')) {
+    const tiktokPixelCode = `
+    <!-- TikTok Pixel Code -->
+    <script>
+    !function (w, d, t) {
+      w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};var o=document.createElement("script");o.type="text/javascript",o.async=!0,o.src=i+"?sdkid="+e+"&lib="+t;var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
+      ttq.load('${process.env.TIKTOK_PIXEL_ID}');
+      ttq.page();
+    }(window, document, 'ttq');
+    </script>
+    <!-- End TikTok Pixel Code -->
+    `;
+    
+    return content.replace('</head>', tiktokPixelCode + '</head>');
+  }
+  return content;
+}
+
+eleventyConfig.addTransform("addTiktokPixel", addTiktokPixel);
 
 function addMetaPixel(content, outputPath) {
   if (outputPath && outputPath.endsWith('.html')) {

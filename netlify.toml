@@ -1,6 +1,21 @@
 [build]
   command = "npm run build"
   publish = "_site"
+  functions = "netlify/functions"
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF dondondonuts-cms/"
 
 [build.environment]
   NODE_VERSION = "18"
+
+[dev]
+  command = "npm run start"
+  port = 8080
+  publish = "_site"
+
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404
+
+[functions]
+  directory = "netlify/functions"
