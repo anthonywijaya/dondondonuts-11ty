@@ -9,8 +9,8 @@ eleventyImport:
 
 <div class="mx-auto w-full max-w-7xl lg:px-8">
   <div class="relative px-4 sm:px-8 lg:px-12">
-    <div class="mx-auto max-w-2xl lg:max-w-5xl text-center">
-      <div class="max-w-md md:max-w-3xl mx-auto">
+    <div class="mx-auto text-center">
+      <div class="mx-auto">
         <div class="relative">
           <h1 class="invisible">Don Don Donuts</h1>
           <img class="w-1/4 mx-auto mb-8" src="/assets/img/logo-illust-text.png" alt="Don Don Donuts Logo">
@@ -87,8 +87,8 @@ eleventyImport:
 
         <!-- Resume container -->
         <div class="mx-auto w-full max-w-7xl lg:px-8">
-          <div class="relative px-4 sm:px-8 lg:px-12">
-            <div class="mx-auto max-w-2xl lg:max-w-5xl">
+          <div class="relative px-4">
+            <div class="mx-auto">
               <div>
                 <hr class="mt-12 mb-6 w-12 mx-auto"/>
                 <h3 class="text-3xl font-bold mt-8">Our Donuts</h3>
@@ -114,11 +114,75 @@ eleventyImport:
                     {% endfor %}
                 </ul> -->
 
-                {% for flavorType in collections.flavors %}
-                  <h4 class="px-4 text-2xl font-semibold mt-8">{{ flavorType[0] }}</h4>
+                <!-- Add CNY Packages Section -->
+                <div class="mt-8 mb-12">
+                  <h2 class="text-3xl font-bold mb-6">Chinese New Year Special Packages</h2>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {% for package in collections.cny %}
+                      {% if package.data.visible == "yes" %}
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                          <div class="relative">
+                            <img src="{{ package.data.thumb }}" alt="{{ package.data.title }}" class="w-full h-48 object-cover">
+                            <div class="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                              CNY Special
+                            </div>
+                          </div>
+                          <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">{{ package.data.title }}</h3>
+                            
+                            <!-- Included Flavors Grid -->
+                            <div class="mb-4">
+                              <div class="grid grid-cols-3 gap-2">
+                                {% for flavor in package.data.flavors %}
+                                  {% set flavorDetails = collections.flavors | getFlavor(flavor) %}
+                                  {% if flavorDetails %}
+                                    <div class="flex flex-col items-center">
+                                      <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-50">
+                                        <img src="{{ flavorDetails.data.thumb }}" 
+                                             alt="{{ flavorDetails.data.title }}" 
+                                             class="w-full h-full object-cover">
+                                      </div>
+                                      <span class="text-xs text-center mt-1">{{ flavorDetails.data.title }}</span>
+                                    </div>
+                                  {% endif %}
+                                {% endfor %}
+                              </div>
+                            </div>
 
-                  <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 px-4 mb-16">
-                    {% for flavor in flavorType[1] %}
+                            <!-- Special Packaging Section -->
+                            <div class="flex items-center justify-center gap-2 mb-4 p-2 bg-red-700 rounded-lg">
+                              <div class="flex-shrink-0">
+                                <svg class="w-5 h-5 text-dondonwhite" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                              </div>
+                              <p class="text-sm text-dondonwhite text-center">
+                                CNY Special Packaging with "Fu" Emblem
+                              </p>
+                            </div>
+
+                            <div class="flex justify-center items-center">
+                              <div class="flex flex-col items-center">
+                                <p class="text-xs text-gray-500 line-through">Rp. {{ package.data.originalprice | thousandseparator }}</p>
+                                <div class="flex items-center gap-2 mt-2">
+                                  <p class="text-md font-bold text-red-600">Rp. {{ package.data.price | thousandseparator }}</p>
+                                  <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-600 text-dondonwhite">
+                                    Early Bird Price!
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+
+                {% for flavorType, flavors in collections.flavors %}
+                  <h4 class="px-4 text-2xl font-semibold mt-8">{{ flavorType }}</h4>
+                  <ul class="grid grid-cols-2 lg:grid-cols-3 gap-6 mt-8 mb-16">
+                    {% for flavor in flavors %}
                       {% if flavor.data.visible %}
                         <li class="flex flex-col">
                           <div class="relative aspect-w-1 aspect-h-1 w-full">

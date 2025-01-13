@@ -1,4 +1,9 @@
-import CryptoJS from 'crypto-js';
+// CryptoJS is loaded globally from the CDN
+// import CryptoJS from 'crypto-js';
+
+// Initialize Meta Pixel
+fbq('init', '1064819841680904');
+fbq('track', 'PageView');
 
 // Function to hash data using SHA-256
 function hashData(data) {
