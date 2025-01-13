@@ -2,7 +2,7 @@
   command = "npm run build"
   publish = "_site"
   functions = "netlify/functions"
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF dondondonuts-cms/"
+  ignore = "git diff --quiet HEAD^ HEAD ./dondondonuts-cms/"
 
 [build.environment]
   NODE_VERSION = "18"
