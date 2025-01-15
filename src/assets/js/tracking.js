@@ -50,17 +50,64 @@ const user = {
 // Call identifyUser on pages where PII data is expected
 identifyUser(user);
 
+// Function to send server-side events
+async function sendServerEvent(platform, eventName, eventData, userData) {
+  const eventId = `${platform}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  
+  try {
+    const response = await fetch(`/.netlify/functions/${platform}-events`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        eventName,
+        eventData,
+        userData: {
+          ...userData,
+          external_id: getPersistentUserId(),
+          fbc: getCookie('_fbc'),
+          fbp: getCookie('_fbp'),
+          ttclid: getCookie('ttclid')
+        },
+        eventId
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error(`${platform} server event error:`, error);
+  }
+}
+
+// Helper to get cookies
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return undefined;
+}
+
 // Function to track form start
 function trackFormStart() {
   gtag('event', 'form_start', {
     'event_category': 'Engagement',
     'event_label': 'Order Form'
   });
-  fbq('trackCustom', 'FormStart', {formName: 'Order Form'});
+  
+  fbq('trackCustom', 'FormStart', {
+    formName: 'Order Form'
+  });
   
   if (window.ttq) {
     ttq.track('StartCheckout');
   }
+
+  // Server-side events
+  sendServerEvent('meta', 'StartCheckout', {});
+  sendServerEvent('tiktok', 'StartCheckout', {});
 }
 
 // Function to track "Need Help" button click
@@ -89,65 +136,84 @@ function trackOrderSubmission(orderDetails) {
     }))
   });
 
-  // Meta Pixel
-  fbq('track', 'Purchase', {
+  // Prepare common event data
+  const eventData = {
     value: orderDetails.total,
     currency: 'IDR',
-    content_type: 'product',
     contents: orderDetails.items.map(item => ({
       id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
       quantity: item.quantity,
       price: item.price
     })),
-    content_ids: orderDetails.items.map(item => item.item_name.toLowerCase().replace(/\s+/g, '_')),
-    user_data: {
-      external_id: persistentUserId
-    }
+    content_ids: orderDetails.items.map(item => 
+      item.item_name.toLowerCase().replace(/\s+/g, '_')
+    )
+  };
+
+  // Meta Pixel
+  fbq('track', 'Purchase', {
+    ...eventData,
+    content_type: 'product'
+  });
+
+  // Meta Server Event
+  sendServerEvent('meta', 'Purchase', eventData, {
+    phone: orderDetails.phone
   });
   
-  // TikTok
+  // TikTok Pixel
   if (window.ttq) {
     ttq.track('PlaceAnOrder', {
-      contents: orderDetails.items.map(item => ({
-        content_id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
-        content_type: 'product',
-        content_name: item.item_name,
-        quantity: item.quantity,
-        price: item.price
-      })),
-      value: orderDetails.total,
+      contents: eventData.contents,
+      value: eventData.value,
       currency: 'IDR',
       order_id: eventId
     });
   }
+
+  // TikTok Server Event
+  sendServerEvent('tiktok', 'PlaceAnOrder', {
+    ...eventData,
+    order_id: eventId
+  }, {
+    phone: orderDetails.phone
+  });
 }
 
 // Add TikTok tracking functions
 function trackTikTokViewContent(flavor) {
   const contentId = flavor.name.toLowerCase().replace(/\s+/g, '_');
-  
-  // Meta Pixel
-  fbq('track', 'ViewContent', {
+  const eventData = {
     content_type: 'product',
     content_ids: [contentId],
     content_name: flavor.name,
     value: flavor.price,
-    currency: 'IDR'
-  });
+    currency: 'IDR',
+    contents: [{
+      content_id: contentId,
+      content_type: 'product',
+      content_name: flavor.name,
+      price: flavor.price
+    }]
+  };
+  
+  // Meta Pixel
+  fbq('track', 'ViewContent', eventData);
 
-  // TikTok
+  // Meta Server Event
+  sendServerEvent('meta', 'ViewContent', eventData, {});
+
+  // TikTok Pixel
   if (window.ttq) {
     ttq.track('ViewContent', {
-      contents: [{
-        content_id: contentId,
-        content_type: 'product',
-        content_name: flavor.name,
-        price: flavor.price
-      }],
+      contents: eventData.contents,
       currency: 'IDR',
       value: flavor.price
     });
   }
+
+  // TikTok Server Event
+  sendServerEvent('tiktok', 'ViewContent', eventData, {});
 }
 
 function trackTikTokInitiateCheckout(orderDetails) {
@@ -155,7 +221,7 @@ function trackTikTokInitiateCheckout(orderDetails) {
     ttq.track('InitiateCheckout', {
       contents: orderDetails.items.map(item => ({
         content_id: item.id,
-        content_type: 'product',
+        content_type: 'product', 
         content_name: item.name,
         quantity: item.quantity,
         price: item.price
