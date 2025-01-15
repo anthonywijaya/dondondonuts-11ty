@@ -29,6 +29,11 @@ eleventyExcludeFromCollections: true
 
       <div class="flex justify-between items-center mb-8">
         <h1 class="text-3xl font-bold">Place Your Order</h1>
+        <script>
+          // Track form start
+          fbq('track', 'InitiateCheckout');
+          trackFormStart();
+        </script>
         <a href="https://wa.me/6281519231874" target="_blank" 
            @click="trackNeedHelp()"
            class="bg-dondonorange hover:bg-dondonorange-dark text-dondonwhite font-bold py-2 px-4 rounded inline-flex items-center">
@@ -219,7 +224,13 @@ eleventyExcludeFromCollections: true
                       {% if flavor.data.new %}
                         <div class="absolute top-0 left-1 bg-dondonblue text-dondonwhite px-2 py-1 text-sm font-bold">New!</div>
                       {% endif %}
-                      <img class="object-cover rounded-xl overflow-hidden w-full" src="{{ flavor.data.thumb }}" alt="{{ flavor.data.title }}">
+                      <img class="object-cover rounded-xl overflow-hidden w-full" 
+                           src="{{ flavor.data.thumb }}" 
+                           alt="{{ flavor.data.title }}"
+                           @click="trackTikTokViewContent({
+                             name: '{{ flavor.data.title }}',
+                             price: {{ flavor.data.price | replace(',', '') }}
+                           })">
                       <p class="text-lg font-medium mt-2 mb-1">{{ flavor.data.title }}</p>
                       <p class="text-sm mb-4">Our signature Ubedon™ {{ flavor.data.description }}</p>
                     </div>
@@ -243,7 +254,11 @@ eleventyExcludeFromCollections: true
                                  inputmode="numeric"
                                  pattern="[0-9]*">
                           <button type="button" 
-                                  @click="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity++"
+                                  @click="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity++; 
+                                         trackTikTokViewContent({
+                                           name: '{{ flavor.data.title }}',
+                                           price: {{ flavor.data.price | replace(',', '') }}
+                                         })"
                                   class="px-3 py-1 bg-dondonwhite-dark text-dondonblue hover:bg-dondonorange-light focus:outline-none focus:ring-2 focus:ring-dondonorange touch-manipulation">
                             +
                           </button>
@@ -695,6 +710,10 @@ function orderForm() {
         this.phoneNumberError = 'Please enter a valid phone number (6-15 digits)';
       } else {
         this.phoneNumberError = '';
+        // Identify user when valid phone number is entered
+        identifyUser({
+          phone: this.phoneNumber
+        });
       }
     },
     getNextAvailableDate(offset = 1) {

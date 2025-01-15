@@ -10,13 +10,32 @@ function hashData(data) {
   return CryptoJS.SHA256(data).toString();
 }
 
+// Function to generate or retrieve persistent user ID
+function getPersistentUserId() {
+  let userId = localStorage.getItem('dondon_user_id');
+  if (!userId) {
+    userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('dondon_user_id', userId);
+  }
+  return userId;
+}
+
 // Function to identify user with PII
 function identifyUser(user) {
+  const persistentUserId = getPersistentUserId();
+  
   if (window.ttq) {
     ttq.identify({
       email: user.email ? hashData(user.email) : undefined,
       phone_number: user.phone ? hashData(user.phone) : undefined,
-      external_id: user.id ? hashData(user.id) : undefined
+      external_id: persistentUserId
+    });
+  }
+
+  // Also identify with Meta
+  if (typeof fbq !== 'undefined') {
+    fbq('init', '1064819841680904', {
+      external_id: persistentUserId
     });
   }
 }
@@ -39,8 +58,9 @@ function trackFormStart() {
   });
   fbq('trackCustom', 'FormStart', {formName: 'Order Form'});
   
-  // Add TikTok tracking
-  trackTikTokInitiateCheckout(orderDetails);
+  if (window.ttq) {
+    ttq.track('StartCheckout');
+  }
 }
 
 // Function to track "Need Help" button click
@@ -54,32 +74,78 @@ function trackNeedHelp() {
 
 // Function to track order submission
 function trackOrderSubmission(orderDetails) {
+  const eventId = `order_${Date.now()}`;
+  const persistentUserId = getPersistentUserId();
+
+  // Google Analytics
   gtag('event', 'purchase', {
-    'transaction_id': Date.now().toString(),
-    'value': orderDetails.total,
-    'currency': 'IDR',
-    'items': orderDetails.items
+    transaction_id: eventId,
+    value: orderDetails.total,
+    currency: 'IDR',
+    items: orderDetails.items.map(item => ({
+      item_name: item.item_name,
+      quantity: item.quantity,
+      price: item.price
+    }))
   });
+
+  // Meta Pixel
   fbq('track', 'Purchase', {
     value: orderDetails.total,
     currency: 'IDR',
+    content_type: 'product',
+    contents: orderDetails.items.map(item => ({
+      id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
+      quantity: item.quantity,
+      price: item.price
+    })),
+    content_ids: orderDetails.items.map(item => item.item_name.toLowerCase().replace(/\s+/g, '_')),
+    user_data: {
+      external_id: persistentUserId
+    }
   });
   
-  // Add TikTok tracking
-  trackTikTokPlaceOrder(orderDetails);
+  // TikTok
+  if (window.ttq) {
+    ttq.track('PlaceAnOrder', {
+      contents: orderDetails.items.map(item => ({
+        content_id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
+        content_type: 'product',
+        content_name: item.item_name,
+        quantity: item.quantity,
+        price: item.price
+      })),
+      value: orderDetails.total,
+      currency: 'IDR',
+      order_id: eventId
+    });
+  }
 }
 
 // Add TikTok tracking functions
 function trackTikTokViewContent(flavor) {
+  const contentId = flavor.name.toLowerCase().replace(/\s+/g, '_');
+  
+  // Meta Pixel
+  fbq('track', 'ViewContent', {
+    content_type: 'product',
+    content_ids: [contentId],
+    content_name: flavor.name,
+    value: flavor.price,
+    currency: 'IDR'
+  });
+
+  // TikTok
   if (window.ttq) {
     ttq.track('ViewContent', {
       contents: [{
-        content_id: flavor.id,
+        content_id: contentId,
         content_type: 'product',
         content_name: flavor.name,
         price: flavor.price
       }],
-      currency: 'IDR'
+      currency: 'IDR',
+      value: flavor.price
     });
   }
 }
