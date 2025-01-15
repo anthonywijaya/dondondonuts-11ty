@@ -50,21 +50,47 @@ exports.handler = async (event) => {
     };
 
     // Send to TikTok Events API
-    const response = await axios.post(
-      'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
-      eventRequest,
-      {
-        headers: {
-          'Access-Token': process.env.TIKTOK_API_ACCESS_TOKEN,
-          'Content-Type': 'application/json'
+    try {
+      const response = await axios.post(
+        'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+        eventRequest,
+        {
+          headers: {
+            'Access-Token': process.env.TIKTOK_API_ACCESS_TOKEN,
+            'Content-Type': 'application/json'
+          }
         }
-      }
-    );
+      );
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ success: true, response: response.data })
-    };
+      console.log('TikTok Events API Success:', {
+        eventName,
+        eventId,
+        response: response.data
+      });
+
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ success: true, response: response.data })
+      };
+    } catch (error) {
+      console.error('TikTok Events API Error:', {
+        error: error.message,
+        eventName,
+        eventId,
+        response: error.response?.data,
+        request: eventRequest
+      });
+
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ 
+          success: false, 
+          error: error.message,
+          details: error.response?.data || 'No additional details',
+          request: eventRequest
+        })
+      };
+    }
   } catch (error) {
     console.error('TikTok Events API Error:', error);
     return {

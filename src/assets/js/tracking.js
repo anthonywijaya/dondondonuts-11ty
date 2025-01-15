@@ -55,7 +55,10 @@ async function sendServerEvent(platform, eventName, eventData, userData) {
   const eventId = `${platform}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   
   try {
-    const response = await fetch(`/.netlify/functions/${platform}-events`, {
+    // Map platform to correct endpoint
+    const endpoint = platform === 'meta' ? 'meta-conversions' : 'tiktok-events';
+    
+    const response = await fetch(`/.netlify/functions/${endpoint}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -75,7 +78,8 @@ async function sendServerEvent(platform, eventName, eventData, userData) {
     });
     
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorData = await response.json();
+      throw new Error(`HTTP error! status: ${response.status}, details: ${JSON.stringify(errorData)}`);
     }
   } catch (error) {
     console.error(`${platform} server event error:`, error);

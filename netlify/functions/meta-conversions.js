@@ -50,15 +50,41 @@ exports.handler = async (event) => {
     };
 
     // Send to Meta Conversions API
-    const response = await axios.post(
-      `https://graph.facebook.com/v17.0/${process.env.META_PIXEL_ID}/events`,
-      eventRequest
-    );
+    try {
+      const response = await axios.post(
+        `https://graph.facebook.com/v17.0/${process.env.META_PIXEL_ID}/events`,
+        eventRequest
+      );
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ success: true, response: response.data })
-    };
+      console.log('Meta Conversions API Success:', {
+        eventName,
+        eventId,
+        response: response.data
+      });
+
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ success: true, response: response.data })
+      };
+    } catch (error) {
+      console.error('Meta Conversions API Error:', {
+        error: error.message,
+        eventName,
+        eventId,
+        response: error.response?.data,
+        request: eventRequest
+      });
+
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ 
+          success: false, 
+          error: error.message,
+          details: error.response?.data || 'No additional details',
+          request: eventRequest
+        })
+      };
+    }
   } catch (error) {
     console.error('Meta Conversions API Error:', error);
     return {
