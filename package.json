@@ -9,7 +9,8 @@
     "build": "run-s clean build:eleventy build:postcss",
     "build:eleventy": "cross-env ELEVENTY_PRODUCTION=true eleventy",
     "build:postcss": "cross-env NODE_ENV=production postcss src/_includes/assets/css/*.css --dir _site",
-    "clean": "rimraf _site"
+    "clean": "rimraf _site",
+    "dev": "eleventy --serve"
   },
   "repository": {
     "type": "git",
