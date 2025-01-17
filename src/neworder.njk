@@ -799,24 +799,34 @@ function orderForm() {
     submitForm() {
       this.validatePhoneNumber();
       this.validateDeliveryDate();
-      if (this.phoneNumberError || this.deliveryDateError) {
-        return; // Don't submit if there are errors
+      
+      // Check if form is valid before proceeding
+      if (this.phoneNumberError || 
+          this.deliveryDateError || 
+          !this.receiverName || 
+          !this.deliveryDate || 
+          !this.phoneNumber || 
+          this.getTotalQuantity() === 0) {
+        
+        console.warn('Form validation failed');
+        return; // Don't submit if there are errors or missing required fields
       }
 
       // Calculate order details for tracking
       const orderDetailsForTracking = {
         total: this.getTotalPrice(),
+        phone: this.phoneNumber, // Add phone number for server events
         items: Object.values(this.flavors).flat()
           .filter(f => f.quantity > 0)
           .map(f => ({
             item_name: f.name,
             quantity: f.quantity,
-            price: Number(f.price), // Ensure price is a number
-            item_price: Number(f.price), // Add item_price explicitly
-            customizations: f.customizations || null
+            price: Number(f.price),
+            item_price: Number(f.price)
           }))
       };
 
+      // Only track if we have valid order details
       trackOrderSubmission(orderDetailsForTracking);
 
       // Generate the message using our updated generateOrderMessage function

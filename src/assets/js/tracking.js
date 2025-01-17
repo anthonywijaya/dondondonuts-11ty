@@ -208,7 +208,7 @@ function trackOrderSubmission(orderDetails) {
       content_id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
       quantity: item.quantity,
       item_price: Number(item.price) || 0,
-      price: Number(item.price) || 0
+      price: (Number(item.price) || 0) * item.quantity  // Calculate total price for line item
     })),
     content_ids: orderDetails.items.map(item => 
       item.item_name.toLowerCase().replace(/\s+/g, '_')
