@@ -136,3 +136,4 @@ dondondonuts-next/
 dondondonuts-cms/
 # Local Netlify folder
 .netlify
+.env

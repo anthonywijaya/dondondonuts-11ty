@@ -12,6 +12,7 @@
   targetPort = 8080
   port = 8888
   publish = "_site"
+  autoLaunch = true
   framework = "#custom"
 
 [[redirects]]

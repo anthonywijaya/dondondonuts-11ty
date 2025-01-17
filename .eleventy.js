@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const fs = require("fs");
 const htmlmin = require("html-minifier");
 
@@ -59,6 +61,18 @@ function addMetaPixel(content, outputPath) {
 }
 
 module.exports = function(eleventyConfig) {
+  // Add environment variables to global data
+  eleventyConfig.addGlobalData("env", {
+    META_PIXEL_ID: process.env.META_PIXEL_ID || '',
+    TIKTOK_PIXEL_ID: process.env.TIKTOK_PIXEL_ID || ''
+  });
+
+  // Log environment variables during build (for debugging)
+  console.log('Environment variables loaded:', {
+    hasMeta: !!process.env.META_PIXEL_ID,
+    hasTikTok: !!process.env.TIKTOK_PIXEL_ID
+  });
+
   if (process.env.ELEVENTY_PRODUCTION) {
     eleventyConfig.addTransform("htmlmin", htmlminTransform);
   }

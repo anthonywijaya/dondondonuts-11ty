@@ -1,9 +1,54 @@
 // CryptoJS is loaded globally from the CDN
 // import CryptoJS from 'crypto-js';
 
-// Initialize Meta Pixel
-fbq('init', '1064819841680904');
-fbq('track', 'PageView');
+// Get pixel IDs from meta tags
+const getMetaPixelId = () => document.querySelector('meta[name="meta-pixel-id"]')?.content;
+const getTikTokPixelId = () => document.querySelector('meta[name="tiktok-pixel-id"]')?.content;
+
+// Function to initialize tracking pixels
+function initializePixels() {
+  const metaPixelId = getMetaPixelId();
+  const tikTokPixelId = getTikTokPixelId();
+
+  console.log('Initializing pixels with:', {
+    hasMeta: !!metaPixelId,
+    hasTikTok: !!tikTokPixelId,
+    tikTokId: tikTokPixelId // Log the actual TikTok ID for verification
+  });
+
+  // Initialize Meta Pixel only once
+  if (typeof fbq !== 'undefined' && metaPixelId) {
+    fbq('init', metaPixelId, {
+      external_id: getPersistentUserId()
+    });
+    fbq('track', 'PageView');
+  }
+
+  // Initialize TikTok pixel
+  if (tikTokPixelId) {
+    // Load TikTok pixel script
+    !function (w, d, t) {
+      w.TiktokAnalyticsObject=t;
+      var ttq=w[t]=w[t]||[];
+      ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"];
+      ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};
+      for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);
+      ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e};
+      ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};var o=document.createElement("script");o.type="text/javascript",o.async=!0,o.src=i+"?sdkid="+e+"&lib="+t;var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
+
+      // Initialize with the pixel ID
+      ttq.load(tikTokPixelId);
+      ttq.page();
+    }(window, document, 'ttq');
+  }
+}
+
+// Initialize pixels when DOM is fully loaded
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializePixels);
+} else {
+  initializePixels();
+}
 
 // Function to hash data using SHA-256
 function hashData(data) {
@@ -23,6 +68,7 @@ function getPersistentUserId() {
 // Function to identify user with PII
 function identifyUser(user) {
   const persistentUserId = getPersistentUserId();
+  const metaPixelId = getMetaPixelId();
   
   if (window.ttq) {
     ttq.identify({
@@ -32,9 +78,9 @@ function identifyUser(user) {
     });
   }
 
-  // Also identify with Meta
-  if (typeof fbq !== 'undefined') {
-    fbq('init', '1064819841680904', {
+  // Update Meta user data without reinitializing
+  if (typeof fbq !== 'undefined' && metaPixelId) {
+    fbq('setUserData', {
       external_id: persistentUserId
     });
   }
@@ -104,22 +150,27 @@ function getCookie(name) {
 
 // Function to track form start
 function trackFormStart() {
+  const formStartId = `form_${Date.now()}`;
+  
   gtag('event', 'form_start', {
     'event_category': 'Engagement',
     'event_label': 'Order Form'
   });
   
   fbq('trackCustom', 'FormStart', {
-    formName: 'Order Form'
+    formName: 'Order Form',
+    content_id: formStartId
   });
   
   if (window.ttq) {
-    ttq.track('StartCheckout');
+    ttq.track('StartCheckout', {
+      content_id: formStartId
+    });
   }
 
   // Server-side events
-  sendServerEvent('meta', 'StartCheckout', {});
-  sendServerEvent('tiktok', 'StartCheckout', {});
+  sendServerEvent('meta', 'StartCheckout', { content_id: formStartId }, {});
+  sendServerEvent('tiktok', 'StartCheckout', { content_id: formStartId }, {});
 }
 
 // Function to track "Need Help" button click
@@ -154,12 +205,15 @@ function trackOrderSubmission(orderDetails) {
     currency: 'IDR',
     contents: orderDetails.items.map(item => ({
       id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
+      content_id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
       quantity: item.quantity,
-      item_price: Number(item.price) || 0
+      item_price: Number(item.price) || 0,
+      price: Number(item.price) || 0
     })),
     content_ids: orderDetails.items.map(item => 
       item.item_name.toLowerCase().replace(/\s+/g, '_')
-    )
+    ),
+    content_id: `order_${eventId}`
   };
 
   // Meta Pixel
@@ -176,6 +230,7 @@ function trackOrderSubmission(orderDetails) {
   // TikTok Pixel
   if (window.ttq) {
     ttq.track('PlaceAnOrder', {
+      content_id: eventData.content_id,
       contents: eventData.contents,
       value: eventData.value,
       currency: 'IDR',
@@ -197,15 +252,17 @@ function trackTikTokViewContent(flavor) {
   const contentId = flavor.name.toLowerCase().replace(/\s+/g, '_');
   const eventData = {
     content_type: 'product',
-    content_ids: [contentId],
+    content_id: contentId,
     content_name: flavor.name,
     value: flavor.price,
     currency: 'IDR',
     contents: [{
       content_id: contentId,
+      id: contentId,
       content_type: 'product',
       content_name: flavor.name,
-      price: flavor.price
+      price: flavor.price,
+      quantity: 1
     }]
   };
   
@@ -218,6 +275,7 @@ function trackTikTokViewContent(flavor) {
   // TikTok Pixel
   if (window.ttq) {
     ttq.track('ViewContent', {
+      content_id: contentId,
       contents: eventData.contents,
       currency: 'IDR',
       value: flavor.price
@@ -229,11 +287,14 @@ function trackTikTokViewContent(flavor) {
 }
 
 function trackTikTokInitiateCheckout(orderDetails) {
+  const checkoutId = `checkout_${Date.now()}`;
   if (window.ttq) {
     ttq.track('InitiateCheckout', {
+      content_id: checkoutId,
       contents: orderDetails.items.map(item => ({
-        content_id: item.id,
-        content_type: 'product', 
+        content_id: item.id || item.name.toLowerCase().replace(/\s+/g, '_'),
+        id: item.id || item.name.toLowerCase().replace(/\s+/g, '_'),
+        content_type: 'product',
         content_name: item.name,
         quantity: item.quantity,
         price: item.price
@@ -245,17 +306,20 @@ function trackTikTokInitiateCheckout(orderDetails) {
 }
 
 function trackTikTokPlaceOrder(orderDetails) {
+  const orderId = `order_${Date.now()}`;
   if (window.ttq) {
     ttq.track('PlaceAnOrder', {
+      content_id: orderId,
       contents: orderDetails.items.map(item => ({
-        content_id: item.id,
+        content_id: item.id || item.name.toLowerCase().replace(/\s+/g, '_'),
         content_type: 'product',
         content_name: item.name,
         quantity: item.quantity,
         price: item.price
       })),
       value: orderDetails.total,
-      currency: 'IDR'
+      currency: 'IDR',
+      order_id: orderId
     });
   }
 }

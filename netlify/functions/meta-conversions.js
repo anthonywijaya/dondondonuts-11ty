@@ -8,12 +8,27 @@ function hashData(data) {
 }
 
 exports.handler = async (event) => {
+  // Add debug logging at the start
+  console.log('Environment variables check:', {
+    hasPixelId: !!process.env.META_PIXEL_ID,
+    hasAccessToken: !!process.env.META_API_ACCESS_TOKEN,
+    pixelIdValue: process.env.META_PIXEL_ID // Be careful not to log the actual access token
+  });
+
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
   try {
     const { eventName, properties = {}, userData = {}, eventId } = JSON.parse(event.body);
+    
+    // Log the request data
+    console.log('Received request:', {
+      eventName,
+      eventId,
+      propertiesSample: properties ? 'exists' : 'missing',
+      userDataSample: userData ? 'exists' : 'missing'
+    });
 
     // Ensure we have default values for required fields
     const eventData = {
