@@ -1,3 +1,6 @@
+// For event deduplication
+const sentEvents = new Set();
+
 // CryptoJS is loaded globally from the CDN
 // import CryptoJS from 'crypto-js';
 
@@ -168,11 +171,60 @@ function getMetaCommonParams(userData = {}) {
   };
 }
 
+// Debug configuration
+const DEBUG_MODE = {
+  enabled: false,
+  logPixel: true,    // Log pixel events
+  logServer: true,   // Log server events
+  logDedup: true,    // Log deduplication info
+  logErrors: true    // Log validation errors
+};
+
+// Debug logging utility
+function logTracking(platform, type, eventName, data) {
+  if (!DEBUG_MODE.enabled) return;
+
+  const timestamp = new Date().toISOString();
+  const logStyles = {
+    Meta: 'color: #0866FF', // Meta blue
+    TikTok: 'color: #000000', // TikTok black
+    error: 'color: #FF0000',
+    dedup: 'color: #9B59B6',
+    pixel: 'color: #27AE60',
+    server: 'color: #E67E22'
+  };
+
+  console.groupCollapsed(
+    `%c[${platform}] ${type} - ${eventName} (${timestamp})`,
+    logStyles[platform]
+  );
+  
+  switch (type) {
+    case 'pixel':
+      DEBUG_MODE.logPixel && console.log('Pixel Data:', data);
+      break;
+    case 'server':
+      DEBUG_MODE.logServer && console.log('Server Event:', data);
+      break;
+    case 'dedup':
+      DEBUG_MODE.logDedup && console.log('Deduplication:', data);
+      break;
+    case 'error':
+      DEBUG_MODE.logErrors && console.error('Error:', data);
+      break;
+  }
+  
+  console.groupEnd();
+}
+
 // Track product view events
 function trackProductView(product, userData = {}) {
   // Validate input
   if (!product?.name || !product?.price) {
-    console.warn('Invalid product data for tracking');
+    logTracking('Meta', 'error', 'ViewContent', {
+      message: 'Invalid product data',
+      product
+    });
     return;
   }
 
@@ -375,67 +427,14 @@ function trackFormStart(userData = {}) {
 
 // Function to track order submission
 function trackOrderSubmission(orderDetails) {
-  // Validate required fields
-  if (!orderDetails || !orderDetails.total || !orderDetails.items || orderDetails.items.length === 0) {
-    console.warn('Tracking: Invalid order details provided');
-    return;
-  }
+  if (!orderDetails?.items?.length) return;
 
-  const eventId = `order_${Date.now()}`;
   const userData = {
-    phone: orderDetails.phone // Include phone number for server events
+    phone: orderDetails.phone
   };
 
-  // TikTok Pixel
-  if (window.ttq) {
-    ttq.track('PlaceAnOrder', {
-      contents: orderDetails.items.map(item => ({
-        content_id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
-        content_type: 'product',
-        content_name: item.item_name,
-        quantity: Number(item.quantity),
-        price: Number(item.price)
-      })),
-      value: Number(orderDetails.total),
-      currency: 'IDR'
-    });
-  }
-
-  // Meta Pixel
-  if (typeof fbq !== 'undefined') {
-    fbq('track', 'Purchase', {
-      ...getMetaCommonParams(userData),
-      content_type: 'product',
-      contents: orderDetails.items.map(item => ({
-        id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
-        quantity: Number(item.quantity),
-        item_price: Number(item.price)
-      })),
-      content_ids: orderDetails.items.map(item => 
-        item.item_name.toLowerCase().replace(/\s+/g, '_')
-      ),
-      value: Number(orderDetails.total),
-      currency: 'IDR',
-      event_id: eventId
-    });
-  }
-
-  // TikTok Server Event
-  sendServerEvent('tiktok', 'PlaceAnOrder', {
-    content_type: 'product',
-    contents: orderDetails.items.map(item => ({
-      content_id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
-      content_type: 'product',
-      content_name: item.item_name,
-      quantity: Number(item.quantity),
-      price: Number(item.price)
-    })),
-    value: Number(orderDetails.total),
-    currency: 'IDR'
-  }, userData);
-
-  // Meta Server Event
-  sendServerEvent('meta', 'Purchase', {
+  // Meta event data
+  const metaEventData = {
     ...getMetaCommonParams(userData),
     content_type: 'product',
     contents: orderDetails.items.map(item => ({
@@ -447,14 +446,30 @@ function trackOrderSubmission(orderDetails) {
       item.item_name.toLowerCase().replace(/\s+/g, '_')
     ),
     value: Number(orderDetails.total),
-    currency: 'IDR',
-    event_id: eventId
-  });
+    currency: 'IDR'
+  };
 
-  // Google Analytics
+  // TikTok event data
+  const tiktokEventData = {
+    contents: orderDetails.items.map(item => ({
+      content_id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
+      content_type: 'product',
+      content_name: item.item_name,
+      quantity: Number(item.quantity),
+      price: Number(item.price)
+    })),
+    value: Number(orderDetails.total),
+    currency: 'IDR'
+  };
+
+  // Track with deduplication
+  trackMetaEvent('Purchase', metaEventData);
+  trackTikTokEvent('PlaceAnOrder', tiktokEventData);
+
+  // Google Analytics (no deduplication needed as it's only client-side)
   if (typeof gtag === 'function') {
     gtag('event', 'purchase', {
-      transaction_id: eventId,
+      transaction_id: `ga_${Date.now()}`,
       value: Number(orderDetails.total),
       currency: 'IDR',
       items: orderDetails.items.map(item => ({
@@ -465,3 +480,111 @@ function trackOrderSubmission(orderDetails) {
     });
   }
 }
+
+// Helper function for deduplication
+function trackMetaEvent(eventName, eventData, shouldSendServer = true) {
+  const eventId = `meta_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const eventKey = `${eventName}_${eventId}`;
+
+  // Log deduplication check
+  logTracking('Meta', 'dedup', eventName, {
+    eventKey,
+    isDuplicate: sentEvents.has(eventKey)
+  });
+
+  if (sentEvents.has(eventKey)) {
+    return;
+  }
+
+  sentEvents.add(eventKey);
+
+  // Client-side pixel
+  if (typeof fbq !== 'undefined') {
+    const pixelData = {
+      ...eventData,
+      event_id: eventId
+    };
+    logTracking('Meta', 'pixel', eventName, pixelData);
+    fbq('track', eventName, pixelData);
+  }
+
+  // Server-side event
+  if (shouldSendServer) {
+    const serverData = {
+      ...eventData,
+      event_id: eventId
+    };
+    logTracking('Meta', 'server', eventName, serverData);
+    sendServerEvent('meta', eventName, serverData);
+  }
+
+  setTimeout(() => {
+    sentEvents.delete(eventKey);
+    logTracking('Meta', 'dedup', eventName, {
+      message: 'Event cleared from deduplication cache',
+      eventKey
+    });
+  }, 3600000);
+}
+
+// Helper function for TikTok deduplication
+function trackTikTokEvent(eventName, eventData, shouldSendServer = true) {
+  const eventId = `tiktok_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const eventKey = `${eventName}_${eventId}`;
+
+  // Log deduplication check
+  logTracking('TikTok', 'dedup', eventName, {
+    eventKey,
+    isDuplicate: sentEvents.has(eventKey)
+  });
+
+  if (sentEvents.has(eventKey)) {
+    return;
+  }
+
+  sentEvents.add(eventKey);
+
+  // Client-side pixel
+  if (window.ttq) {
+    const pixelData = {
+      ...eventData,
+      event_id: eventId
+    };
+    logTracking('TikTok', 'pixel', eventName, pixelData);
+    ttq.track(eventName, pixelData);
+  }
+
+  // Server-side event
+  if (shouldSendServer) {
+    const serverData = {
+      ...eventData,
+      event_id: eventId
+    };
+    logTracking('TikTok', 'server', eventName, serverData);
+    sendServerEvent('tiktok', eventName, serverData);
+  }
+
+  setTimeout(() => {
+    sentEvents.delete(eventKey);
+    logTracking('TikTok', 'dedup', eventName, {
+      message: 'Event cleared from deduplication cache',
+      eventKey
+    });
+  }, 3600000);
+}
+
+// Add debug controls to window for easy toggling
+window.debugTracking = {
+  enable: () => {
+    DEBUG_MODE.enabled = true;
+    console.log('🔍 Tracking debug mode enabled');
+  },
+  disable: () => {
+    DEBUG_MODE.enabled = false;
+    console.log('🔍 Tracking debug mode disabled');
+  },
+  setOptions: (options) => {
+    Object.assign(DEBUG_MODE, options);
+    console.log('🔧 Debug options updated:', DEBUG_MODE);
+  }
+};
