@@ -33,8 +33,8 @@ eleventyExcludeFromCollections: true
           // Track form start
           fbq('track', 'InitiateCheckout');
           trackFormStart({
-            firstName: this.receiverName.split(' ')[0],
-            lastName: this.receiverName.split(' ').slice(1).join(' '),
+            firstName: this.receiverName ? this.receiverName.split(' ')[0] : '',
+            lastName: this.receiverName ? this.receiverName.split(' ').slice(1).join(' ') : '',
             phone: this.phoneNumber
           });
         </script>
