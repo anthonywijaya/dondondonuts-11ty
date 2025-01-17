@@ -155,7 +155,7 @@ function trackOrderSubmission(orderDetails) {
     contents: orderDetails.items.map(item => ({
       id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
       quantity: item.quantity,
-      price: item.price
+      item_price: Number(item.price) || 0
     })),
     content_ids: orderDetails.items.map(item => 
       item.item_name.toLowerCase().replace(/\s+/g, '_')
