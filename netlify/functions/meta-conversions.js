@@ -24,7 +24,7 @@ exports.handler = async (event) => {
     const hashedUserData = {
       external_id: userData.external_id,
       ph: userData.phone ? hashData(userData.phone) : undefined,
-      client_ip_address: event.headers['x-forwarded-for'] || event.headers['client-ip'],
+      client_ip_address: event.headers['x-forwarded-for']?.split(',')[0].trim() || event.headers['client-ip'],
       client_user_agent: event.headers['user-agent'],
       fbc: userData.fbc,
       fbp: userData.fbp

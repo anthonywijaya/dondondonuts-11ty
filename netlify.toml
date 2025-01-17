@@ -25,6 +25,6 @@
 
 [template.environment]
   META_API_ACCESS_TOKEN = "Your Meta API Access Token"
-  META_PIXEL_ID = "1064819841680904"
+  META_PIXEL_ID = "Your Meta Pixel ID"
   TIKTOK_API_ACCESS_TOKEN = "Your TikTok API Access Token"
   TIKTOK_PIXEL_ID = "Your TikTok Pixel ID"

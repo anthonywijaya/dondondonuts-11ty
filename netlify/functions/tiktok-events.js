@@ -8,7 +8,28 @@ function hashData(data) {
 }
 
 exports.handler = async (event) => {
+  // Handle OPTIONS request for CORS
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 204,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+      }
+    };
+  }
+
+  // Log incoming request
+  console.log('TikTok Events API Request:', {
+    method: event.httpMethod,
+    headers: event.headers,
+    path: event.path,
+    body: event.body ? JSON.parse(event.body) : null
+  });
+
   if (event.httpMethod !== 'POST') {
+    console.log('Method not allowed:', event.httpMethod);
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
@@ -20,6 +41,14 @@ exports.handler = async (event) => {
       eventId
     } = JSON.parse(event.body);
 
+    // Log parsed data
+    console.log('Parsed request data:', {
+      eventName,
+      properties,
+      userData: { ...userData, phone: userData.phone ? 'REDACTED' : undefined },
+      eventId
+    });
+
     // Prepare user data with proper hashing
     const hashedUserData = {
       external_id: userData.external_id,
@@ -28,6 +57,12 @@ exports.handler = async (event) => {
       user_agent: event.headers['user-agent'],
       ttclid: userData.ttclid
     };
+
+    // Log hashed user data
+    console.log('Hashed user data:', {
+      ...hashedUserData,
+      phone_number: hashedUserData.phone_number ? 'HASHED' : undefined
+    });
 
     // Prepare event data
     const eventRequest = {
@@ -42,12 +77,18 @@ exports.handler = async (event) => {
         }
       },
       properties: {
-        currency: properties.currency || 'IDR',
-        value: properties.value,
-        contents: properties.contents,
-        content_type: 'product'
+        currency: properties?.currency || 'IDR',
+        value: properties?.value || 0,
+        contents: properties?.contents || [],
+        content_type: properties?.content_type || 'product'
       }
     };
+
+    // Log event request
+    console.log('TikTok API request:', {
+      ...eventRequest,
+      pixel_code: 'REDACTED'
+    });
 
     // Send to TikTok Events API
     try {
@@ -70,6 +111,12 @@ exports.handler = async (event) => {
 
       return {
         statusCode: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS'
+        },
         body: JSON.stringify({ success: true, response: response.data })
       };
     } catch (error) {
@@ -78,27 +125,45 @@ exports.handler = async (event) => {
         eventName,
         eventId,
         response: error.response?.data,
-        request: eventRequest
+        request: {
+          ...eventRequest,
+          pixel_code: 'REDACTED'
+        }
       });
 
       return {
         statusCode: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS'
+        },
         body: JSON.stringify({ 
           success: false, 
           error: error.message,
           details: error.response?.data || 'No additional details',
-          request: eventRequest
+          request: {
+            ...eventRequest,
+            pixel_code: 'REDACTED'
+          }
         })
       };
     }
   } catch (error) {
-    console.error('TikTok Events API Error:', error);
+    console.error('TikTok Events API Processing Error:', error);
     return {
       statusCode: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+      },
       body: JSON.stringify({ 
         success: false, 
         error: error.message,
-        details: error.response?.data || 'No additional details'
+        details: 'Error processing request'
       })
     };
   }
