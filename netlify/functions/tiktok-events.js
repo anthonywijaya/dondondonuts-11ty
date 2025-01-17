@@ -97,7 +97,7 @@ exports.handler = async (event) => {
         eventRequest,
         {
           headers: {
-            'Access-Token': process.env.TIKTOK_API_ACCESS_TOKEN,
+            'Access-Token': process.env.TIKTOK_ACCESS_TOKEN,
             'Content-Type': 'application/json'
           }
         }
