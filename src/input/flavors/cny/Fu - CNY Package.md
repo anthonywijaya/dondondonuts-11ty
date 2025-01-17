@@ -3,7 +3,7 @@ thumb: "dondon-cny-fu-package.png"
 visible: yes
 category: "cny"
 description: "Box of 6: (Powdered Sugar, Meses, Cheddar Cheese, Hazelnut Chocolate, Chocolate Cream, Abon) + CNY Special Packaging with Fu emblem."
-price: 108000
+price: 128000
 originalprice: 128000
 sort: 2
 flavors:

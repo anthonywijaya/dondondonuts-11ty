@@ -3,7 +3,7 @@ thumb: "dondon-cny-wang-package.png"
 visible: yes
 category: "cny"
 description: "Box of 6: (Powdered Sugar, Meses, Cheddar Cheese, Chocolate Milk, Vanilla Milk, Ovomaltine) + CNY Special Packaging with Fu emblem."
-price: 118000
+price: 138000
 originalprice: 138000
 sort: 3
 flavors:
