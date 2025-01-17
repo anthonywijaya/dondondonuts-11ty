@@ -29,16 +29,19 @@ exports.handler = async (event) => {
       },
       custom_data: {
         currency: properties.currency || 'IDR',
-        value: properties.value || 0,
+        value: Number(properties.value) || 0,
         content_type: properties.content_type || 'product',
-        contents: properties.contents?.map(item => ({
-          id: item.id,
-          quantity: item.quantity,
-          item_price: item.item_price
-        })) || []
+        contents: Array.isArray(properties.contents) ? properties.contents.map(item => ({
+          id: String(item.id),
+          quantity: Number(item.quantity),
+          item_price: Number(item.item_price)
+        })) : []
       },
       action_source: 'website'
     };
+
+    // Add debug logging
+    console.log('Contents data:', JSON.stringify(eventData.custom_data.contents));
 
     const eventRequest = {
       data: [eventData],
