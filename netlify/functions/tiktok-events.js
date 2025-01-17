@@ -71,21 +71,28 @@ exports.handler = async (event) => {
       event_id: eventId,
       timestamp: Date.now(),
       context: {
-        user: hashedUserData,
+        user: {
+          external_id: hashData(userData.external_id),
+          phone_number: userData.phone ? hashData(userData.phone.trim()) : undefined,
+          ip: event.headers['x-forwarded-for'] || event.headers['client-ip'],
+          user_agent: event.headers['user-agent'],
+          ttclid: userData.ttclid
+        },
         page: {
           url: event.headers.referer || 'https://dondondonuts.id'
         }
       },
       properties: {
-        currency: properties?.currency || 'IDR',
-        value: properties?.value || 0,
+        currency: 'IDR',
+        value: Number(properties?.value) || 0,
         contents: properties?.contents?.map(item => ({
-          ...item,
-          content_id: item.content_id || item.id || 'unknown',
+          content_id: item.content_id || item.id,
+          content_type: 'product',
+          content_name: item.content_name || item.name,
+          quantity: Number(item.quantity) || 1,
           price: Number(item.price || item.item_price || 0)
         })) || [],
-        content_type: properties?.content_type || 'product',
-        content_id: properties?.content_id || `event_${eventId}`
+        content_type: 'product'
       }
     };
 
