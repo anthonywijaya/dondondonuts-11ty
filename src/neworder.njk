@@ -32,7 +32,11 @@ eleventyExcludeFromCollections: true
         <script>
           // Track form start
           fbq('track', 'InitiateCheckout');
-          trackFormStart();
+          trackFormStart({
+            firstName: this.receiverName.split(' ')[0],
+            lastName: this.receiverName.split(' ').slice(1).join(' '),
+            phone: this.phoneNumber
+          });
         </script>
         <a href="https://wa.me/6281519231874" target="_blank" 
            @click="trackNeedHelp()"
@@ -226,7 +230,7 @@ eleventyExcludeFromCollections: true
                       <img class="object-cover rounded-xl overflow-hidden w-full" 
                            src="{{ flavor.data.thumb }}" 
                            alt="{{ flavor.data.title }}"
-                           @click="trackTikTokViewContent({
+                           @click="trackProductView({
                              name: '{{ flavor.data.title }}',
                              price: {{ flavor.data.price | replace(',', '') }}
                            })">
@@ -254,7 +258,7 @@ eleventyExcludeFromCollections: true
                                  pattern="[0-9]*">
                           <button type="button" 
                                   @click="flavors['{{ flavorType }}'][{{ loop.index0 }}].quantity++; 
-                                         trackTikTokViewContent({
+                                         trackProductView({
                                            name: '{{ flavor.data.title }}',
                                            price: {{ flavor.data.price | replace(',', '') }}
                                          })"

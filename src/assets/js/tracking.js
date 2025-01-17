@@ -149,185 +149,108 @@ function getCookie(name) {
   return undefined;
 }
 
-// Function to track form start
-function trackFormStart() {
-  const formStartId = `form_${Date.now()}`;
-  
-  gtag('event', 'form_start', {
-    'event_category': 'Engagement',
-    'event_label': 'Order Form'
-  });
-  
-  fbq('trackCustom', 'FormStart', {
-    formName: 'Order Form',
-    content_id: formStartId
-  });
-  
-  if (window.ttq) {
-    ttq.track('StartCheckout', {
-      content_id: formStartId
-    });
-  }
-
-  // Server-side events
-  sendServerEvent('meta', 'StartCheckout', { content_id: formStartId }, {});
-  sendServerEvent('tiktok', 'StartCheckout', { content_id: formStartId }, {});
+// Helper function to get common Meta parameters
+function getMetaCommonParams(userData = {}) {
+  return {
+    action_source: 'website',
+    event_source_url: window.location.href,
+    event_time: Math.floor(Date.now() / 1000),
+    user_data: {
+      client_user_agent: navigator.userAgent,
+      first_name: userData.firstName || undefined,
+      last_name: userData.lastName || undefined,
+      phone: userData.phone || undefined,
+      client_ip_address: undefined, // This will be set server-side
+      external_id: userData.external_id || getPersistentUserId(),
+      fbp: getCookie('_fbp'),
+      fbc: getCookie('_fbc')
+    }
+  };
 }
 
-// Function to track "Need Help" button click
-function trackNeedHelp() {
-  gtag('event', 'contact', {
-    'event_category': 'Engagement',
-    'event_label': 'Need Help'
-  });
-  fbq('trackCustom', 'Contact', {type: 'Need Help'});
-}
-
-// Function to track order submission
-function trackOrderSubmission(orderDetails) {
-  // Validate required fields
-  if (!orderDetails || !orderDetails.total || !orderDetails.items || orderDetails.items.length === 0) {
-    console.warn('Tracking: Invalid order details provided');
+// Track product view events
+function trackProductView(product, userData = {}) {
+  // Validate input
+  if (!product?.name || !product?.price) {
+    console.warn('Invalid product data for tracking');
     return;
   }
 
-  const eventId = `order_${Date.now()}`;
-
-  // TikTok Pixel - Place Order
-  if (window.ttq) {
-    ttq.track('PlaceAnOrder', {
-      contents: orderDetails.items.map(item => ({
-        content_id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
-        content_type: 'product',
-        content_name: item.item_name,
-        quantity: Number(item.quantity),
-        price: Number(item.price)
-      })),
-      value: Number(orderDetails.total),
-      currency: 'IDR'
-    });
+  // Check if product has been viewed this session
+  const viewedProducts = JSON.parse(localStorage.getItem('viewedProducts') || '{}');
+  const contentId = product.name.toLowerCase().replace(/\s+/g, '_');
+  
+  if (viewedProducts[contentId]) {
+    return; // Skip if already viewed in this session
   }
 
-  // Google Analytics
-  gtag('event', 'purchase', {
-    transaction_id: eventId,
-    value: orderDetails.total,
-    currency: 'IDR',
-    items: orderDetails.items.map(item => ({
-      item_name: item.item_name,
-      quantity: item.quantity,
-      price: item.price
-    }))
-  });
+  // Mark product as viewed
+  viewedProducts[contentId] = Date.now();
+  localStorage.setItem('viewedProducts', JSON.stringify(viewedProducts));
 
-  // Prepare common event data
-  const eventData = {
-    value: orderDetails.total,
-    currency: 'IDR',
-    contents: orderDetails.items.map(item => ({
-      id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
-      content_id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
-      quantity: item.quantity,
-      item_price: Number(item.price) || 0,
-      price: (Number(item.price) || 0) * item.quantity  // Calculate total price for line item
-    })),
-    content_ids: orderDetails.items.map(item => 
-      item.item_name.toLowerCase().replace(/\s+/g, '_')
-    ),
-    content_id: `order_${eventId}`
-  };
-
-  // Meta Pixel
-  fbq('track', 'Purchase', {
-    ...eventData,
-    content_type: 'product'
-  });
-
-  // Meta Server Event
-  sendServerEvent('meta', 'Purchase', eventData, {
-    phone: orderDetails.phone
-  });
-  
-  // TikTok Server Event
-  sendServerEvent('tiktok', 'PlaceAnOrder', {
-    ...eventData,
-    order_id: eventId
-  }, {
-    phone: orderDetails.phone
-  });
-}
-
-// Function to track TikTok view content
-function trackTikTokViewContent(flavor) {
-  const contentId = flavor.name.toLowerCase().replace(/\s+/g, '_');
-  
+  // TikTok Pixel
   if (window.ttq) {
     ttq.track('ViewContent', {
       contents: [{
         content_id: contentId,
-        content_type: 'product', // Explicitly set as required
-        content_name: flavor.name,
-        price: Number(flavor.price) // Ensure it's a number
+        content_type: 'product',
+        content_name: product.name,
+        price: Number(product.price)
       }]
     });
   }
 
   // Meta Pixel
-  fbq('track', 'ViewContent', {
-    content_type: 'product',
-    content_id: contentId,
-    content_name: flavor.name,
-    value: flavor.price,
-    currency: 'IDR',
-    contents: [{
-      content_id: contentId,
-      id: contentId,
+  if (typeof fbq !== 'undefined') {
+    fbq('track', 'ViewContent', {
+      ...getMetaCommonParams(userData),
       content_type: 'product',
-      content_name: flavor.name,
-      price: flavor.price,
-      quantity: 1
-    }]
-  });
-
-  // Meta Server Event
-  sendServerEvent('meta', 'ViewContent', {
-    content_type: 'product',
-    content_id: contentId,
-    content_name: flavor.name,
-    value: flavor.price,
-    currency: 'IDR',
-    contents: [{
-      content_id: contentId,
-      id: contentId,
-      content_type: 'product',
-      content_name: flavor.name,
-      price: flavor.price,
-      quantity: 1
-    }]
-  }, {});
+      content_id: product.name.toLowerCase().replace(/\s+/g, '_'),
+      content_name: product.name,
+      value: Number(product.price),
+      currency: 'IDR'
+    });
+  }
 
   // TikTok Server Event
   sendServerEvent('tiktok', 'ViewContent', {
     content_type: 'product',
     content_id: contentId,
-    content_name: flavor.name,
-    value: flavor.price,
+    content_name: product.name,
+    value: Number(product.price),
     currency: 'IDR',
     contents: [{
       content_id: contentId,
-      id: contentId,
       content_type: 'product',
-      content_name: flavor.name,
-      price: flavor.price,
+      content_name: product.name,
+      price: Number(product.price),
       quantity: 1
     }]
   }, {});
+
+  // Meta Server Event
+  sendServerEvent('meta', 'ViewContent', {
+    ...getMetaCommonParams(userData),
+    content_type: 'product',
+    content_id: product.name.toLowerCase().replace(/\s+/g, '_'),
+    content_name: product.name,
+    value: Number(product.price),
+    currency: 'IDR'
+  });
 }
 
-// Function to track initiate checkout
-function trackTikTokInitiateCheckout(orderDetails) {
-  if (!orderDetails?.items?.length) return;
+// Track checkout initiation
+function trackInitiateCheckout(orderDetails, userData = {}) {
+  // Validate input and prevent duplicate events
+  if (!orderDetails?.items?.length || hasInitiatedCheckout) {
+    return;
+  }
 
+  hasInitiatedCheckout = true;
+  const eventId = `checkout_${Date.now()}`;
+  const total = Number(orderDetails.total);
+
+  // TikTok Pixel
   if (window.ttq) {
     ttq.track('InitiateCheckout', {
       contents: orderDetails.items.map(item => ({
@@ -337,27 +260,115 @@ function trackTikTokInitiateCheckout(orderDetails) {
         quantity: Number(item.quantity),
         price: Number(item.price)
       })),
+      value: total,
+      currency: 'IDR'
+    });
+  }
+
+  // Meta Pixel
+  if (typeof fbq !== 'undefined') {
+    fbq('track', 'InitiateCheckout', {
+      ...getMetaCommonParams(userData),
+      content_type: 'product',
+      contents: orderDetails.items.map(item => ({
+        id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
+        quantity: Number(item.quantity),
+        item_price: Number(item.price)
+      })),
       value: Number(orderDetails.total),
       currency: 'IDR'
     });
   }
+
+  // Google Analytics
+  gtag('event', 'begin_checkout', {
+    currency: 'IDR',
+    value: total,
+    items: orderDetails.items.map(item => ({
+      item_name: item.item_name,
+      quantity: Number(item.quantity),
+      price: Number(item.price)
+    }))
+  });
+
+  // TikTok Server Event
+  sendServerEvent('tiktok', 'InitiateCheckout', {
+    content_type: 'product',
+    contents: orderDetails.items.map(item => ({
+      content_id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
+      content_type: 'product',
+      content_name: item.item_name,
+      quantity: Number(item.quantity),
+      price: Number(item.price)
+    })),
+    value: total,
+    currency: 'IDR'
+  }, {});
+
+  // Meta Server Event
+  sendServerEvent('meta', 'InitiateCheckout', {
+    ...getMetaCommonParams(userData),
+    content_type: 'product',
+    contents: orderDetails.items.map(item => ({
+      id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
+      quantity: Number(item.quantity),
+      item_price: Number(item.price)
+    })),
+    value: Number(orderDetails.total),
+    currency: 'IDR'
+  });
 }
 
-function trackTikTokPlaceOrder(orderDetails) {
-  const orderId = `order_${Date.now()}`;
-  if (window.ttq) {
-    ttq.track('PlaceAnOrder', {
-      content_id: orderId,
-      contents: orderDetails.items.map(item => ({
-        content_id: item.id || item.name.toLowerCase().replace(/\s+/g, '_'),
-        content_type: 'product',
-        content_name: item.name,
-        quantity: item.quantity,
-        price: item.price
-      })),
-      value: orderDetails.total,
-      currency: 'IDR',
-      order_id: orderId
+// Track form start
+function trackFormStart(userData = {}) {
+  if (typeof fbq !== 'undefined') {
+    fbq('trackCustom', 'FormStart', {
+      ...getMetaCommonParams(userData),
+      formName: 'Order Form'
     });
   }
+
+  sendServerEvent('meta', 'FormStart', {
+    ...getMetaCommonParams(userData),
+    formName: 'Order Form'
+  });
+}
+
+// Track purchase
+function trackPurchase(orderDetails, userData = {}) {
+  const eventId = `order_${Date.now()}`;
+
+  if (typeof fbq !== 'undefined') {
+    fbq('track', 'Purchase', {
+      ...getMetaCommonParams(userData),
+      content_type: 'product',
+      contents: orderDetails.items.map(item => ({
+        id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
+        quantity: Number(item.quantity),
+        item_price: Number(item.price)
+      })),
+      content_ids: orderDetails.items.map(item => 
+        item.item_name.toLowerCase().replace(/\s+/g, '_')
+      ),
+      value: Number(orderDetails.total),
+      currency: 'IDR',
+      event_id: eventId
+    });
+  }
+
+  sendServerEvent('meta', 'Purchase', {
+    ...getMetaCommonParams(userData),
+    content_type: 'product',
+    contents: orderDetails.items.map(item => ({
+      id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
+      quantity: Number(item.quantity),
+      item_price: Number(item.price)
+    })),
+    content_ids: orderDetails.items.map(item => 
+      item.item_name.toLowerCase().replace(/\s+/g, '_')
+    ),
+    value: Number(orderDetails.total),
+    currency: 'IDR',
+    event_id: eventId
+  });
 }
