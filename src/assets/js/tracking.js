@@ -334,10 +334,74 @@ function trackFormStart(userData = {}) {
   });
 }
 
-// Track purchase
-function trackPurchase(orderDetails, userData = {}) {
-  const eventId = `order_${Date.now()}`;
+// // Track purchase
+// function trackPurchase(orderDetails, userData = {}) {
+//   const eventId = `order_${Date.now()}`;
 
+//   if (typeof fbq !== 'undefined') {
+//     fbq('track', 'Purchase', {
+//       ...getMetaCommonParams(userData),
+//       content_type: 'product',
+//       contents: orderDetails.items.map(item => ({
+//         id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
+//         quantity: Number(item.quantity),
+//         item_price: Number(item.price)
+//       })),
+//       content_ids: orderDetails.items.map(item => 
+//         item.item_name.toLowerCase().replace(/\s+/g, '_')
+//       ),
+//       value: Number(orderDetails.total),
+//       currency: 'IDR',
+//       event_id: eventId
+//     });
+//   }
+
+//   sendServerEvent('meta', 'Purchase', {
+//     ...getMetaCommonParams(userData),
+//     content_type: 'product',
+//     contents: orderDetails.items.map(item => ({
+//       id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
+//       quantity: Number(item.quantity),
+//       item_price: Number(item.price)
+//     })),
+//     content_ids: orderDetails.items.map(item => 
+//       item.item_name.toLowerCase().replace(/\s+/g, '_')
+//     ),
+//     value: Number(orderDetails.total),
+//     currency: 'IDR',
+//     event_id: eventId
+//   });
+// }
+
+// Function to track order submission
+function trackOrderSubmission(orderDetails) {
+  // Validate required fields
+  if (!orderDetails || !orderDetails.total || !orderDetails.items || orderDetails.items.length === 0) {
+    console.warn('Tracking: Invalid order details provided');
+    return;
+  }
+
+  const eventId = `order_${Date.now()}`;
+  const userData = {
+    phone: orderDetails.phone // Include phone number for server events
+  };
+
+  // TikTok Pixel
+  if (window.ttq) {
+    ttq.track('PlaceAnOrder', {
+      contents: orderDetails.items.map(item => ({
+        content_id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
+        content_type: 'product',
+        content_name: item.item_name,
+        quantity: Number(item.quantity),
+        price: Number(item.price)
+      })),
+      value: Number(orderDetails.total),
+      currency: 'IDR'
+    });
+  }
+
+  // Meta Pixel
   if (typeof fbq !== 'undefined') {
     fbq('track', 'Purchase', {
       ...getMetaCommonParams(userData),
@@ -356,6 +420,21 @@ function trackPurchase(orderDetails, userData = {}) {
     });
   }
 
+  // TikTok Server Event
+  sendServerEvent('tiktok', 'PlaceAnOrder', {
+    content_type: 'product',
+    contents: orderDetails.items.map(item => ({
+      content_id: item.item_name.toLowerCase().replace(/\s+/g, '_'),
+      content_type: 'product',
+      content_name: item.item_name,
+      quantity: Number(item.quantity),
+      price: Number(item.price)
+    })),
+    value: Number(orderDetails.total),
+    currency: 'IDR'
+  }, userData);
+
+  // Meta Server Event
   sendServerEvent('meta', 'Purchase', {
     ...getMetaCommonParams(userData),
     content_type: 'product',
@@ -371,4 +450,18 @@ function trackPurchase(orderDetails, userData = {}) {
     currency: 'IDR',
     event_id: eventId
   });
+
+  // Google Analytics
+  if (typeof gtag === 'function') {
+    gtag('event', 'purchase', {
+      transaction_id: eventId,
+      value: Number(orderDetails.total),
+      currency: 'IDR',
+      items: orderDetails.items.map(item => ({
+        item_name: item.item_name,
+        quantity: Number(item.quantity),
+        price: Number(item.price)
+      }))
+    });
+  }
 }
