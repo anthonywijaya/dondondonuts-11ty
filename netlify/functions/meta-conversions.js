@@ -31,7 +31,11 @@ exports.handler = async (event) => {
         currency: properties.currency || 'IDR',
         value: properties.value || 0,
         content_type: properties.content_type || 'product',
-        contents: properties.contents || []
+        contents: properties.contents?.map(item => ({
+          id: item.id,
+          quantity: item.quantity,
+          item_price: item.item_price
+        })) || []
       },
       action_source: 'website'
     };
