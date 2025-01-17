@@ -64,12 +64,15 @@ exports.handler = async (event) => {
       phone_number: hashedUserData.phone_number ? 'HASHED' : undefined
     });
 
+    // Convert timestamp to microseconds and ensure it's a string
+    const timestamp = (Date.now() * 1000).toString();
+
     // Prepare event data
     const eventRequest = {
       pixel_code: process.env.TIKTOK_PIXEL_ID,
       event: eventName,
       event_id: eventId,
-      timestamp: Date.now(),
+      timestamp: timestamp,
       context: {
         user: {
           external_id: hashData(userData.external_id),
