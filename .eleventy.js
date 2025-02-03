@@ -160,6 +160,11 @@ module.exports = function(eleventyConfig) {
       .sort((a, b) => (a.data.sort || 0) - (b.data.sort || 0));
   });
 
+  eleventyConfig.addCollection("valentine", function(collectionApi) {
+    return collectionApi.getFilteredByGlob("src/input/flavors/valentine 2025/*.md")
+      .sort((a, b) => (a.data.sort || 0) - (b.data.sort || 0));
+  });
+
   eleventyConfig.addFilter("getFlavor", function(collections, flavorPath) {
     const allFlavors = Object.values(collections).flat();
     return allFlavors.find(flavor => {
