@@ -136,14 +136,14 @@ eleventyExcludeFromCollections: true
         <!-- Flavors -->
         <div class="space-y-6">
           <!-- Valentine Packages Section -->
-          {# <div class="mt-8 mb-12">
+          <div class="mt-8 mb-12">
             <h2 class="text-3xl font-bold mb-6">Valentine's Special Packages</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {% for package in collections.valentine %}
                 {% if package.data.visible == "yes" %}
                   <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                     <div class="relative">
-                      <img src="{{ package.data.thumb }}" alt="{{ package.data.title }}" class="w-full h-56 object-cover">
+                      <img src="{{ package.data.thumb }}" alt="{{ package.data.title }}" class="w-full">
                       
                     </div>
                     <div class="p-6">
@@ -151,7 +151,7 @@ eleventyExcludeFromCollections: true
                       
                       <!-- Included Flavors Grid -->
                       <div class="mb-4">
-                        <div class="grid grid-cols-3 gap-2">
+                        <div class="grid grid-cols-2 gap-2">
                           {% for flavor in package.data.flavors %}
                             {% set flavorDetails = collections.flavors | getFlavor(flavor) %}
                             {% if flavorDetails %}
@@ -207,8 +207,9 @@ eleventyExcludeFromCollections: true
                   </div>
                 {% endif %}
               {% endfor %}
+              
             </div>
-          </div> #}
+          </div>
 
           <!-- Existing Flavors Section -->
           <h2 class="text-3xl font-bold mt-8">Our Donuts</h2>
