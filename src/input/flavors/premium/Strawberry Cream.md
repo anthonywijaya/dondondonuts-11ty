@@ -4,5 +4,4 @@ visible: yes
 category: "premium"
 description: "+ Strawberry Cream"
 price: 15000
-new: true
 ---
