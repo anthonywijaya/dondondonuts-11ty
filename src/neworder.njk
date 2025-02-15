@@ -97,7 +97,7 @@ eleventyExcludeFromCollections: true
                 
               </div>
               <div class="mt-2 flex space-x-2">
-              <span class="text-xs bg-dondonorange p-2 text-dondonwhite flex-1 text-center">14 Feb: <span class="line-through">Full</span></span>
+              <span class="text-xs bg-dondonorange p-2 text-dondonwhite flex-1 text-center">16 Feb: <span class="line-through">Full</span></span>
                 {# <span class="text-xs bg-dondonorange p-2 text-dondonwhite flex-1 text-center">21 Dec: <span class="line-through">Full</span></span> #}
                 {# <span class="text-xs bg-dondonorange p-2 text-dondonwhite flex-1 text-center">3 Nov: <span class="line-through">Full</span></span> #}
                 <span x-text="getNextAvailableDate(1)" class="text-xs bg-dondonorange p-2 text-dondonwhite flex-1 text-center"></span>
@@ -136,7 +136,7 @@ eleventyExcludeFromCollections: true
         <!-- Flavors -->
         <div class="space-y-6">
           <!-- Valentine Packages Section -->
-          <div class="mt-8 mb-12">
+          {# <div class="mt-8 mb-12">
             <h2 class="text-3xl font-bold mb-6">Valentine's Special Packages</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {% for package in collections.valentine %}
@@ -209,7 +209,7 @@ eleventyExcludeFromCollections: true
               {% endfor %}
               
             </div>
-          </div>
+          </div> #}
 
           <!-- Existing Flavors Section -->
           <h2 class="text-3xl font-bold mt-8">Our Donuts</h2>
