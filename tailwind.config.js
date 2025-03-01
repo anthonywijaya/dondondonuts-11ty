@@ -103,4 +103,8 @@ module.exports = {
       },
     },
   },
+  safelist: [
+    'grid-cols-3',
+    // other classes you want to preserve
+  ],
 };
