@@ -204,6 +204,74 @@ eleventyExcludeFromCollections: true
                       </div>
                     </div>
                   </div>
+                {% elif package.data.visible == "no" %}
+                  <div class="bg-white rounded-xl shadow-lg overflow-hidden opacity-60">
+                    <div class="relative">
+                      <!-- Sold Out Badge -->
+                      <div class="absolute top-2 right-2 bg-dondonblue text-dondonwhite px-2 py-1 text-sm font-bold rounded-md z-10 shadow-md">
+                        Sold Out
+                      </div>
+                      <img src="{{ package.data.thumb }}" alt="{{ package.data.title }}" class="w-full grayscale">
+                    </div>
+                    <div class="p-6">
+                      <h3 class="text-xl text-green-800 font-bold mb-2">{{ package.data.title }}</h3>
+                      
+                      <!-- Included Flavors Grid -->
+                      <div class="mb-4">
+                        <div class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-2">
+                          {% for flavor in package.data.flavors %}
+                            {% set flavorDetails = collections.flavors | getFlavor(flavor) %}
+                            {% if flavorDetails %}
+                              <div class="flex flex-col items-center">
+                                <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-50">
+                                  <img src="{{ flavorDetails.data.thumb }}" 
+                                       alt="{{ flavorDetails.data.title }}" 
+                                       class="w-full h-full object-cover grayscale">
+                                </div>
+                                <span class="text-xs text-center mt-1">{{ flavorDetails.data.title }}</span>
+                              </div>
+                            {% endif %}
+                          {% endfor %}
+                        </div>
+                      </div>
+
+                      <!-- Special Packaging Section -->
+                      <div class="flex items-center gap-2 mb-4 p-2 bg-gray-500 rounded-lg">
+                        <div class="flex-shrink-0">
+                          <svg class="w-5 h-5 text-dondonwhite" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                          </svg>
+                        </div>
+                        <p class="text-sm text-dondonwhite">
+                          Festive Eid Box Included
+                        </p>
+                      </div>
+
+                      <div class="flex justify-between items-center">
+                        <div class="flex flex-col">
+                          <p class="text-md font-bold text-gray-600">Rp. {{ package.data.price | thousandseparator }}</p>
+                        </div>
+                        <!-- Disabled quantity controls -->
+                        <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+                          <button type="button" 
+                                  disabled
+                                  class="px-3 py-1 bg-gray-100 text-gray-400 cursor-not-allowed">
+                            -
+                          </button>
+                          <input type="text" 
+                                 disabled
+                                 value="0"
+                                 class="w-12 px-2 py-1 text-center text-sm bg-gray-50 border-none cursor-not-allowed"
+                                 inputmode="numeric">
+                          <button type="button" 
+                                  disabled
+                                  class="px-3 py-1 bg-gray-100 text-gray-400 cursor-not-allowed">
+                            +
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 {% endif %}
               {% endfor %}
             </div>

@@ -1,7 +1,7 @@
 ---
 title: "Paket B - Raya"
 thumb: "raya.jpg"
-visible: "yes"
+visible: "no"
 category: "eid"
 description: "Eid Raya Package with 6 premium flavors."
 price: 121000

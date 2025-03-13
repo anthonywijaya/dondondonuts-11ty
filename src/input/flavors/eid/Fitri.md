@@ -1,7 +1,7 @@
 ---
 title: "Paket A - Fitri"
 thumb: "fitri.jpg"
-visible: "yes"
+visible: "no"
 category: "eid"
 description: "Eid Fitri Package with 6 non-cream flavors."
 price: 120000

@@ -1,7 +1,7 @@
 ---
 title: "Paket C - Mubarak"
 thumb: "mubarak.jpg"
-visible: "yes"
+visible: "no"
 category: "eid"
 description: "Deluxe Eid Mubarak Package with 12 flavors. (2 boxes of 6)"
 price: 201000
