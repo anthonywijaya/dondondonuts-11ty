@@ -408,6 +408,42 @@ eleventyExcludeFromCollections: true
           </div>
         </div>
 
+        <!-- Eid Accessories Option -->
+        <div x-show="enableEidAccessories" class="mt-8 bg-dondonwhite-dark rounded-lg shadow-md p-6">
+          <div class="flex items-center space-x-4">
+            <div class="flex-grow">
+              <span class="text-lg font-semibold text-dondonblue">Eid Festive Additionals</span>
+              <span class="block text-sm text-dondonblue-light">Add Eid decorations: ribbons, and hangtags for your celebration!</span>
+            </div>
+            <div class="flex items-center">
+              <span class="text-dondonorange font-semibold mr-3">Rp. <span x-text="eidAccessoriesPrice.toLocaleString('en-US')"></span></span>
+              <div class="flex items-center border border-dondonorange-light rounded-lg overflow-hidden">
+                <button type="button" 
+                        @click="eidAccessoriesQuantity = Math.max(0, eidAccessoriesQuantity - 1)"
+                        class="px-3 py-1 bg-dondonwhite-dark text-dondonblue hover:bg-dondonorange-light focus:outline-none">
+                  -
+                </button>
+                <input type="text" 
+                       x-model.number="eidAccessoriesQuantity" 
+                       @input="eidAccessoriesQuantity = Math.max(0, parseInt($event.target.value) || 0)"
+                       class="w-12 px-2 py-1 text-center text-sm bg-dondonwhite border-none focus:ring-0"
+                       inputmode="numeric"
+                       pattern="[0-9]*">
+                <button type="button" 
+                        @click="eidAccessoriesQuantity++"
+                        class="px-3 py-1 bg-dondonwhite-dark text-dondonblue hover:bg-dondonorange-light focus:outline-none">
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center mt-4">
+            <img src="/assets/img/eid-hampers-accessories-cropped.jpg" alt="Eid Accessories" class="w-24 h-24 object-cover rounded-lg shadow-md mr-4">
+            <img src="/assets/img/eid-hampers-accessories-highlight-croped.jpg" alt="Eid Accessories" class="w-24 h-24 object-cover rounded-lg shadow-md mr-4">
+            <p class="text-sm ml-4 text-dondonblue-light">Includes festive Eid ornaments: add 1 for each box of 6 donuts.</p>
+          </div>
+        </div>
+
         <!-- Total Price -->
         <div id="orderSummary" class="mt-8 bg-dondonwhite-dark rounded-lg shadow-md p-6 space-y-4">
           <h3 class="text-2xl font-bold text-dondonblue mb-4">Order Summary</h3>
@@ -444,6 +480,12 @@ eleventyExcludeFromCollections: true
           <div x-show="birthdayTopper" class="flex justify-between items-center py-2 border-b border-dondonorange-light">
             <span class="text-dondonblue">Birthday Additionals:</span>
             <span class="text-xl font-semibold">Rp. 15,000</span>
+          </div>
+          
+          <!-- Add Eid Accessories to the order summary if selected -->
+          <div x-show="eidAccessoriesQuantity > 0" class="flex justify-between items-center py-2 border-b border-dondonorange-light">
+            <span class="text-dondonblue">Eid Festive Additionals:</span>
+            <span class="text-xl font-semibold"><span x-text="eidAccessoriesQuantity"></span> x Rp. <span x-text="eidAccessoriesPrice.toLocaleString('en-US')"></span></span>
           </div>
           
           <!-- Update the Total Price calculation -->
@@ -512,6 +554,8 @@ eleventyExcludeFromCollections: true
               <span class="text-sm font-medium">Total Items: <span x-text="getTotalQuantity()" class="font-bold"></span></span>
               <span class="text-sm font-medium">Total: <span x-text="`Rp. ${getTotalPrice().toLocaleString('en-US')}`" class="font-bold"></span></span>
               <span x-show="getDiscount() > 0" class="text-sm font-medium text-dondonorange">Discount: <span x-text="`Rp. ${getDiscount().toLocaleString('en-US')}`" class="font-bold"></span></span>
+              <span x-show="birthdayTopper" class="text-sm font-medium">Birthday: <span class="font-bold">+Rp. 15,000</span></span>
+              <span x-show="eidAccessoriesQuantity > 0" class="text-sm font-medium">Eid: <span class="font-bold"><span x-text="eidAccessoriesQuantity"></span> x Rp. <span x-text="eidAccessoriesPrice.toLocaleString('en-US')"></span></span></span>
             </div>
             <div x-show="getNextDiscountTier()" class="text-sm">
               <span x-show="!getNextDiscountTier().hasReachedTier" x-text="`Add ${getNextDiscountTier().quantity} more for Rp. ${getNextDiscountTier().discount.toLocaleString('en-US')} off!`" class="text-dondonorange-dark"></span>
@@ -617,6 +661,10 @@ function orderForm() {
     birthdayTopper: false,
     birthdayCardMessage: '',
     enableDiscounts: false,
+    eidAccessories: false,
+    enableEidAccessories: true,
+    eidAccessoriesPrice: 10000,
+    eidAccessoriesQuantity: 0,
     init() {
       this.initFlavors();
       this.deliveryDate = this.getNextAvailableDate();
@@ -713,7 +761,7 @@ function orderForm() {
       return Object.values(this.flavors).flat().reduce((total, flavor) => total + flavor.price * flavor.quantity, 0);
     },
     getTotalPrice() {
-      return this.getSubtotal() - this.getDiscount() + (this.birthdayTopper ? 15000 : 0);
+      return this.getSubtotal() - this.getDiscount() + (this.birthdayTopper ? 15000 : 0) + (this.eidAccessoriesQuantity * this.eidAccessoriesPrice);
     },
     getTotalQuantity() {
       return Object.values(this.flavors).flat().reduce((total, flavor) => total + flavor.quantity, 0);
@@ -1036,9 +1084,13 @@ ${regularOrders}`;
 Birthday/Anniversary Card Message: ${this.birthdayCardMessage}`;
       }
 
+      if (this.eidAccessoriesQuantity > 0) {
+        message += `\n\nEid Festive Additionals: ${this.eidAccessoriesQuantity} x Rp. ${this.eidAccessoriesPrice.toLocaleString('en-US')}`;
+      }
+
       message += `\n
 Subtotal: Rp. ${this.getSubtotal().toLocaleString('en-US')}
-${this.enableDiscounts ? `Discount: - Rp. ${this.getDiscount().toLocaleString('en-US')}\n` : ''}${this.birthdayTopper ? `Birthday Topper: Rp. 15,000\n` : ''}
+${this.enableDiscounts ? `Discount: - Rp. ${this.getDiscount().toLocaleString('en-US')}\n` : ''}${this.birthdayTopper ? `Birthday Topper: Rp. 15,000\n` : ''}${this.eidAccessoriesQuantity > 0 ? `Eid Festive Additionals: ${this.eidAccessoriesQuantity} x Rp. ${this.eidAccessoriesPrice.toLocaleString('en-US')}\n` : ''}
 Total Price: Rp. ${this.getTotalPrice().toLocaleString('en-US')}
 
 L${classicValue}U${premiumValue}
