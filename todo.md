@@ -20,6 +20,7 @@
 - [x] Update floating summary bar to show Eid accessories
 - [x] ~~Update generateOrderMessage() to include Eid accessories~~ Updated: Show quantity in message
 - [x] Add configurable eidAccessoriesPrice variable
+- [x] Optimize Eid accessories section for mobile devices
 
 ## Completed
 - Added Eid Accessories UI section with toggle functionality
@@ -29,6 +30,11 @@
 - Updated floating bar to show Eid accessories quantity
 - Updated WhatsApp message to include Eid accessories quantity
 - Added configurable eidAccessoriesPrice variable (default: 10,000)
+- Improved mobile layout with responsive design:
+  - Restructured to use flex-col on mobile and flex-row on larger screens
+  - Made image take full width on mobile and 1/3 width on desktop
+  - Improved touch targets for mobile users
+  - Enhanced spacing and alignment for better readability
 
 ## Notes
 - Default setting for enableEidAccessories is set to `true`. Set to `false` to disable the feature during non-Eid seasons.
